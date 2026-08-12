@@ -1,0 +1,30 @@
+import 'package:erp_client_1/features/danhmuc/taikhoan/presentation/ui/state/taikhoan_lookup_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+
+import '../../../../../../core/widgets/app_combobox.dart';
+import '../../../data/model/taikhoan_lookup_model.dart';
+
+class TaiKhoanXL0Combobox extends ConsumerWidget {
+  final void Function(dynamic)? onChanged;
+  final String? selected;
+  final bool enabled;
+  const TaiKhoanXL0Combobox({super.key, this.selected, this.onChanged, this.enabled=true});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(taiKhoanLookupProvider(LoaiTaiKhoan.maXL0));
+    return state.when(data: (value){
+      return  AppCombobox(
+        enabled: enabled,
+        enabledClear: true,
+        noSearch: false,
+        menuWidth: 300,
+        columnWidth: [50, 250],
+        onChanged: onChanged,
+        value: selected,
+        items: value.map((e) => ComboboxItem(value: e.maTK, text: [e.maTK, e.tenTK])).toList(),
+      );
+    }, error: (e,s)=> Text(e.toString()), loading: ()=> LinearProgressIndicator());
+  }
+}
