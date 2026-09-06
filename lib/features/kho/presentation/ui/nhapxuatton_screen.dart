@@ -35,6 +35,9 @@ class _NhapXuatTonScreenState extends ConsumerState<NhapXuatTonScreen> {
     final state = ref.watch(nhapXuatTonProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [
+        AppFooter()
+      ],
       headers: [
         AppHeader(title: "Nhập xuất tồn kho"),
         AppBar(
@@ -73,7 +76,7 @@ class _NhapXuatTonScreenState extends ConsumerState<NhapXuatTonScreen> {
         Divider(color: AppColor.border300,)
       ],
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(0),
         child: state.when(
           data: (val) {
             return Scaffold(

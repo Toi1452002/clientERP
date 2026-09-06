@@ -141,4 +141,18 @@ class TaiKhoanRepository implements ITaiKhoanRepository{
     }
   }
 
+  @override
+  Future<List<TaiKhoanLookupModel>> getTKSoCai() async {
+    // TODO: implement getTKSoCai
+    try{
+      final response = await _dio.get("/TaiKhoan/tk-so-cai");
+      final data = response.data as List;
+      return data.map((e)=> TaiKhoanLookupModel.fromMap(e)).toList();
+    }on DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      throw Exception("Unknown error");
+    }
+  }
+
 }

@@ -4,9 +4,11 @@ import 'package:erp_client_1/core/widgets/app_textfield.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AppSelectDate extends StatefulWidget {
-  const AppSelectDate({super.key, this.onSubmit});
+  const AppSelectDate({super.key, this.onSubmit, this.text, this.selected});
 
-  final void Function(DateTime, DateTime)? onSubmit;
+  final int? selected;
+  final void Function(DateTime, DateTime, int)? onSubmit;
+  final String? text;
 
   @override
   State<AppSelectDate> createState() => _AppSelectDateState();
@@ -23,13 +25,15 @@ class _AppSelectDateState extends State<AppSelectDate> {
     // TODO: implement initState
     super.initState();
 
+    selectType = widget.selected??0;
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('Chọn'),
+        Text('Chọn').medium,
         Gap(5),
         SizedBox(
           width: 70,
@@ -91,27 +95,27 @@ class _AppSelectDateState extends State<AppSelectDate> {
               },
             ),
             if (selectType != 2) Gap(10),
-            if (selectType != 2) Text('Năm'),
+            if (selectType != 2) Text('Năm').medium,
             if (selectType != 2) Gap(5),
             SizedBox(width: 50, child: AppTextField(controller: txtNam)),
             Gap(10),
             OutlineButton(
-              child: Text('Thực hiện'),
+              child: Text(widget.text?? 'Thực hiện'),
               onPressed: () {
                 int nam = int.tryParse(txtNam.text) ?? DateTime.now().year;
                 if (selectType == 0) {
                   widget.onSubmit?.call(
                     DateTime(nam, selectMonth, 1),
-                    DateTime(nam, selectMonth, DateHelper.ngayCuoiThang(nam, selectMonth)),
+                    DateTime(nam, selectMonth, DateHelper.ngayCuoiThang(nam, selectMonth)),selectType
                   );
                 } else if (selectType == 1) {
                   final lastMQuy = DateHelper.lastMQuy(selectQuy);
                   widget.onSubmit?.call(
                     DateTime(nam, DateHelper.firstMQuy(selectQuy), 1),
-                    DateTime(nam, lastMQuy, DateHelper.ngayCuoiThang(nam, lastMQuy)),
+                    DateTime(nam, lastMQuy, DateHelper.ngayCuoiThang(nam, lastMQuy)),selectType
                   );
                 } else {
-                  widget.onSubmit?.call(DateTime(nam, 1, 1), DateTime(nam, 12, 31));
+                  widget.onSubmit?.call(DateTime(nam, 1, 1), DateTime(nam, 12, 31),selectType);
                 }
               },
             ),

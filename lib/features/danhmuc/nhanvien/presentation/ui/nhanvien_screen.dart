@@ -18,6 +18,7 @@ class NhanVienScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(
           title: "Danh sách nhân viên",
@@ -47,10 +48,7 @@ class NhanVienScreen extends ConsumerWidget {
         ),
         Divider(color: AppColor.border300,)
       ],
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 10),
-        child: NhanVienTable(),
-      ),
+      child: NhanVienTable(),
     );
   }
 }

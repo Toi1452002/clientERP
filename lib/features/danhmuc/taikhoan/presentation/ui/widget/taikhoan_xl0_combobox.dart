@@ -9,22 +9,37 @@ class TaiKhoanXL0Combobox extends ConsumerWidget {
   final void Function(dynamic)? onChanged;
   final String? selected;
   final bool enabled;
-  const TaiKhoanXL0Combobox({super.key, this.selected, this.onChanged, this.enabled=true});
+  final bool isInTable;
+  final bool enableClear;
+
+  const TaiKhoanXL0Combobox({
+    super.key,
+    this.selected,
+    this.onChanged,
+    this.enabled = true,
+    this.isInTable = false,
+    this.enableClear = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(taiKhoanLookupProvider(LoaiTaiKhoan.maXL0));
-    return state.when(data: (value){
-      return  AppCombobox(
-        enabled: enabled,
-        enabledClear: true,
-        noSearch: false,
-        menuWidth: 300,
-        columnWidth: [50, 250],
-        onChanged: onChanged,
-        value: selected,
-        items: value.map((e) => ComboboxItem(value: e.maTK, text: [e.maTK, e.tenTK])).toList(),
-      );
-    }, error: (e,s)=> Text(e.toString()), loading: ()=> LinearProgressIndicator());
+    return state.when(
+      data: (value) {
+        return AppCombobox(
+          enabled: enabled,
+          enabledClear: enableClear,
+          noSearch: false,
+          menuWidth: 300,
+          noBorder: isInTable,
+          columnWidth: [50, 250],
+          onChanged: onChanged,
+          value: selected,
+          items: value.map((e) => ComboboxItem(value: e.maTK, text: [e.maTK, e.tenTK])).toList(),
+        );
+      },
+      error: (e, s) => Text(e.toString()),
+      loading: () => LinearProgressIndicator(),
+    );
   }
 }

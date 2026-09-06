@@ -1,7 +1,4 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_button.dart';
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
 import 'package:erp_client_1/features/danhmuc/dauky/presentation/notifier/dky_taikhoan_view_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/dauky/presentation/notifier/dky_update_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/state/dky_taikhoan_table_manager.dart';
@@ -46,6 +43,7 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
     final stateUD = ref.watch(dkyUpdateProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: "Danh sách đầu kỳ tài khoản",trailing: [
           AppReloadButton(onPressed: (){
@@ -62,15 +60,17 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
           Gap(10)
         ],)
       ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          data: (val) {
-            return LoadingOverlay(
-              isLoading: stateUD.isLoading,
-              child: Scaffold(
-                headers: [
-                  AppBar(
+      child: state.when(
+        data: (val) {
+          return LoadingOverlay(
+            isLoading: stateUD.isLoading,
+            child: Scaffold(
+              headers: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColor.border)
+                  ),
+                  child: AppBar(
                     leading: [
                       Text('Tháng'),
                       SizedBox(
@@ -101,57 +101,57 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
                         },
                       )
                     ],
-                  )
+                  ),
+                )
+              ],
+              child: AppTable(
+                onLoaded: (e){
+                  _manager = DKyTaiKhoanTableManager(e.stateManager);
+                  _manager.loadView(val);
+                },
+                onChange: (re){
+                  final field = re.column.field;
+                  final maTK = re.row.cells['MaTK']?.value;
+                  if(field == "DKNo"){
+                    ref.read(dkyUpdateProvider.notifier).updateCKNo(re.cell.value, maTK);
+                  }else if(field=="DKCo"){
+                    ref.read(dkyUpdateProvider.notifier).updateCKCo(re.cell.value, maTK);
+                  }
+                },
+                columns: [
+                  AppTableColumn(
+                    title: ['#', 'stt'],
+                    width: 35,
+                    readOnly: true,
+                    showFilter: true,
+                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                  ),
+                  AppTableColumn(title: ['Mã TK', 'MaTK'], width: 80, readOnly: true),
+                  AppTableColumn(title: ['Mô tả tài khoản', 'TenTK'], width: 290, readOnly: true),
+                  AppTableColumn(title: ['TC', 'TinhChat'], width: 50, columnAlign: ColumnAlign.center, readOnly: true),
+                  AppTableColumn(
+                    title: ['Đầu kỳ nợ', 'DKNo'],
+                    width: 100,
+                    isEdit: true,
+                    columnType: ColumnType.num,
+                    columnAlign: ColumnAlign.right,
+                    showFooter: true,
+                  ),
+                  AppTableColumn(
+                    title: ['Đầu kỳ có', 'DKCo'],
+                    width: 100,
+                    isEdit: true,
+                    columnType: ColumnType.num,
+                    showFooter: true,
+                    columnAlign: ColumnAlign.right,
+                  ),
                 ],
-                child: AppTable(
-                  onLoaded: (e){
-                    _manager = DKyTaiKhoanTableManager(e.stateManager);
-                    _manager.loadView(val);
-                  },
-                  onChange: (re){
-                    final field = re.column.field;
-                    final maTK = re.row.cells['MaTK']?.value;
-                    if(field == "DKNo"){
-                      ref.read(dkyUpdateProvider.notifier).updateCKNo(re.cell.value, maTK);
-                    }else if(field=="DKCo"){
-                      ref.read(dkyUpdateProvider.notifier).updateCKCo(re.cell.value, maTK);
-                    }
-                  },
-                  columns: [
-                    AppTableColumn(
-                      title: ['#', 'stt'],
-                      width: 35,
-                      readOnly: true,
-                      showFilter: true,
-                      renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                    ),
-                    AppTableColumn(title: ['Mã TK', 'MaTK'], width: 80, readOnly: true),
-                    AppTableColumn(title: ['Mô tả tài khoản', 'TenTK'], width: 290, readOnly: true),
-                    AppTableColumn(title: ['TC', 'TinhChat'], width: 50, columnAlign: ColumnAlign.center, readOnly: true),
-                    AppTableColumn(
-                      title: ['Đầu kỳ nợ', 'DKNo'],
-                      width: 100,
-                      isEdit: true,
-                      columnType: ColumnType.num,
-                      columnAlign: ColumnAlign.right,
-                      showFooter: true,
-                    ),
-                    AppTableColumn(
-                      title: ['Đầu kỳ có', 'DKCo'],
-                      width: 100,
-                      isEdit: true,
-                      columnType: ColumnType.num,
-                      showFooter: true,
-                      columnAlign: ColumnAlign.right,
-                    ),
-                  ],
-                ),
               ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+            ),
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

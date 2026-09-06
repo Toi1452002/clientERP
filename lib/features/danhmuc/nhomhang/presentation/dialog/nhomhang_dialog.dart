@@ -37,7 +37,7 @@ class _NhomHangDialogState extends ConsumerState<NhomHangDialog> {
       title: "DANH SÁCH NHÓM HÀNG",
       child: Scaffold(
         backgroundColor: AppColor.background,
-        child: Padding(padding: EdgeInsets.all(10), child: Scaffold(headers: [
+        child: Scaffold(headers: [
           Container(
             decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
             padding: EdgeInsets.all(5),
@@ -55,7 +55,7 @@ class _NhomHangDialogState extends ConsumerState<NhomHangDialog> {
               ],
             ),
           )
-        ],child: NhomHangTable())),
+        ],child: NhomHangTable()),
       ),
     );
   }

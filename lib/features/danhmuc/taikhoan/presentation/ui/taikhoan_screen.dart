@@ -25,6 +25,7 @@ class _TaiKhoanScreenState extends ConsumerState<TaiKhoanScreen> {
     final state = ref.watch(taiKhoanViewProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(
           title: "Danh sách tài khoản kế toán",
@@ -48,75 +49,72 @@ class _TaiKhoanScreenState extends ConsumerState<TaiKhoanScreen> {
           ],
         ),
       ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          skipLoadingOnRefresh: false,
-          data: (val) {
-            return AppTable(
-              onLoaded: (e) {
-                e.stateManager.setShowColumnFilter(true);
-                _manager = TaiKhoanTablemanager(e.stateManager);
-                _manager.loadView(val);
-              },
-              onRowDoubleTap: (re){
-                final field = re.cell.column.field;
-                final id = re.row.cells['delete']?.value;
-                if(field == "MaTK"){
-                  showAppDialog(context, child: TaiKhoanFormDialog(id: id,));
-                }
-              },
-              rowColorCallback: (re) {
-                final maXL = re.row.cells['MaXL']?.value;
-                if (maXL == 1) {
-                  return AppColor.rowParent;
-                }
-                return Colors.transparent;
-              },
-              columns: [
-                AppTableColumn(
-                  title: ['#', 'stt'],
-                  width: 35,
-                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                  readOnly: true,
-                  showFilter: false,
-                ),
-                AppTableColumn(
-                  title: ['', 'delete'],
-                  showFilter: false,
-                  width: 25,
-                  renderer: (re) => AppTableCell.delete(() {
-                    _manager.setCurrent(re);
-                    showQuestion(
-                      context,
-                      onPressed: () async {
-                        try {
-                          final result = await ref.read(taiKhoanViewProvider.notifier).delete(re.cell.value);
-                          if (result > 0) {
-                            _manager.delete(re);
-                          }
-                        } catch (e) {
-                          if (context.mounted) showInfo(context, e.toString());
+      child: state.when(
+        skipLoadingOnRefresh: false,
+        data: (val) {
+          return AppTable(
+            onLoaded: (e) {
+              e.stateManager.setShowColumnFilter(true);
+              _manager = TaiKhoanTablemanager(e.stateManager);
+              _manager.loadView(val);
+            },
+            onRowDoubleTap: (re){
+              final field = re.cell.column.field;
+              final id = re.row.cells['delete']?.value;
+              if(field == "MaTK"){
+                showAppDialog(context, child: TaiKhoanFormDialog(id: id,));
+              }
+            },
+            rowColorCallback: (re) {
+              final maXL = re.row.cells['MaXL']?.value;
+              if (maXL == 1) {
+                return AppColor.rowParent;
+              }
+              return Colors.transparent;
+            },
+            columns: [
+              AppTableColumn(
+                title: ['#', 'stt'],
+                width: 35,
+                renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                readOnly: true,
+                showFilter: false,
+              ),
+              AppTableColumn(
+                title: ['', 'delete'],
+                showFilter: false,
+                width: 25,
+                renderer: (re) => AppTableCell.delete(() {
+                  _manager.setCurrent(re);
+                  showQuestion(
+                    context,
+                    onPressed: () async {
+                      try {
+                        final result = await ref.read(taiKhoanViewProvider.notifier).delete(re.cell.value);
+                        if (result > 0) {
+                          _manager.delete(re);
                         }
-                      },
-                    );
-                  }),
-                ),
-                AppTableColumn(
-                  title: ['Mã TK', 'MaTK'],
-                  width: 100,
-                  renderer: (re) => AppTableCell.textRed(re.cell.value),
-                ),
-                AppTableColumn(title: ['Mô tả', 'TenTK'], width: 350),
-                AppTableColumn(title: ['TC', 'TinhChat'], width: 70, columnAlign: ColumnAlign.center),
-                AppTableColumn(title: ['Ghi chú', 'GhiChu'], width: 250),
-                AppTableColumn(title: ['Nhóm', 'MaXL'], width: 100, hide: true, columnAlign: ColumnAlign.center),
-              ],
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+                      } catch (e) {
+                        if (context.mounted) showInfo(context, e.toString());
+                      }
+                    },
+                  );
+                }),
+              ),
+              AppTableColumn(
+                title: ['Mã TK', 'MaTK'],
+                width: 100,
+                renderer: (re) => AppTableCell.textRed(re.cell.value),
+              ),
+              AppTableColumn(title: ['Mô tả', 'TenTK'], width: 350),
+              AppTableColumn(title: ['TC', 'TinhChat'], width: 70, columnAlign: ColumnAlign.center),
+              AppTableColumn(title: ['Ghi chú', 'GhiChu'], width: 250),
+              AppTableColumn(title: ['Nhóm', 'MaXL'], width: 100, hide: true, columnAlign: ColumnAlign.center),
+            ],
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

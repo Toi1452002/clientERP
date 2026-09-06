@@ -15,6 +15,17 @@ import 'package:erp_client_1/features/kho/presentation/ui/nhapxuatton_screen.dar
 import 'package:erp_client_1/features/nhapxuat/report/presentation/ui/bke_hangban_screen.dart';
 import 'package:erp_client_1/features/nhapxuat/report/presentation/ui/bke_hoadon_ban_screen.dart';
 import 'package:erp_client_1/features/nhapxuat/report/presentation/ui/bke_hoadon_mua_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_cdkt_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_cdps_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_kqkd_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_lctt_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_tmtc_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tncn_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_tt_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/nhatkychung_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socaitk_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socttk_screen.dart';
 import 'package:erp_client_1/features/system/auth/presentation/notifier/auth_notifier.dart';
 import 'package:erp_client_1/features/system/auth/presentation/ui/login_screen.dart';
 import 'package:erp_client_1/features/system/home/presentation/ui/home_screen.dart';
@@ -95,6 +106,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: "/bang-ke-hang-nhap", name: RouterName.bKeHangNhap, builder: (_,_)=>BKeHangNhapScreen()),
           GoRoute(path: "/bang-ke-hang-xuat", name: RouterName.bKeHangXuat, builder: (_,_)=>BKeHangXuatScreen()),
           GoRoute(path: "/nhap-xuat-ton-kho", name: RouterName.bKeNhapXuatTon, builder: (_,_)=>NhapXuatTonScreen()),
+
+          //SoKeToan
+          GoRoute(path: "/so-nhat-ky-chung", name: RouterName.soNhatKyChung, builder: (_,_)=>NhatKyChungScreen()),
+          GoRoute(path: "/so-cai-tai-khoan", name: RouterName.soCaiTaiKhoan, builder: (_,_)=>SoCaiTKScreen()),
+          GoRoute(path: "/so-chi-tiet-tai-khoan", name: RouterName.soCTTK, builder: (_,_)=>SoCTTKScreen()),
+
+
+          GoRoute(path: "/bang-can-doi-phat-sinh", name: RouterName.bangCDPS, builder: (_,_)=>BangCDPSScreen()),
+          GoRoute(path: "/bang-can-doi-ke-toan", name: RouterName.bangCDKT, builder: (_,_)=>BangCDKTScreen()),
+          GoRoute(path: "/bao-cao-ket-quan-kinh-doanh", name: RouterName.bangKQKD, builder: (_,_)=>BangKQKDScreen()),
+          GoRoute(path: "/bao-cao-luu-chuyen-tien-te", name: RouterName.bangLCTT, builder: (_,_)=>BangLCTTScreen()),
+          GoRoute(path: "/bao-cao-thuyet-minh-tai-chinh", name: RouterName.bangTMTC, builder: (_,_)=>BangTMTCScreen()),
+          GoRoute(path: "/bao-cao-thue-tam-tinh", name: RouterName.bangTNDNtt, builder: (_,_)=>TNDNttScreen()),
+          GoRoute(path: "/bao-cao-thue-tndn", name: RouterName.bangTNDN, builder: (_,_)=>TNDNScreen()),
+          GoRoute(path: "/bao-cao-thue-tncn", name: RouterName.bangTNCN, builder: (_,_)=>TNCNScreen()),
+
+
+
         ],
       ),
 

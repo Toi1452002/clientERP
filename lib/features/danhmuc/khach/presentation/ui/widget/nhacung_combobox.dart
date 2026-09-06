@@ -9,7 +9,8 @@ class NhaCungCombobx extends ConsumerWidget {
   final String? selected;
   final void Function(dynamic)? onChanged;
   final bool enabled;
-  const NhaCungCombobx({super.key, this.selected, this.onChanged, this.enabled=true});
+  final bool clear;
+  const NhaCungCombobx({super.key, this.selected, this.onChanged, this.enabled=true, this.clear = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +23,7 @@ class NhaCungCombobx extends ConsumerWidget {
           enabled: enabled,
           onChanged: onChanged,
           value: selected,
+          enabledClear: clear,
           menuWidth: 300,
           columnWidth: [50, 250],
           items: value.map((e) => ComboboxItem(value: e.maKH, text: [e.maKH, e.tenKH])).toList(),

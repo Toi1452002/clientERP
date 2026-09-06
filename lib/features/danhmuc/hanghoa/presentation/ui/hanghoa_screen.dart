@@ -20,6 +20,7 @@ class HangHoaScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: "Danh sách hàng hóa – vật tư",trailing: [
           AppReloadButton(
@@ -40,24 +41,13 @@ class HangHoaScreen extends ConsumerWidget {
               text: 'Thêm hàng hóa',
               onPressed: () {
                 showAppDialog(context, child: HangHoaFormDialog());
-                // context.goNamed(hangHoaAdd);
-                // context.goNamed(khachAdd);
               },
             ),
-            // AppPrintButton(
-            //   onPressed: () {
-            //     context.goNamed(hangHoaPrint);
-            //     // context.goNamed(khachAdd);
-            //   },
-            // ),
           ],
         ),
         Divider(color: AppColor.border300,)
       ],
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: HangHoaTable(),
-      ),
+      child: HangHoaTable(),
     );
   }
 }

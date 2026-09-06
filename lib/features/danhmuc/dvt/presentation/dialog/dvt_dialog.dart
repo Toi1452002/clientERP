@@ -3,7 +3,6 @@ import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_noti
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/widgets/app_alert.dart';
 import '../../../../../core/widgets/widget.dart';
 import '../ui/widget/dvt_table.dart';
 
@@ -35,7 +34,7 @@ class DonViTinhScreenState extends ConsumerState<DvtDialog> {
       title: "DANH SÁCH ĐƠN VỊ TÍNH",
       child: Scaffold(
         backgroundColor: AppColor.background,
-        child: Padding(padding: EdgeInsets.all(10), child: Scaffold(headers: [
+        child: Scaffold(headers: [
           Container(
 
             decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
@@ -54,7 +53,7 @@ class DonViTinhScreenState extends ConsumerState<DvtDialog> {
               ],
             ),
           )
-        ],child: DvtTable())),
+        ],child: DvtTable()),
       ),
     );
   }

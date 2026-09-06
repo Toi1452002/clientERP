@@ -31,7 +31,7 @@ class UserTableState extends ConsumerState<UserTable> {
   Widget build(BuildContext context) {
     final state = ref.watch(userViewProvider);
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(0),
       child: state.when(
         skipLoadingOnRefresh: false,
         data: (users) {

@@ -61,6 +61,7 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
     final state = ref.watch(dkyHangHoaViewProvider);
     final stateUpdate = ref.watch(dkyUpdateProvider);
     return Scaffold(
+      footers: [AppFooter()],
       headers: [
         AppHeader(
           title: "Danh sách tồn đầu kỳ",
@@ -76,81 +77,79 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
         ),
       ],
       backgroundColor: AppColor.background,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          skipLoadingOnRefresh: true,
-          data: (val) {
-            return LoadingOverlay(
-              isLoading: stateUpdate.isLoading,
-              child: Scaffold(
-                headers: [
-                  Container(
-                    decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                    child: AppBar(
-                      trailing: [
-                        AppSaveButton(
-                          onPressed: () {
-                            try{
-                              ref.read(dkyUpdateProvider.notifier).updateDKyHangHoa(_manager.toList());
+      child: state.when(
+        skipLoadingOnRefresh: true,
+        data: (val) {
+          return LoadingOverlay(
+            isLoading: stateUpdate.isLoading,
+            child: Scaffold(
+              headers: [
+                Container(
+                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                  child: AppBar(
+                    trailing: [
+                      AppSaveButton(
+                        text:"Thực hiện lưu đầu kỳ",
+                        onPressed: () {
+                          try{
+                            ref.read(dkyUpdateProvider.notifier).updateDKyHangHoa(_manager.toList());
 
-                            }catch(e){
-                              showInfo(context, "Có lỗi khi lưu");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                          }catch(e){
+                            showInfo(context, "Có lỗi khi lưu");
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ],
-                child: AppTable(
-                  onLoaded: (e) {
-                    _manager = DKyHangHoaTableManager(e.stateManager);
-                    _manager.loadView(val);
-                  },
-                  columns: [
-                    AppTableColumn(
-                      title: ['#', 'stt'],
-                      width: 35,
-                      readOnly: true,
-                      showFilter: false,
-                      renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                    ),
-                    AppTableColumn(title: ['Ngày', 'Ngay'], width: 85, columnType: ColumnType.text, isEdit: true),
-                    AppTableColumn(
-                      title: ['Mã hàng', 'MaHH'],
-                      width: 100,
-                      readOnly: true
-                    ),
-                    AppTableColumn(
-                      title: ['Tên hàng', 'TenHH'],
-                      width: 300,
-                      readOnly: true
-                    ),
-                    AppTableColumn(
-                      title: ['Số lượng', 'SoTon'],
-                      width: 80,
-                      isEdit: true,
-                      columnAlign: ColumnAlign.right,
-                      columnType: ColumnType.num,
-                    ),
-                    AppTableColumn(
-                      title: ['Giá vốn', 'GiaVon'],
-                      width: 100,
-                      isEdit: true,
-                      columnType: ColumnType.num,
-                      showFooter: true,
-                      columnAlign: ColumnAlign.right,
-                    ),
-                    AppTableColumn(title: ["","HangHoaId"],hide: true)
-                  ],
                 ),
+              ],
+              child: AppTable(
+                onLoaded: (e) {
+                  _manager = DKyHangHoaTableManager(e.stateManager);
+                  _manager.loadView(val);
+                },
+                columns: [
+                  AppTableColumn(
+                    title: ['#', 'stt'],
+                    width: 35,
+                    readOnly: true,
+                    showFilter: false,
+                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                  ),
+                  AppTableColumn(title: ['Ngày', 'Ngay'], width: 85, columnType: ColumnType.text, isEdit: true),
+                  AppTableColumn(
+                    title: ['Mã hàng', 'MaHH'],
+                    width: 100,
+                    readOnly: true
+                  ),
+                  AppTableColumn(
+                    title: ['Tên hàng', 'TenHH'],
+                    width: 300,
+                    readOnly: true
+                  ),
+                  AppTableColumn(
+                    title: ['Số lượng', 'SoTon'],
+                    width: 80,
+                    isEdit: true,
+                    columnAlign: ColumnAlign.right,
+                    columnType: ColumnType.num,
+                  ),
+                  AppTableColumn(
+                    title: ['Giá vốn', 'GiaVon'],
+                    width: 100,
+                    isEdit: true,
+                    columnType: ColumnType.num,
+                    showFooter: true,
+                    columnAlign: ColumnAlign.right,
+                  ),
+                  AppTableColumn(title: ["","HangHoaId"],hide: true)
+                ],
               ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+            ),
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

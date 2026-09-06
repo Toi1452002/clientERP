@@ -25,6 +25,7 @@ class _BKeHangBanScreenState extends ConsumerState<BKeHangBanScreen> {
     final state = ref.watch(bkeHangBanProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: 'Bảng kê hàng bán'),
         AppBar(
@@ -32,7 +33,7 @@ class _BKeHangBanScreenState extends ConsumerState<BKeHangBanScreen> {
             // AppPrintButton(),
             // Gap(150),
             AppSelectDate(
-              onSubmit: (t,d){
+              onSubmit: (t,d,type){
                 ref.read(bkeHangBanProvider.notifier).get(tuNgay: t,denNgay: d);
               },
             )
@@ -40,94 +41,91 @@ class _BKeHangBanScreenState extends ConsumerState<BKeHangBanScreen> {
         ),
         Divider(color: AppColor.border300,)
       ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          data: (val){
-            return Scaffold(
-              headers: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                  child: AppBar(
-                    leading: [
-                      AppPrintButton()
-                    ],
-                  ),
-                )
+      child: state.when(
+        data: (val){
+          return Scaffold(
+            headers: [
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                child: AppBar(
+                  leading: [
+                    AppPrintButton()
+                  ],
+                ),
+              )
+            ],
+            child: AppTable(
+              onLoaded: (re){
+                _manager = BkeHangBanManager(re.stateManager);
+                _manager.loadView(val);
+              },
+              columns: [
+                AppTableColumn(
+                  title: ['', 'stt'],
+                  width: 35,
+                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                  readOnly: true,
+                  showFilter: false,
+                ),
+                AppTableColumn(
+                  title: ['Mã hàng', 'MaHH'],
+                  width: 100,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Tên hàng', 'TenHH'],
+                  width: 300,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['ĐVT', 'DVT'],
+                  width: 80,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
+                ),
+                AppTableColumn(
+                  title: ['Số lg', 'SoLg'],
+                  width: 80,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['Tiền chưa VAT', 'ThanhTien'],
+                  width: 130,
+                  showFooter: true,
+                  columnType: ColumnType.num,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['Thuế', 'ThueSuat'],
+                  width: 100,
+                  showFooter: true,
+                  columnType: ColumnType.num,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['Tiền thuế', 'TienThue'],
+                  width: 130,
+                  showFooter: true,
+                  columnType: ColumnType.num,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['Cộng tiền', 'CongTien'],
+                  width: 130,
+                  showFooter: true,
+                  columnType: ColumnType.num,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
               ],
-              child: AppTable(
-                onLoaded: (re){
-                  _manager = BkeHangBanManager(re.stateManager);
-                  _manager.loadView(val);
-                },
-                columns: [
-                  AppTableColumn(
-                    title: ['', 'stt'],
-                    width: 35,
-                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                    readOnly: true,
-                    showFilter: false,
-                  ),
-                  AppTableColumn(
-                    title: ['Mã hàng', 'MaHH'],
-                    width: 100,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Tên hàng', 'TenHH'],
-                    width: 300,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['ĐVT', 'DVT'],
-                    width: 80,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
-                  ),
-                  AppTableColumn(
-                    title: ['Số lg', 'SoLg'],
-                    width: 80,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['Tiền chưa VAT', 'ThanhTien'],
-                    width: 130,
-                    showFooter: true,
-                    columnType: ColumnType.num,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['Thuế', 'ThueSuat'],
-                    width: 100,
-                    showFooter: true,
-                    columnType: ColumnType.num,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['Tiền thuế', 'TienThue'],
-                    width: 130,
-                    showFooter: true,
-                    columnType: ColumnType.num,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['Cộng tiền', 'CongTien'],
-                    width: 130,
-                    showFooter: true,
-                    columnType: ColumnType.num,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                ],
-              ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+            ),
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

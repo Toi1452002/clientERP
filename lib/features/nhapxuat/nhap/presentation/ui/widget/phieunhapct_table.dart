@@ -78,7 +78,7 @@ class PhieuNhapCTTable extends ConsumerWidget {
                 if (re.row.cells['SoLg']?.value == 0) {
                   re.row.cells['SoLg']?.value = 1;
                 }
-                re.row.cells['ThanhTien']?.value = re.row.cells['DonGia']?.value * re.row.cells['SoLg']?.value;
+                re.row.cells['ThanhTien']?.value = re.row.cells['DonGia']?.value ?? 0 * re.row.cells['SoLg']?.value ?? 0;
                 changedThanhTien?.call();
 
                 re.cell.value = hh?.id;

@@ -55,6 +55,9 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColor.background,
+        footers: [
+          AppFooter()
+        ],
         headers: [
           AppHeader(title: "Phân quyền người dùng",trailing: [ AppReloadButton(
             onPressed: (){
@@ -86,14 +89,11 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
               ),
               Gap(5),
             ],
-            trailing: [
-
-            ],
           ),
           Divider(color: AppColor.border300,)
         ],
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(0),
           child: state.when(
             skipLoadingOnRefresh: false,
             data: (val) {

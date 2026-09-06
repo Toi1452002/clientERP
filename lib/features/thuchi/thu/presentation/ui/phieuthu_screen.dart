@@ -169,7 +169,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
           Navigator.pop(context);
         }
       },
-      height: 460,
+      height: 440,
       title: 'PHIẾU THU',
       child: Scaffold(
         backgroundColor: AppColor.background,
@@ -259,7 +259,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
             return LoadingOverlay(
               isLoading: saveState.isLoading || editState.isLoading || deleteState.isLoading,
               child: Container(
-                margin: EdgeInsets.all(10),
+                // margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(color: Colors.white),
                 child: Column(

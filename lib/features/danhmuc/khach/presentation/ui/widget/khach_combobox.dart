@@ -9,7 +9,8 @@ class KhachCombobox extends ConsumerWidget {
   final String? selected;
   final void Function(dynamic)? onChanged;
   final bool enabled;
-  const KhachCombobox({super.key, this.selected, this.onChanged, this.enabled=true});
+  final bool clear;
+  const KhachCombobox({super.key, this.selected, this.onChanged, this.enabled=true, this.clear = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +23,7 @@ class KhachCombobox extends ConsumerWidget {
           onChanged: onChanged,
           enabled: enabled,
           value: selected,
+          enabledClear: clear,
           menuWidth: 300,
           columnWidth: [50, 250],
           items: value.map((e) => ComboboxItem(value: e.maKH, text: [e.maKH, e.tenKH])).toList(),

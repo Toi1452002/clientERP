@@ -20,6 +20,7 @@ class _UserScreenState extends ConsumerState<UserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: "Danh sách người dùng",trailing: [ AppReloadButton(
           onPressed: () {

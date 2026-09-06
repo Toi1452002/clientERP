@@ -17,5 +17,5 @@ class TaiKhoanLookupModel{
 }
 
 enum LoaiTaiKhoan{
-  khoND, maXL0, tkNoPx, tkCoPx
+  khoND, maXL0, tkNoPx, tkCoPx, soCai
 }

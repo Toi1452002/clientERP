@@ -22,6 +22,7 @@ class HangHoaCombobox extends ConsumerWidget {
           onChanged: onChanged,
           value: selected,
           noSearch: false,
+          enabledClear: false,
           menuWidth:540 ,
           columnWidth: [150,300,90],
           items: val.map((e) => ComboboxItem(value: e.maHH, text: [e.maHH, e.tenHH,e.dvt??""])).toList(),

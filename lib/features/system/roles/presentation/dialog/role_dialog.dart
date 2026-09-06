@@ -36,7 +36,7 @@ class _RoleDialogState extends ConsumerState<RoleDialog> {
       child: Scaffold(
         backgroundColor: AppColor.background,
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(0),
           child: Scaffold(
             headers: [
               Container(

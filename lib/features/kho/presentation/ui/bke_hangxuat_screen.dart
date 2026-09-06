@@ -23,6 +23,9 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
 
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [
+        AppFooter()
+      ],
       headers: [
         AppHeader(title: "Bảng kê hàng xuất"),
         AppBar(
@@ -35,7 +38,7 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
         Divider(color: AppColor.border300,)
       ],
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(0),
         child: state.when(
           data: (val) {
             return Scaffold(

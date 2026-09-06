@@ -26,12 +26,13 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
     final state = ref.watch(bkeHoaDonMuaProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: "Bảng kê hóa đơn mua vào"),
         AppBar(
           leading: [
             AppSelectDate(
-              onSubmit: (t,d){
+              onSubmit: (t,d,type){
                 ref.read(bkeHoaDonMuaProvider.notifier).get(tuNgay: t,denNgay: d);
               },
             )
@@ -40,100 +41,97 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
         ),
         Divider(color: AppColor.border300,)
       ],
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: state.when(
-          data: (val){
-            return Scaffold(
-              headers: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                  child: AppBar(
-                    leading: [
-                      AppPrintButton()
-                    ],
-                  ),
-                )
-              ],
-              child: AppTable(
-                onLoaded: (e){
-                  _manager = BkeHoaDonMuaManager(e.stateManager);
-                  _manager.loadView(val);
-                },
-                onRowDoubleTap: (re){
-                  final field = re.cell.column.field;
-                  if(field == "SoCT"){
-                    final phieu = re.row.cells['Phieu']?.value;
-                    showAppDialog(context, child: PhieuNhapScreen(phieu: phieu,));
-                  }
-                },
-                columns: [
-                  AppTableColumn(
-                    title: ['', 'stt'],
-                    width: 35,
-                    readOnly: true,
-                    showFilter: false,
-                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                  ),
-                  AppTableColumn(
-                    title: ['Phieu', 'Phieu'],
-                    width: 85,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                    hide: true
-                  ),
-                  AppTableColumn(
-                    title: ['Ký hiệu', 'KyHieu'],
-                    width: 85,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(title: ['Số HD', 'SoCT'], width: 80, renderer: (re) => AppTableCell.textRed(re.cell.value)),
-                  AppTableColumn(
-                    title: ['Ngày HD', 'NgayCT'],
-                    width: 100,
-                    columnType: ColumnType.date,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Tên khách hàng', 'TenKH'],
-                    width: 300,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Mã số thuế', 'MST'],
-                    width: 120,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Tiền chưa VAT', 'CongTien'],
-                    width: 125,
-                    columnType: ColumnType.num,
-                    showFooter: true,
-                    columnAlign: ColumnAlign.right,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['Tiền thuế', 'TienThue'],
-                    width: 125,
-                    columnType: ColumnType.num,
-                    showFooter: true,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+      child: state.when(
+        data: (val){
+          return Scaffold(
+            headers: [
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                child: AppBar(
+                  leading: [
+                    AppPrintButton()
+                  ],
+                ),
+              )
+            ],
+            child: AppTable(
+              onLoaded: (e){
+                _manager = BkeHoaDonMuaManager(e.stateManager);
+                _manager.loadView(val);
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "SoCT"){
+                  final phieu = re.row.cells['Phieu']?.value;
+                  showAppDialog(context, child: PhieuNhapScreen(phieu: phieu,));
+                }
+              },
+              columns: [
+                AppTableColumn(
+                  title: ['', 'stt'],
+                  width: 35,
+                  readOnly: true,
+                  showFilter: false,
+                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                ),
+                AppTableColumn(
+                  title: ['Phieu', 'Phieu'],
+                  width: 85,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                  hide: true
+                ),
+                AppTableColumn(
+                  title: ['Ký hiệu', 'KyHieu'],
+                  width: 85,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(title: ['Số HD', 'SoCT'], width: 80, renderer: (re) => AppTableCell.textRed(re.cell.value)),
+                AppTableColumn(
+                  title: ['Ngày HD', 'NgayCT'],
+                  width: 100,
+                  columnType: ColumnType.date,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Tên khách hàng', 'TenKH'],
+                  width: 300,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Mã số thuế', 'MST'],
+                  width: 120,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Tiền chưa VAT', 'CongTien'],
+                  width: 125,
+                  columnType: ColumnType.num,
+                  showFooter: true,
+                  columnAlign: ColumnAlign.right,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['Tiền thuế', 'TienThue'],
+                  width: 125,
+                  columnType: ColumnType.num,
+                  showFooter: true,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
 
-                    columnAlign: ColumnAlign.right,
-                  ),
-                  AppTableColumn(
-                    title: ['Ghi chú', 'DienGiai'],
-                    width: 230,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                ],
-              ),
-            );
-          },
-          error: (e,s)=>Center(child: Text(e.toString()),),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+                  columnAlign: ColumnAlign.right,
+                ),
+                AppTableColumn(
+                  title: ['Ghi chú', 'DienGiai'],
+                  width: 230,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+              ],
+            ),
+          );
+        },
+        error: (e,s)=>Center(child: Text(e.toString()),),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

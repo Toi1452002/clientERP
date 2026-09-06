@@ -46,77 +46,74 @@ class _MaNghiepVuScreenState extends ConsumerState<MaNghiepVuScreen> {
       title: 'Danh sách mã nghiệp vụ',
       child: Scaffold(
         backgroundColor: AppColor.background,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Scaffold(
-            headers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                padding: EdgeInsets.all(5),
-                child: AppRow(
-                  columnWidths: {0: 100, 2: 40},
-                  items: [
-                    AppTextField(hintText: 'Nhập mã', controller: txtMa),
-                    AppTextField(hintText: 'Nhập mô tả', controller: txtMoTa, onSubmitted: (val) => onSubmit()),
-                    AppAddButton(
-                      onPressed: () {
-                        onSubmit();
-                      },
-                    ),
-                  ],
-                ),
+        child: Scaffold(
+          headers: [
+            Container(
+              decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              padding: EdgeInsets.all(5),
+              child: AppRow(
+                columnWidths: {0: 100, 2: 40},
+                items: [
+                  AppTextField(hintText: 'Nhập mã', controller: txtMa),
+                  AppTextField(hintText: 'Nhập mô tả', controller: txtMoTa, onSubmitted: (val) => onSubmit()),
+                  AppAddButton(
+                    onPressed: () {
+                      onSubmit();
+                    },
+                  ),
+                ],
               ),
-            ],
-            child: state.when(
-              data: (val) {
-                return AppTable(
-                  onLoaded: (e) {
-                    _manager = MaNghiepVuTableManager(e.stateManager);
-                    _manager.loadView(val);
-                  },
-                  onChange: (re) async{
-                    final field = re.column.field;
-                    final id = re.row.cells['delete']?.value;
-                    try{
-                      if(field == "MaNV"){
-                        await ref.read(maNghiepVuProvider.notifier).updateMaNV(re.cell.value, id);
-                      }else if (field=="MoTa"){
-                        await ref.read(maNghiepVuProvider.notifier).updateMoTa(re.cell.value, id);
-                      }
-                    }catch(e){
-                      showInfo(context, e.toString());
-                    }
-
-                  },
-                  columns: [
-                    AppTableColumn(
-                      title: ['#', 'stt'],
-                      width: 35,
-                      renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                      readOnly: true,
-                    ),
-                    AppTableColumn(
-                      title: ['', 'delete'],
-                      width: 25,
-                      renderer: (re) => AppTableCell.delete(() async {
-                        _manager.setCurrent(re);
-                        try {
-                          await ref.read(maNghiepVuProvider.notifier).delete(re.cell.value);
-                          _manager.delete(re);
-                        } catch (e) {
-                          if(context.mounted) showInfo(context, e.toString());
-                        }
-                      }),
-                    ),
-                    AppTableColumn(title: ['Mã', 'MaNV'], width: 100, isEdit: true),
-                    AppTableColumn(title: ['Mô tả', 'MoTa'], width: 195, isEdit:  true),
-
-                  ],
-                );
-              },
-              error: (e, s) => Center(child: Text(e.toString())),
-              loading: () => Center(child: CircularProgressIndicator(size: 50)),
             ),
+          ],
+          child: state.when(
+            data: (val) {
+              return AppTable(
+                onLoaded: (e) {
+                  _manager = MaNghiepVuTableManager(e.stateManager);
+                  _manager.loadView(val);
+                },
+                onChange: (re) async{
+                  final field = re.column.field;
+                  final id = re.row.cells['delete']?.value;
+                  try{
+                    if(field == "MaNV"){
+                      await ref.read(maNghiepVuProvider.notifier).updateMaNV(re.cell.value, id);
+                    }else if (field=="MoTa"){
+                      await ref.read(maNghiepVuProvider.notifier).updateMoTa(re.cell.value, id);
+                    }
+                  }catch(e){
+                    showInfo(context, e.toString());
+                  }
+
+                },
+                columns: [
+                  AppTableColumn(
+                    title: ['#', 'stt'],
+                    width: 35,
+                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                    readOnly: true,
+                  ),
+                  AppTableColumn(
+                    title: ['', 'delete'],
+                    width: 25,
+                    renderer: (re) => AppTableCell.delete(() async {
+                      _manager.setCurrent(re);
+                      try {
+                        await ref.read(maNghiepVuProvider.notifier).delete(re.cell.value);
+                        _manager.delete(re);
+                      } catch (e) {
+                        if(context.mounted) showInfo(context, e.toString());
+                      }
+                    }),
+                  ),
+                  AppTableColumn(title: ['Mã', 'MaNV'], width: 100, isEdit: true),
+                  AppTableColumn(title: ['Mô tả', 'MoTa'], width: 195, isEdit:  true),
+
+                ],
+              );
+            },
+            error: (e, s) => Center(child: Text(e.toString())),
+            loading: () => Center(child: CircularProgressIndicator(size: 50)),
           ),
         ),
       ),

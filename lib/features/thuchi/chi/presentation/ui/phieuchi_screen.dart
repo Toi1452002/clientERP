@@ -168,7 +168,7 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
           Navigator.pop(context);
         }
       },
-      height: 460,
+      height: 440,
       title: 'PHIẾU CHI',
       child: Scaffold(
         backgroundColor: AppColor.background,
@@ -253,7 +253,7 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
             return LoadingOverlay(
               isLoading: saveState.isLoading || editState.isLoading || deleteState.isLoading,
               child: Container(
-                margin: EdgeInsets.all(10),
+                // margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(color: Colors.white),
                 child: Column(

@@ -23,6 +23,9 @@ class _TTDNScreenState extends ConsumerState<TTDNScreen> {
     final state = ref.watch(ttdnProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [
+        AppFooter()
+      ],
       headers: [
         AppHeader(
           title: "Thông tin doanh nghiệp",
@@ -37,48 +40,45 @@ class _TTDNScreenState extends ConsumerState<TTDNScreen> {
           ],
         ),
       ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          skipLoadingOnRefresh: false,
-          data: (val) {
-            return AppTable(
-              onLoaded: (e){
-                _manager = TTDNTableManager(e.stateManager);
-                _manager.loadView(val);
-              },
-              onChange: (re){
-                final field = re.column.field;
-                final id = re.row.cells['Id']?.value;
-                if(field == "NoiDung"){
-                 try{
-                   ref.read(ttdnProvider.notifier).updateNoiDung(re.value, id);
-                 }catch(e){
-                   showInfo(context, e.toString());
-                 }
-                }
-              },
-              columns: [
-                AppTableColumn(
-                  title: ['#', 'stt'],
-                  width: 35,
-                  readOnly: true,
-                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                ),
-                AppTableColumn(title: ["", "Id"], hide: true),
-                AppTableColumn(
-                  title: ['Tiêu đề', 'TieuDe'],
-                  readOnly: true,
-                  width: 300,
-                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                ),
-                AppTableColumn(title: ['Nội dung', 'NoiDung'], width: 690, isEdit: true),
-              ],
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+      child: state.when(
+        skipLoadingOnRefresh: false,
+        data: (val) {
+          return AppTable(
+            onLoaded: (e){
+              _manager = TTDNTableManager(e.stateManager);
+              _manager.loadView(val);
+            },
+            onChange: (re){
+              final field = re.column.field;
+              final id = re.row.cells['Id']?.value;
+              if(field == "NoiDung"){
+               try{
+                 ref.read(ttdnProvider.notifier).updateNoiDung(re.value, id);
+               }catch(e){
+                 showInfo(context, e.toString());
+               }
+              }
+            },
+            columns: [
+              AppTableColumn(
+                title: ['#', 'stt'],
+                width: 35,
+                readOnly: true,
+                renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+              ),
+              AppTableColumn(title: ["", "Id"], hide: true),
+              AppTableColumn(
+                title: ['Tiêu đề', 'TieuDe'],
+                readOnly: true,
+                width: 300,
+                renderer: (re) => AppTableCell.textBlue(re.cell.value),
+              ),
+              AppTableColumn(title: ['Nội dung', 'NoiDung'], width: 690, isEdit: true),
+            ],
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

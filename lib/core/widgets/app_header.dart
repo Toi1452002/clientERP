@@ -1,3 +1,4 @@
+import 'package:erp_client_1/core/widgets/app_container_border.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../constain/app_color.dart';
@@ -24,3 +25,20 @@ class AppHeader extends StatelessWidget {
     );
   }
 }
+
+class AppFooter extends StatelessWidget {
+  const AppFooter({super.key, this.leading = const []});
+  final List<Widget> leading;
+
+  @override
+  Widget build(BuildContext context) {
+    return  AppContainerBorder(
+      child: AppBar(
+        backgroundColor: AppColor.background,
+        height: 20,
+        leading: leading,
+      ),
+    );
+  }
+}
+

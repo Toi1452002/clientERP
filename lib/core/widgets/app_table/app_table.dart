@@ -1,3 +1,4 @@
+import 'package:erp_client_1/core/constain/app_color.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:trina_grid/trina_grid.dart';
@@ -119,7 +120,9 @@ class AppTable extends StatelessWidget {
           columnHeight: columnHeight ?? 25,
           cellReadonlyColor: readOnlyColor ?? Colors.gray.shade100,
           defaultColumnFilterPadding: EdgeInsets.zero,
-          borderColor: Colors.black.withValues(alpha: .2),
+          // borderColor: Colors.black.withValues(alpha: .2),
+          borderColor: AppColor.border300,
+          gridBorderColor: AppColor.border300,
           gridBorderRadius: BorderRadius.circular(2),
           activatedBorderColor: Colors.blue.shade600,
           // columnHeight: widget.columnHeight ?? 25,

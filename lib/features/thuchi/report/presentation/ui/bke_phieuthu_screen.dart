@@ -37,6 +37,7 @@ class _BKePhieuThuScreenState extends ConsumerState<BKePhieuThuScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(bkePhieuThuProvider);
     return Scaffold(
+      footers: [AppFooter()],
       backgroundColor: AppColor.background,
       headers: [
         AppHeader(title: "Bảng kê phiếu thu"),
@@ -55,99 +56,96 @@ class _BKePhieuThuScreenState extends ConsumerState<BKePhieuThuScreen> {
         ),
         Divider(color: AppColor.border300,)
       ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          data: (val) {
-            return Scaffold(
-              headers: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                  child: AppBar(
-                    leading: [AppPrintButton(),],
-                  ),
-                )
+      child: state.when(
+        data: (val) {
+          return Scaffold(
+            headers: [
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                child: AppBar(
+                  leading: [AppPrintButton(),],
+                ),
+              )
+            ],
+            child: AppTable(
+              onLoaded: (e){
+                _manager = BKeThuChiTableManager(e.stateManager);
+                _manager.loadView(val);
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "Phieu"){
+                  showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
+                }
+              },
+              columns: [
+                AppTableColumn(
+                  title: ['', 'stt'],
+                  width: 35,
+                  readOnly: true,
+                  showFilter: false,
+                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                ),
+                AppTableColumn(
+                  title: ['Ngày', 'Ngay'],
+                  width: 80,
+                  columnType: ColumnType.date,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
+                ),
+                AppTableColumn(
+                  title: ['Phiếu', 'Phieu'],
+                  width: 70,
+                  renderer: (re) => AppTableCell.textRed(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Kiểu chi', 'Kieu'],
+                  width: 100,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Mã KH', 'MaKH'],
+                  width: 80,
+                  renderer: (re) => AppTableCell.textRed(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Tên khách', 'TenKH'],
+                  width: 300,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['PTTT', 'PTTT'],
+                  width: 75,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
+                ),
+                AppTableColumn(
+                  title: ['Lý do chi', 'NoiDung'],
+                  width: 250,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                ),
+                AppTableColumn(
+                  title: ['Số tiền', 'SoTien'],
+                  width: 100,
+                  columnType: ColumnType.num,
+                  showFooter: true,
+                  renderer: (re) =>
+                      AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
+                ),
+                AppTableColumn(
+                  title: ['TK nợ', 'TKNo'],
+                  width: 75,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
+                ),
+                AppTableColumn(
+                  title: ['TK có', 'TKCo'],
+                  width: 75,
+                  renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
+                ),
               ],
-              child: AppTable(
-                onLoaded: (e){
-                  _manager = BKeThuChiTableManager(e.stateManager);
-                  _manager.loadView(val);
-                },
-                onRowDoubleTap: (re){
-                  final field = re.cell.column.field;
-                  if(field == "Phieu"){
-                    showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
-                  }
-                },
-                columns: [
-                  AppTableColumn(
-                    title: ['', 'stt'],
-                    width: 35,
-                    readOnly: true,
-                    showFilter: false,
-                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                  ),
-                  AppTableColumn(
-                    title: ['Ngày', 'Ngay'],
-                    width: 80,
-                    columnType: ColumnType.date,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
-                  ),
-                  AppTableColumn(
-                    title: ['Phiếu', 'Phieu'],
-                    width: 70,
-                    renderer: (re) => AppTableCell.textRed(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Kiểu chi', 'Kieu'],
-                    width: 100,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Mã KH', 'MaKH'],
-                    width: 80,
-                    renderer: (re) => AppTableCell.textRed(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Tên khách', 'TenKH'],
-                    width: 300,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['PTTT', 'PTTT'],
-                    width: 75,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
-                  ),
-                  AppTableColumn(
-                    title: ['Lý do chi', 'NoiDung'],
-                    width: 250,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                  ),
-                  AppTableColumn(
-                    title: ['Số tiền', 'SoTien'],
-                    width: 100,
-                    columnType: ColumnType.num,
-                    showFooter: true,
-                    renderer: (re) =>
-                        AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
-                  ),
-                  AppTableColumn(
-                    title: ['TK nợ', 'TKNo'],
-                    width: 75,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
-                  ),
-                  AppTableColumn(
-                    title: ['TK có', 'TKCo'],
-                    width: 75,
-                    renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
-                  ),
-                ],
-              ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+            ),
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

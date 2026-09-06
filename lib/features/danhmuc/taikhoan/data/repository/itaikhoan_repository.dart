@@ -9,6 +9,7 @@ abstract interface class ITaiKhoanRepository{
   Future<List<TaiKhoanLookupModel>> getMaXL0();
   Future<List<TaiKhoanLookupModel>> getTKNoPx();
   Future<List<TaiKhoanLookupModel>> getTKCoPx();
+  Future<List<TaiKhoanLookupModel>> getTKSoCai();
   Future<List<TaiKhoanViewModel>> getView();
   Future<int> add(TaiKhoanRequestModel model);
   Future<int> update(TaiKhoanRequestModel model, int id);

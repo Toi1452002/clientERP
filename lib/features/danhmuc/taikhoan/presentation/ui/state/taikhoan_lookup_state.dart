@@ -13,5 +13,7 @@ final taiKhoanLookupProvider = FutureProvider.family<List<TaiKhoanLookupModel>, 
       return await ref.read(taiKhoanRepositoryProvider).getTKNoPx();
     case LoaiTaiKhoan.tkCoPx:
       return await ref.read(taiKhoanRepositoryProvider).getTKCoPx();
+    case LoaiTaiKhoan.soCai:
+      return await ref.read(taiKhoanRepositoryProvider).getTKSoCai();
   }
 }, retry: (_, _) => null);

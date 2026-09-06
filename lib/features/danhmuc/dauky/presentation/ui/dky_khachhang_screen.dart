@@ -58,6 +58,7 @@ class _DKyKhachHangScreenState extends ConsumerState<DKyKhachHangScreen> {
     final state = ref.watch(dkyKhachHangViewProvider);
     final stateUpdate = ref.watch(dkyUpdateProvider);
     return Scaffold(
+      footers: [AppFooter()],
       headers: [
         AppHeader(
           title: "Danh sách nợ đầu kỳ",
@@ -73,75 +74,73 @@ class _DKyKhachHangScreenState extends ConsumerState<DKyKhachHangScreen> {
         ),
       ],
       backgroundColor: AppColor.background,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: state.when(
-          skipLoadingOnRefresh: true,
-          data: (val) {
-            return LoadingOverlay(
-              isLoading: stateUpdate.isLoading,
-              child: Scaffold(
-                headers: [
-                  Container(
-                    decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-                    child: AppBar(
-                      trailing: [
-                        AppSaveButton(
-                          onPressed: () {
-                            try{
-                              ref.read(dkyUpdateProvider.notifier).updateDKyKhachHang(_manager.toList());
+      child: state.when(
+        skipLoadingOnRefresh: true,
+        data: (val) {
+          return LoadingOverlay(
+            isLoading: stateUpdate.isLoading,
+            child: Scaffold(
+              headers: [
+                Container(
+                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                  child: AppBar(
+                    trailing: [
+                      AppSaveButton(
+                        text:"Thực hiện lưu đầu kỳ",
+                        onPressed: () {
+                          try{
+                            ref.read(dkyUpdateProvider.notifier).updateDKyKhachHang(_manager.toList());
 
-                            }catch(e){
-                              showInfo(context, "Có lỗi khi lưu");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                          }catch(e){
+                            showInfo(context, "Có lỗi khi lưu");
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              child: AppTable(
+                onLoaded: (e) {
+                  _manager = DKyKhachHangTableManager(e.stateManager);
+                  _manager.loadView(val);
+                },
+                columns: [
+                  AppTableColumn(
+                    title: ['#', 'stt'],
+                    width: 30,
+                    readOnly: true,
+                    showFilter: false,
+                    renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                  ),
+                  AppTableColumn(title: ['Ngày', 'Ngay'], width: 85, columnType: ColumnType.text, isEdit: true),
+                  AppTableColumn(
+                    title: ['Mã KH', 'MaKH'],
+                    width: 140,
+                    readOnly: true,
+                    // renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                  ),
+                  AppTableColumn(
+                    title: ['Tên khách hàng', 'TenKH'],
+                    width: 300,
+                    readOnly: true,
+                    // renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                  ),
+                  AppTableColumn(
+                    title: ['Số đầu kỳ', 'SoDuNo'],
+                    width: 100,
+                    columnType: ColumnType.num,
+                    isEdit: true,
+                    showFooter: true,
+                    columnAlign: ColumnAlign.right,
                   ),
                 ],
-                child: AppTable(
-                  onLoaded: (e) {
-                    _manager = DKyKhachHangTableManager(e.stateManager);
-                    _manager.loadView(val);
-                  },
-                  columns: [
-                    AppTableColumn(
-                      title: ['#', 'stt'],
-                      width: 30,
-                      readOnly: true,
-                      showFilter: false,
-                      renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                    ),
-                    AppTableColumn(title: ['Ngày', 'Ngay'], width: 85, columnType: ColumnType.text, isEdit: true),
-                    AppTableColumn(
-                      title: ['Mã KH', 'MaKH'],
-                      width: 140,
-                      readOnly: true,
-                      // renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                    ),
-                    AppTableColumn(
-                      title: ['Tên khách hàng', 'TenKH'],
-                      width: 300,
-                      readOnly: true,
-                      // renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                    ),
-                    AppTableColumn(
-                      title: ['Số đầu kỳ', 'SoDuNo'],
-                      width: 100,
-                      columnType: ColumnType.num,
-                      isEdit: true,
-                      showFooter: true,
-                      columnAlign: ColumnAlign.right,
-                    ),
-                  ],
-                ),
               ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString())),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-        ),
+            ),
+          );
+        },
+        error: (e, s) => Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator(size: 50)),
       ),
     );
   }

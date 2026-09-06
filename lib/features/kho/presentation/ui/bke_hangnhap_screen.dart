@@ -25,6 +25,7 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
     final state = ref.watch(bKeHangNhapProvider);
     return Scaffold(
       backgroundColor: AppColor.background,
+      footers: [AppFooter()],
       headers: [
         AppHeader(title: "Bảng kê hàng nhập"),
         AppBar(
@@ -37,7 +38,7 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
         Divider(color: AppColor.border300,)
       ],
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(0),
         child: state.when(
           data: (val) {
             return Scaffold(
