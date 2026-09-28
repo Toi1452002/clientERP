@@ -2,11 +2,11 @@ import 'package:erp_client_1/features/danhmuc/manghiepvu/data/model/manghiepvu_m
 import 'package:erp_client_1/features/danhmuc/manghiepvu/data/model/manghiepvu_request_model.dart';
 
 abstract interface class IMaNghiepVuRepository {
-  Future<int> add(MaNghiepVuRequestModel model);
+  Future<MaNghiepVuModel> add(MaNghiepVuRequestModel model);
 
-  // Future<int> update(MaNghiepVuRequestModel model, int id);
-  Future<int> updateMaNV(String ma, int id);
-  Future<int> updateMoTa(String moTa, int id);
+  Future<MaNghiepVuModel> update(MaNghiepVuRequestModel model, int id);
+  // Future<int> updateMaNV(String ma, int id);
+  // Future<int> updateMoTa(String moTa, int id);
 
   Future<int> delete(int id);
 

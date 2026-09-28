@@ -67,7 +67,13 @@ class TreeMenuWidget extends ConsumerWidget {
                   RouterName.bangTMTC,
                   RouterName.bangTNDNtt,
                   RouterName.bangTNDN,
-                  RouterName.bangTNCN
+                  RouterName.bangTNCN,
+                  RouterName.bangChuyenLo,
+                  RouterName.soThue,
+                  RouterName.tscd,
+                  RouterName.ccdc,
+                  RouterName.chamCong,
+                  RouterName.bangLuong
                 ].contains(code)) {
                   context.goNamed(code);
                 }

@@ -19,6 +19,10 @@ class PhieuThuModel{
   final String? createdBy;
   final bool khoa;
   // final bool isEdit;
+  final int stt;
+  final int tongStt;
+  final int? idTruoc;
+  final int? idSau;
 
   const PhieuThuModel({
     required this.id,
@@ -39,6 +43,10 @@ class PhieuThuModel{
     required this.soTien,
     this.createdBy,
     this.khoa = false,
+    required this.stt,
+    required this.tongStt,
+    this.idSau,
+    this.idTruoc
   });
 
   // Map<String, dynamic> toMap() {
@@ -84,47 +92,51 @@ class PhieuThuModel{
       soTien: map['soTien'],
       createdBy: map['createdBy'] ,
       khoa:  map['khoa'],
+      stt: map['stt'],
+      tongStt: map['tongStt'],
+      idSau: map['idSau'],
+      idTruoc: map['idTruoc']
     );
   }
 
-  PhieuThuModel copyWith({
-    int? id,
-    DateTime? ngay,
-    String? phieu,
-    String? maTC,
-    String? maKH,
-    String? tenKH,
-    String? diaChi,
-    String? nguoiNop,
-    String? nguoiThu,
-    String? noiDung,
-    String? soCT,
-    String? tkNo,
-    String? tkCo,
-    String? pttt,
-    num? soTien,
-    String? createdBy,
-    bool? khoa,
-  }) {
-    return PhieuThuModel(
-      id: id ?? this.id,
-      ngay: ngay ?? this.ngay,
-      phieu: phieu ?? this.phieu,
-      maTC: maTC ?? this.maTC,
-      maKH: maKH ?? this.maKH,
-      tenKH: tenKH ?? this.tenKH,
-      diaChi: diaChi ?? this.diaChi,
-      nguoiNop: nguoiNop ?? this.nguoiNop,
-      nguoiThu: nguoiThu ?? this.nguoiThu,
-      noiDung: noiDung ?? this.noiDung,
-      soCT: soCT ?? this.soCT,
-      tkNo: tkNo ?? this.tkNo,
-      tkCo: tkCo ?? this.tkCo,
-      pttt: pttt ?? this.pttt,
-      soTien: soTien ?? this.soTien,
-      createdBy: createdBy ?? this.createdBy,
-      khoa: khoa ?? this.khoa,
-    );
-  }
+  // PhieuThuModel copyWith({
+  //   int? id,
+  //   DateTime? ngay,
+  //   String? phieu,
+  //   String? maTC,
+  //   String? maKH,
+  //   String? tenKH,
+  //   String? diaChi,
+  //   String? nguoiNop,
+  //   String? nguoiThu,
+  //   String? noiDung,
+  //   String? soCT,
+  //   String? tkNo,
+  //   String? tkCo,
+  //   String? pttt,
+  //   num? soTien,
+  //   String? createdBy,
+  //   bool? khoa,
+  // }) {
+  //   return PhieuThuModel(
+  //     id: id ?? this.id,
+  //     ngay: ngay ?? this.ngay,
+  //     phieu: phieu ?? this.phieu,
+  //     maTC: maTC ?? this.maTC,
+  //     maKH: maKH ?? this.maKH,
+  //     tenKH: tenKH ?? this.tenKH,
+  //     diaChi: diaChi ?? this.diaChi,
+  //     nguoiNop: nguoiNop ?? this.nguoiNop,
+  //     nguoiThu: nguoiThu ?? this.nguoiThu,
+  //     noiDung: noiDung ?? this.noiDung,
+  //     soCT: soCT ?? this.soCT,
+  //     tkNo: tkNo ?? this.tkNo,
+  //     tkCo: tkCo ?? this.tkCo,
+  //     pttt: pttt ?? this.pttt,
+  //     soTien: soTien ?? this.soTien,
+  //     createdBy: createdBy ?? this.createdBy,
+  //     khoa: khoa ?? this.khoa,
+  //   );
+  // }
 
 }

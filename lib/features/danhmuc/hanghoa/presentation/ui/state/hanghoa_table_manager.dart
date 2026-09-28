@@ -28,4 +28,8 @@ class HangHoaTableManager extends AppTableState<HangHoaViewModel>{
 
 
   void showFilter()=> _stateManager.setShowColumnFilter(true);
+
+  void showLoading ()=> _stateManager.setShowLoading(true);
+  void closeLoading ()=> _stateManager.setShowLoading(false);
+  void clearFilter()=>_stateManager.clearAllColumnFilters();
 }

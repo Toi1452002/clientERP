@@ -1,6 +1,3 @@
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_select_date.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
 import 'package:erp_client_1/features/nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
 import 'package:erp_client_1/features/nhapxuat/report/presentation/notifier/bke_hoadon_mua_notifier.dart';
 import 'package:erp_client_1/features/nhapxuat/report/presentation/ui/state/bke_hoadon_mua_manager.dart';
@@ -29,24 +26,25 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
       footers: [AppFooter()],
       headers: [
         AppHeader(title: "Bảng kê hóa đơn mua vào"),
-        AppBar(
-          leading: [
-            AppSelectDate(
-              onSubmit: (t,d,type){
-                ref.read(bkeHoaDonMuaProvider.notifier).get(tuNgay: t,denNgay: d);
-              },
-            )
-
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              AppSelectDate(
+                onSubmit: (t,d,type){
+                  ref.read(bkeHoaDonMuaProvider.notifier).get(tuNgay: t,denNgay: d);
+                },
+              )
+          
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
+        // Divider(color: AppColor.border300,)
       ],
       child: state.when(
         data: (val){
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [
                     AppPrintButton()
@@ -68,7 +66,7 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   showFilter: false,

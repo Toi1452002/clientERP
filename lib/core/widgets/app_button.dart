@@ -71,7 +71,7 @@ class AppReloadButton extends StatelessWidget {
       icon: Icon(PhosphorIcons.arrowsClockwise, size: 16),
       enabled: enabled,
       onPressed: onPressed,
-      trailing: Text('Refresh'),
+      // trailing: Text('Refresh'),
     );
   }
 }
@@ -124,7 +124,7 @@ class AppSaveButton extends StatelessWidget {
         if (toolTip) return OutlinedContainer(child: Text('Ctrl+S'));
         return SizedBox();
       },
-      child: OutlineButton(
+      child: PrimaryButton(
         // icon: Icon(
         //   PhosphorIcons.floppyDisk,
         //   color: enabled ? Colors.blue.shade900 : Colors.gray,
@@ -134,7 +134,7 @@ class AppSaveButton extends StatelessWidget {
         // ),
         onPressed: onPressed,
         enabled: enabled,
-        child: Text(text, style: TextStyle(color: enabled ? Colors.blue.shade900 : Colors.gray)),
+        child: Text(text,),
       ),
     );
   }

@@ -17,9 +17,10 @@ class TaiKhoanEditNotifier extends AsyncNotifier<TaiKhoanViewModel?>{
     return null;
   }
 
-  Future<void> get(int id) async{
+  Future<void> get({int? id}) async{
     state = AsyncLoading();
     state = await AsyncValue.guard(() async{
+      if(id == null) return null;
       return await _repo.getEdit(id);
     });
   }

@@ -20,7 +20,6 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
   int selectMonth = DateTime.now().month;
   final txtNam = TextEditingController(text: DateTime.now().year.toString());
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -45,20 +44,24 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
       backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Danh sách đầu kỳ tài khoản",trailing: [
-          AppReloadButton(onPressed: (){
-            ref.refresh(dkyTaiKhoanViewProvider);
-            _manager.showLoading();
-            ref.listenManual(dkyTaiKhoanViewProvider, (_,next){
-              next.whenData((data){
-
-                _manager.loadView(data);
-                _manager.closeLoading();
-              });
-            });
-          },),
-          Gap(10)
-        ],)
+        AppHeader(
+          title: "Danh sách đầu kỳ tài khoản",
+          // trailing: [
+          //   AppReloadButton(
+          //     onPressed: () {
+          //       ref.refresh(dkyTaiKhoanViewProvider);
+          //       _manager.showLoading();
+          //       ref.listenManual(dkyTaiKhoanViewProvider, (_, next) {
+          //         next.whenData((data) {
+          //           _manager.loadView(data);
+          //           _manager.closeLoading();
+          //         });
+          //       });
+          //     },
+          //   ),
+          //   Gap(10),
+          // ],
+        ),
       ],
       child: state.when(
         data: (val) {
@@ -66,10 +69,7 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
             isLoading: stateUD.isLoading,
             child: Scaffold(
               headers: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.border)
-                  ),
+                AppContainerBorder(
                   child: AppBar(
                     leading: [
                       Text('Tháng'),
@@ -90,31 +90,30 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
                       ),
                       Gap(5),
                       Text('Năm'),
-                      SizedBox(width: 50, child: AppTextField(controller: txtNam,isNumber: true,maxLength: 4,)),
-
+                      SizedBox(width: 50, child: AppTextField(controller: txtNam, isNumber: true, maxLength: 4)),
                     ],
                     trailing: [
                       AppSaveButton(
                         text: "Thực hiện lưu đầu kỳ",
-                        onPressed: (){
+                        onPressed: () {
                           ref.read(dkyUpdateProvider.notifier).ghiDKTK(selectMonth, txtNam.text);
                         },
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
               child: AppTable(
-                onLoaded: (e){
+                onLoaded: (e) {
                   _manager = DKyTaiKhoanTableManager(e.stateManager);
                   _manager.loadView(val);
                 },
-                onChange: (re){
+                onChange: (re) {
                   final field = re.column.field;
                   final maTK = re.row.cells['MaTK']?.value;
-                  if(field == "DKNo"){
+                  if (field == "DKNo") {
                     ref.read(dkyUpdateProvider.notifier).updateCKNo(re.cell.value, maTK);
-                  }else if(field=="DKCo"){
+                  } else if (field == "DKCo") {
                     ref.read(dkyUpdateProvider.notifier).updateCKCo(re.cell.value, maTK);
                   }
                 },

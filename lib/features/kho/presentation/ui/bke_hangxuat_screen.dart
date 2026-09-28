@@ -28,14 +28,15 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
       ],
       headers: [
         AppHeader(title: "Bảng kê hàng xuất"),
-        AppBar(
-          leading: [
-            AppTngayDngay(onSubmit: (t,d){
-              ref.read(bKeHangXuatProvider.notifier).get(t, d);
-            },)
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              AppTngayDngay(onSubmit: (t,d){
+                ref.read(bKeHangXuatProvider.notifier).get(t, d);
+              },)
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: Padding(
         padding: EdgeInsets.all(0),
@@ -43,10 +44,7 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
           data: (val) {
             return Scaffold(
               headers: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.border)
-                  ),
+                AppContainerBorder(
                   child: AppBar(
                     leading: [
                       AppPrintButton()
@@ -61,7 +59,7 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
                 },
                 columns: [
                   AppTableColumn(
-                    title: ['', 'stt'],
+                    title: ['#', 'stt'],
                     width: 35,
                     readOnly: true,
                     showFilter: false,

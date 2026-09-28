@@ -13,7 +13,7 @@ final phieuNhapRepositoryProvider = Provider<IPhieuNhapRepository>((ref) {
 
 class PhieuNhapRepository implements IPhieuNhapRepository{
   final Dio _dio;
-  PhieuNhapRepository(this._dio);
+  const PhieuNhapRepository(this._dio);
   
   @override
   Future<PhieuNhapRequestModel> add() async {
@@ -95,39 +95,39 @@ class PhieuNhapRepository implements IPhieuNhapRepository{
     }
   }
 
-  @override
-  Future<PhieuNhapRequestModel?> getNext(int id) async{
-    // TODO: implement getNext
-    try{
-      final response = await _dio.get("/Nhap/next/$id");
-      if(response.statusCode == 204){
-        return null;
-      }
-      final data = response.data as Map<String, dynamic>;
-      return PhieuNhapRequestModel.fromMap(data);
-    }on  DioException catch(e){
-      throw ApiException.handleDioException(e);
-    }catch(e){
-      rethrow;
-    }
-  }
+  // @override
+  // Future<PhieuNhapRequestModel?> getNext(int id) async{
+  //   // TODO: implement getNext
+  //   try{
+  //     final response = await _dio.get("/Nhap/next/$id");
+  //     if(response.statusCode == 204){
+  //       return null;
+  //     }
+  //     final data = response.data as Map<String, dynamic>;
+  //     return PhieuNhapRequestModel.fromMap(data);
+  //   }on  DioException catch(e){
+  //     throw ApiException.handleDioException(e);
+  //   }catch(e){
+  //     rethrow;
+  //   }
+  // }
 
-  @override
-  Future<PhieuNhapRequestModel?> getPrevious(int id) async{
-    // TODO: implement getPrevious
-    try{
-      final response = await _dio.get("/Nhap/previous/$id");
-      if(response.statusCode == 204){
-        return null;
-      }
-      final data = response.data as Map<String, dynamic>;
-      return PhieuNhapRequestModel.fromMap(data);
-    }on  DioException catch(e){
-      throw ApiException.handleDioException(e);
-    }catch(e){
-      rethrow;
-    }
-  }
+  // @override
+  // Future<PhieuNhapRequestModel?> getPrevious(int id) async{
+  //   // TODO: implement getPrevious
+  //   try{
+  //     final response = await _dio.get("/Nhap/previous/$id");
+  //     if(response.statusCode == 204){
+  //       return null;
+  //     }
+  //     final data = response.data as Map<String, dynamic>;
+  //     return PhieuNhapRequestModel.fromMap(data);
+  //   }on  DioException catch(e){
+  //     throw ApiException.handleDioException(e);
+  //   }catch(e){
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Future<void> delete(int id) async {
@@ -146,6 +146,23 @@ class PhieuNhapRepository implements IPhieuNhapRepository{
     // TODO: implement getByPhieu
     try{
       final response = await _dio.get("/Nhap/$maPhieu");
+      if(response.statusCode == 204){
+        return null;
+      }
+      final data = response.data as Map<String, dynamic>;
+      return PhieuNhapRequestModel.fromMap(data);
+    }on  DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PhieuNhapRequestModel?> getById(int id) async {
+    // TODO: implement getById
+    try{
+      final response = await _dio.get("/Nhap/get-by-id/$id");
       if(response.statusCode == 204){
         return null;
       }

@@ -1,13 +1,4 @@
-import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_alert.dart';
-import 'package:erp_client_1/core/widgets/app_button.dart';
-import 'package:erp_client_1/core/widgets/app_combobox.dart';
-import 'package:erp_client_1/core/widgets/app_container_border.dart';
-import 'package:erp_client_1/core/widgets/app_dialog.dart';
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_select_date.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
-import 'package:erp_client_1/core/widgets/app_tngay_dngay.dart';
+import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/danhmuc/taikhoan/presentation/ui/widget/taikhoan_xl0_combobox.dart';
 import 'package:erp_client_1/features/ketchuyen/presentation/notifier/ketchuyen_view_notifier.dart';
 import 'package:erp_client_1/features/ketchuyen/presentation/ui/state/ketchuyen_table_manager.dart';

@@ -16,12 +16,12 @@ class RoleRepository implements IRoleRepository{
   
   
   @override
-  Future<int> add(String roleName)async {
+  Future<RoleModel> add(String roleName)async {
     // TODO: implement add
     try{
       final response = await _dio.post("/role", queryParameters: {"roleName": roleName});
-      final data = response.data;
-      return data;
+      final data = response.data as Map<String, dynamic>;
+      return RoleModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
@@ -57,12 +57,12 @@ class RoleRepository implements IRoleRepository{
   }
 
   @override
-  Future<int> update(String roleName, int id)async {
+  Future<RoleModel> update(String roleName, int id)async {
     // TODO: implement update
     try{
       final response = await _dio.patch("/role/$id",queryParameters: {"roleName": roleName});
-      final data = response.data;
-      return data;
+      final data = response.data as Map<String, dynamic>;
+      return RoleModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){

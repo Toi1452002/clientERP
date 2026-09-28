@@ -30,6 +30,7 @@ class DKyKhachHangTableManager extends AppTableState<DKyKhachHangViewModel> {
     );
   }
 
+
   void showLoading() => _stateManager.setShowLoading(true);
 
   void closeLoading() => _stateManager.setShowLoading(false);

@@ -58,6 +58,10 @@ class PhieuXuatCTTable extends ConsumerWidget {
           return HangHoaCombobox(
             enabled: !re.stateManager.mode.isReadOnly,
             selected: maHH?.maHH,
+            onTap: (){
+              re.stateManager.setCurrentCell(re.cell, re.rowIdx);
+
+            },
             noBorder: true,
             onChanged: (val){
               final hh = ref.read(hangHoaLookupProvider).value?.firstWhereOrNull((e)=>e.maHH==val);
@@ -88,6 +92,10 @@ class PhieuXuatCTTable extends ConsumerWidget {
               enabled: !re.stateManager.mode.isReadOnly,
               selected: re.cell.value,
               noBorder: true,
+              onTap: (){
+                re.stateManager.setCurrentCell(re.cell, re.rowIdx);
+
+              },
               onChanged: (val) {
                 re.cell.value = val;
                 re.stateManager.notifyListeners();

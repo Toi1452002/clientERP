@@ -16,18 +16,44 @@ class NhanVienTable extends ConsumerStatefulWidget {
 
 class _NhanVienTableState extends ConsumerState<NhanVienTable> {
   late NhanVienTableManager _manager;
+  bool isInit = false;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.listenManual(nhanVienViewProvider, (_, next){
+      if(isInit){
+        next.whenOrNull(
+          data: (val){
+            _manager.loadView(val);
+            _manager.closeLoading();
+          },
+          error: (e,s){
+            showInfo(context, e.toString());
+            isInit = false;
+            _manager.closeLoading();
+          },
+
+          loading: (){
+            _manager.showLoading();
+        }
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(nhanVienViewProvider);
     return state.when(
-      skipLoadingOnRefresh: false,
+      skipLoadingOnRefresh: isInit,
       data: (val) {
         return AppTable(
           onLoaded: (e){
             _manager = NhanVienTableManager(e.stateManager);
             _manager.loadView(val);
+            isInit = true;
           },
           onRowDoubleTap: (re){
             if(re.cell.column.field == "MaNV"){
@@ -37,7 +63,7 @@ class _NhanVienTableState extends ConsumerState<NhanVienTable> {
           },
           columns: [
             AppTableColumn(
-              title: ['', 'stt'],
+              title: ['#', 'stt'],
               width: 35,
               readOnly: true,
               renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
@@ -48,16 +74,15 @@ class _NhanVienTableState extends ConsumerState<NhanVienTable> {
               width: 25,
               renderer: (re) => AppTableCell.delete(() async {
                 final id = re.cell.value;
+                _manager.setCurrent(re);
                 showQuestion(context,onPressed: () async{
+                  _manager.showLoading();
                   try{
-                    final result = await ref.read(nhanVienViewProvider.notifier).delete(id);
-                    if(result!=0){
-                      _manager.setCurrent(re);
-                      _manager.delete(re);
-                    }
+                    await ref.read(nhanVienViewProvider.notifier).delete(id);
                   }catch(e){
                     if(context.mounted) showInfo(context, e.toString());
                   }
+                  _manager.closeLoading();
                 });
                 // _controller.removeRow(re);
                 // md.removeRow(ref, re.cell.value, re);

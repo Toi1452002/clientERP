@@ -40,27 +40,27 @@ class _BKePhieuChiScreenState extends ConsumerState<BKePhieuChiScreen> {
       backgroundColor: AppColor.background,
       headers: [
         AppHeader(title: "Bảng kê phiếu thu"),
-        AppBar(
-          leading: [
-            // AppPrintButton(),
-            // Gap(150),
-            AppTngayDngay(
-              onSubmit: (tn, dn){
-                ref.read(bkePhieuChiProvider.notifier).get(tn, dn);
-                tN = tn;
-                dN = dN;
-              },
-            ),
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              // AppPrintButton(),
+              // Gap(150),
+              AppTngayDngay(
+                onSubmit: (tn, dn){
+                  ref.read(bkePhieuChiProvider.notifier).get(tn, dn);
+                  tN = tn;
+                  dN = dN;
+                },
+              ),
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [AppPrintButton(),],
                 ),
@@ -79,7 +79,7 @@ class _BKePhieuChiScreenState extends ConsumerState<BKePhieuChiScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   showFilter: false,

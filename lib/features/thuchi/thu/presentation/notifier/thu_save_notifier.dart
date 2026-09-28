@@ -23,4 +23,11 @@ class ThuSaveNotifier extends AsyncNotifier<void>{
     });
   }
 
+  Future<void> updateKhoa(int id) async{
+    state = AsyncLoading();
+    state = await AsyncValue.guard(()async{
+      await _repo.updateEdit(id);
+    });
+  }
+
 }

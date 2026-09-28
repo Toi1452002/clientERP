@@ -1,8 +1,5 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_button.dart';
-import 'package:erp_client_1/core/widgets/app_datefield.dart';
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
+import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/congno/presentation/notifier/tonghopcongno_notifier.dart';
 import 'package:erp_client_1/features/congno/presentation/ui/state/tonghopcongno_table_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,28 +27,26 @@ class _TongHopCongNoScreenState extends ConsumerState<TongHopCongNoScreen> {
       ],
       headers: [
         AppHeader(title: "Tổng hợp công nợ"),
-        AppBar(
-          leading: [
-            SizedBox(width: 100,child: AppDateField(onChanged: (val){
-              date = val;
-            },value: date,)),
-            OutlineButton(child: Text('Thực hiện'),onPressed: (){
-              if(date!=null){
-                ref.read(tongHopCongNoProvider.notifier).get(date!);
-              }
-            },)
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              SizedBox(width: 100,child: AppDateField(onChanged: (val){
+                date = val;
+              },value: date,)),
+              OutlineButton(child: Text('Thực hiện'),onPressed: (){
+                if(date!=null){
+                  ref.read(tongHopCongNoProvider.notifier).get(date!);
+                }
+              },)
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColor.border)
-                ),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [
                     AppPrintButton()
@@ -73,7 +68,7 @@ class _TongHopCongNoScreenState extends ConsumerState<TongHopCongNoScreen> {
               ],
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 40,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
                   readOnly: true,

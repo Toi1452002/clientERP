@@ -1,7 +1,8 @@
+import 'package:erp_client_1/features/system/auth/presentation/notifier/auth_notifier.dart';
 import 'package:erp_client_1/features/system/users/presentation/dialog/user_form.dart';
+import 'package:erp_client_1/features/system/users/presentation/notifier/user_change_info_notifier.dart';
 import 'package:erp_client_1/features/system/users/presentation/notifier/user_view_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../core/constain/app_color.dart';
@@ -19,15 +20,12 @@ class _UserScreenState extends ConsumerState<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.background,
+      // backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Danh sách người dùng",trailing: [ AppReloadButton(
-          onPressed: () {
-            ref.refresh(userViewProvider);
-          },
+        AppHeader(
+          title: "Danh sách người dùng",
         ),
-          Gap(10),],),
         AppBar(
           leading: [
             AppNewButton(
@@ -38,7 +36,7 @@ class _UserScreenState extends ConsumerState<UserScreen> {
             ),
           ],
         ),
-        Divider(color: AppColor.border300,)
+        Divider(color: AppColor.border300),
       ],
       child: UserTable(),
     );

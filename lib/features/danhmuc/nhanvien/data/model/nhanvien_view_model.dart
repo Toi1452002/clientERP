@@ -26,7 +26,7 @@ class NhanVienViewModel{
       maNV: map['maNV'] as String,
       tenNV: map['tenNV'] as String,
       gioiTinh: map['gioiTinh'] as bool,
-      ngaySinh: DateTime.tryParse(map['ngaySinh']),
+      ngaySinh:map['ngaySinh']==null?null: DateTime.tryParse(map['ngaySinh']),
       diaChi: map['diaChi'] as String?,
       trinhDo: map['trinhDo'] as String?,
       chuyenMon: map['chuyenMon'] as String?,

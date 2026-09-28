@@ -4,13 +4,12 @@ import 'package:erp_client_1/features/system/auth/data/model/auth_model.dart';
 import 'package:erp_client_1/features/system/auth/data/repository/auth_repository.dart';
 import 'package:erp_client_1/features/system/auth/data/repository/iauth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import '../../../../../core/data/local/storage/storage_name.dart';
 import '../../../../../core/data/local/storage/storage_provider.dart';
 
 final authNotifierProvider = AsyncNotifierProvider<AuthNotifier, AuthModel?>(AuthNotifier.new, retry: (_, _) => null);
 
-final loginErrorState = StateProvider<String?>((ref) => null);
+// final loginErrorState = StateProvider<String?>((ref) => null);
 
 class AuthNotifier extends AsyncNotifier<AuthModel?> {
   IAuthRepository get _repo => ref.read(authRepositoryProvider);
@@ -40,13 +39,6 @@ class AuthNotifier extends AsyncNotifier<AuthModel?> {
       logout(isRefresh: true);
       return;
     }
-    // final current = state.value;
-    //
-    // if (current == null) return;
-    // state = AsyncData(current.copyWith(
-    //   accessToken: auth.accessToken,
-    //   refreshToken: auth.refreshToken
-    // ));
     await ref.read(storageProvider).saveString(stToken, auth.accessToken);
     await ref.read(storageProvider).saveString(stRefreshToken, auth.refreshToken);
   }

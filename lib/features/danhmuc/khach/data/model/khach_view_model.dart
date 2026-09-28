@@ -2,10 +2,11 @@ class KhachViewModel {
   final int id;
   final String maKH;
   final String tenKH;
-  final String diaChi;
-  final String diDong;
-  final String mst;
+  final String? diaChi;
+  final String? diDong;
+  final String? mst;
   final String loaiKH;
+  final bool isActive;
 
   const KhachViewModel({
     required this.id,
@@ -15,18 +16,20 @@ class KhachViewModel {
     required this.diDong,
     required this.mst,
     required this.loaiKH,
+    required this.isActive
   });
 
 
   factory KhachViewModel.fromMap(Map<String, dynamic> map) {
     return KhachViewModel(
-      id: map['id'] as int,
-      maKH: map['maKH'] as String,
-      tenKH: map['tenKH'] as String,
-      diaChi: map['diaChi'] as String,
-      diDong: map['diDong'] as String,
-      mst: map['mst'] as String,
-      loaiKH: map['loaiKH'] as String,
+      id: map['id'] ,
+      maKH: map['maKH'] ,
+      tenKH: map['tenKH'] ,
+      diaChi: map['diaChi'] ,
+      diDong: map['diDong'] ,
+      mst: map['mst'] ,
+      loaiKH: map['loaiKH'] ,
+      isActive: map['isActive']
     );
   }
 }

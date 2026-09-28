@@ -18,4 +18,6 @@ class NhomHangTableManager extends AppTableState<NhomHangModel>{
     })).toList());
   }
 
+  void showLoading()=> _stateManager.setShowLoading(true);
+  void closeLoading()=> _stateManager.setShowLoading(false);
 }

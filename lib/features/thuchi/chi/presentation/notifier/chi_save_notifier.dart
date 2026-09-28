@@ -24,4 +24,11 @@ class ChiSaveNotifier extends AsyncNotifier<void>{
     });
   }
 
+  Future<void> updateEdit(int id) async {
+    state = AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await _repo.updateEdit(id);
+    });
+  }
+
 }

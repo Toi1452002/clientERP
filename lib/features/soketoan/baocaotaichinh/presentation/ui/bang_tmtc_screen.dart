@@ -41,7 +41,7 @@ class _BangTMTCScreenState extends ConsumerState<BangTMTCScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(bangTmpCBTCProvider);
     final stateSave = ref.watch(luuNamTruocNotifier);
-    return LoadingOverlay(
+    return AppLoadingOverlay(
       isLoading: stateSave.isLoading,
       child: Scaffold(
         footers: [AppFooter()],
@@ -92,7 +92,7 @@ class _BangTMTCScreenState extends ConsumerState<BangTMTCScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

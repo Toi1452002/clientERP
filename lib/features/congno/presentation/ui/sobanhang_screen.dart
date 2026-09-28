@@ -1,10 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_button.dart';
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
-import 'package:erp_client_1/core/widgets/app_textfield.dart';
-import 'package:erp_client_1/core/widgets/app_tngay_dngay.dart';
+import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/congno/presentation/ui/state/sobanhang_table_manager.dart';
 import 'package:erp_client_1/features/danhmuc/khach/presentation/ui/widget/khach_combobox.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -39,55 +35,59 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
       ],
       headers: [
         AppHeader(title: "Sổ bán hàng"),
-        AppBar(
-          leading: [
-            AppTngayDngay(
-              onSubmit: (tn, dn) {
-                tN = tn;
-                dN = dn;
-                ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
-              },
+        AppContainerBorder(child: Column(
+          children: [
+            AppBar(
+              leading: [
+                AppTngayDngay(
+                  onSubmit: (tn, dn) {
+                    tN = tn;
+                    dN = dn;
+                    ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        AppBar(
-          leading: [
-            Text("Mã KH").medium,
-            Gap(8),
-            SizedBox(
-              width: 100,
-              child: KhachCombobox(
-                clear: false,
-                selected: maKH,
-                onChanged: (val) {
-                  setState(() {
-                    maKH = val;
-                  });
-                  if (maKH == null) {
-                    txtTenKH.clear();
-                  } else {
-                    final k = ref.read(khachLookupProvider(LoaiKH.Khach)).value;
-                    final tmp = k?.firstWhereOrNull((e) => e.maKH == val);
-                    if (tmp != null) {
-                      txtTenKH.text = tmp.tenKH;
-                    }
-                  }
+            AppBar(
+              leading: [
+                Text("Mã KH").medium,
+                Gap(8),
+                SizedBox(
+                  width: 100,
+                  child: KhachCombobox(
+                    showAdd: false,
+                    clear: false,
+                    selected: maKH,
+                    onChanged: (val) {
+                      setState(() {
+                        maKH = val;
+                      });
+                      if (maKH == null) {
+                        txtTenKH.clear();
+                      } else {
+                        final k = ref.read(khachLookupProvider(LoaiKH.Khach)).value;
+                        final tmp = k?.firstWhereOrNull((e) => e.maKH == val);
+                        if (tmp != null) {
+                          txtTenKH.text = tmp.tenKH;
+                        }
+                      }
 
-                  ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
-                },
-              ),
-            ),
-            SizedBox(width: 250, child: AppTextField(readOnly: true, controller: txtTenKH)),
+                      ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
+                    },
+                  ),
+                ),
+                SizedBox(width: 250, child: AppTextField(readOnly: true, controller: txtTenKH)),
+              ],
+            )
           ],
-        ),
-        Divider(color: AppColor.border300),
+        )),
+
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [AppPrintButton()],
                   trailing: [
@@ -98,8 +98,7 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
               ),
             ],
             footers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              AppContainerBorder(
 
                 child: AppBar(
                   trailing: [
@@ -118,7 +117,7 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

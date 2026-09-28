@@ -6,10 +6,11 @@ abstract interface class IChiRepository {
 
   Future<PhieuChiModel?> getFirstPhieu();
 
-  Future<PhieuChiModel?> getPrevious(int id);
-
-  Future<PhieuChiModel?> getNext(int id);
+  // Future<PhieuChiModel?> getPrevious(int id);
+  //
+  // Future<PhieuChiModel?> getNext(int id);
   Future<PhieuChiModel?> getByPhieu(String phieu);
+  Future<PhieuChiModel?> getById(int id);
 
   Future<int> onSave(PhieuChiSaveModel pc, int id);
 

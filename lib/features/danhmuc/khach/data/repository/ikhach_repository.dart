@@ -4,15 +4,15 @@ import '../model/khach_request_model.dart';
 import '../model/khach_view_model.dart';
 
 abstract interface class IKhachRepository{
-  Future<List<KhachViewModel>> getView();
+  Future<List<KhachViewModel>> getView({bool? isActive});
 
-  Future<int> add(KhachRequestModel khach);
+  Future<KhachViewModel> add(KhachRequestModel khach);
 
   Future<KhachEditModel> getById(int id);
 
-  Future<void> update(KhachRequestModel khach, int id);
+  Future<KhachViewModel> update(KhachRequestModel khach, int id);
 
-  Future<bool> delete(int id);
+  Future<int> delete(int id);
 
   Future<List<KhachLookupModel>> getNhaCung();
   Future<List<KhachLookupModel>> getKhach();

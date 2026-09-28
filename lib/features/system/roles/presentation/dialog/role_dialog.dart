@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:erp_client_1/core/constain/app_color.dart';
 import 'package:erp_client_1/core/widgets/app_dialog.dart';
+import 'package:erp_client_1/features/system/roles/presentation/notifier/role_edit_notifier.dart';
 import 'package:erp_client_1/features/system/roles/presentation/notifier/role_view_notifier.dart';
 import 'package:erp_client_1/features/system/roles/presentation/ui/widget/role_table.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,18 +20,14 @@ class RoleDialog extends ConsumerStatefulWidget {
 class _RoleDialogState extends ConsumerState<RoleDialog> {
   final txtVaiTro = TextEditingController();
 
-  Future<void> onSubmit(String dvt) async {
-    try {
-      if (dvt.isEmpty) return;
-      await ref.read(roleViewProvider.notifier).add(txtVaiTro.text);
-      txtVaiTro.clear();
-    } catch (e) {
-      if (context.mounted) showInfo(context, e.toString());
-    }
+  void onSubmit(String dvt) {
+    ref.read(roleEditProvider.notifier).add(txtVaiTro.text);
+    txtVaiTro.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(roleEditProvider);
     return DialogWindows(
       width: 330,
       height: 500,
@@ -38,11 +37,14 @@ class _RoleDialogState extends ConsumerState<RoleDialog> {
         child: Padding(
           padding: const EdgeInsets.all(0),
           child: Scaffold(
+            footers: [AppFooter(
+              leading: [
+                if(state.hasError) Text(state.error.toString(),style: TextStyle(color: Colors.red),)
+              ],
+            )],
             headers: [
               Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColor.border)
-                ),
+                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
                 padding: EdgeInsets.all(5),
                 child: Row(
                   // columnWidths: {0:200,1: 30},
@@ -51,13 +53,13 @@ class _RoleDialogState extends ConsumerState<RoleDialog> {
                       child: AppTextField(
                         hintText: 'Nhập vai trò',
                         controller: txtVaiTro,
-                        onSubmitted: (val) async {
-                          await onSubmit(val);
+                        onSubmitted: (val) {
+                          onSubmit(val);
                         },
                       ),
                     ),
                     Gap(5),
-                    AppAddButton(onPressed: () async => await onSubmit(txtVaiTro.text.trim())),
+                    AppAddButton(onPressed: () => onSubmit(txtVaiTro.text.trim())),
                   ],
                 ),
               ),

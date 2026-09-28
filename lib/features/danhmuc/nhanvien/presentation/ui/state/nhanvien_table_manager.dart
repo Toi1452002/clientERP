@@ -29,4 +29,7 @@ class NhanVienTableManager extends AppTableState<NhanVienViewModel>{
     }).toList());
   }
 
+  void showLoading()=>_state.setShowLoading(true);
+  void closeLoading()=>_state.setShowLoading(false);
+
 }

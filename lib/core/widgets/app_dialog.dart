@@ -2,6 +2,7 @@ import 'package:erp_client_1/core/constain/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as sh;
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 Future<void> showAppDialog(
   BuildContext context, {
@@ -62,7 +63,7 @@ class DialogWindows extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               // color: Colors.yellow
-              color: Colors.grey,
+              color: context.theme.colorScheme.accent,
               border: Border.all(color: Colors.black.withValues(alpha: .1)),
               boxShadow: [
                 BoxShadow(
@@ -81,14 +82,17 @@ class DialogWindows extends StatelessWidget {
               children: [
                 Container(
                   height: 28,
-                  color: Colors.grey.shade200,
+                  // color: Colors.grey.shade200,
+                  color: Colors.cyan.shade800,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Row(
                       children: [
-                        Icon(PhosphorIcons.appWindow, color: Colors.blue.shade700),
+                        Icon(PhosphorIcons.appWindow, color: Colors.white),
                         SizedBox(width: 5),
-                        Text(title, style: Theme.of(context).textTheme.labelMedium),
+                        Text(title, style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: Colors.white
+                        )),
                         const Spacer(),
                         Material(
                           color: Colors.transparent,
@@ -102,7 +106,7 @@ class DialogWindows extends StatelessWidget {
                                   Navigator.pop(context);
                                 }
                               },
-                              child: Icon(PhosphorIcons.x, color: Colors.red.shade700, size: 20),
+                              child: Icon(PhosphorIcons.x, color: Colors.red.shade100, size: 20),
                             ),
                           ),
                         ),

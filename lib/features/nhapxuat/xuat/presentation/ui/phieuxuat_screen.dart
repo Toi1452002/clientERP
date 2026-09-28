@@ -24,6 +24,7 @@ import '../notifier/phieuxuat_save_notifier.dart';
 
 class PhieuXuatScreen extends ConsumerStatefulWidget {
   final String? phieu;
+
   const PhieuXuatScreen({super.key, this.phieu});
 
   @override
@@ -60,6 +61,8 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
 
   late PhieuXuatCTTableManager _tableManager;
 
+  bool isSave = false;
+  bool isUpdateKhoa = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -72,7 +75,6 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
       }
     });
 
-
     ref.listenManual(phieuXuatProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
@@ -84,9 +86,19 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
     ref.listenManual(phieuXuatSaveProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
-          setState(() {
-            khoa = !khoa;
-          });
+          if (isSave) {
+            setState(() {
+              khoa = true;
+              isSave = false;
+            });
+          }
+
+          if(isUpdateKhoa){
+            setState(() {
+              khoa = !khoa;
+              isUpdateKhoa = false;
+            });
+          }
         },
         error: (e, s) {
           showInfo(context, e.toString());
@@ -94,10 +106,10 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
       );
     });
 
-    ref.listenManual(phieuXuatDeleteProvider, (pre,next){
+    ref.listenManual(phieuXuatDeleteProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
-          ref.read(phieuXuatProvider.notifier).getNext(id);
+          ref.read(phieuXuatProvider.notifier).getNext();
         },
         error: (e, s) {
           showInfo(context, e.toString());
@@ -135,14 +147,12 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
     tienThue = NumHelper.numFormat(p.tienThue);
     tongThanhToan = NumHelper.numFormat((p.congTien ?? 0) + (p.tienThue ?? 0));
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   PhieuXuatSaveModel _model() {
     return PhieuXuatSaveModel(
-      soHD: txtSoHD.text.isEmpty?null:txtSoHD.text,
+      soHD: txtSoHD.text.isEmpty ? null : txtSoHD.text,
       maKH: maKH,
       tienThue: NumHelper.stringToDouble(tienThue),
       congTien: NumHelper.stringToDouble(tongTienHang),
@@ -160,6 +170,14 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
     );
   }
 
+  void _autoSave(){
+    if(!khoa){
+      ref
+          .read(phieuXuatSaveProvider.notifier)
+          .save(PhieuXuatUpdateModel(phieuXuat: _model(), phieuXuatCT: _tableManager.toList(id)), id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(phieuXuatProvider);
@@ -170,12 +188,14 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
       height: 600,
       beforeClose: () async {
         if (!khoa && state.value != null) {
-          showQuestion(
+          showClosePhieu(
             context,
             onPressed: () {
+              ref
+                  .read(phieuXuatSaveProvider.notifier)
+                  .save(PhieuXuatUpdateModel(phieuXuat: _model(), phieuXuatCT: _tableManager.toList(id)), id);
               Navigator.pop(context);
             },
-            text: "Chưa lưu phiếu, có chắc muốn đóng?",
           );
         } else {
           Navigator.pop(context);
@@ -188,25 +208,39 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
           Divider(color: AppColor.border300),
 
           AppBar(
-            leading: [AppButtonPage(first: () {
-              ref.read(phieuXuatProvider.notifier).getFirst();
-            }, last: () {
-              ref.read(phieuXuatProvider.notifier).rebuild();
-            }, back: () {
-              ref.read(phieuXuatProvider.notifier).getPrevious(id);
-            }, next: () {
-              ref.read(phieuXuatProvider.notifier).getNext(id);
-            })],
+            leading: [
+              AppButtonPage(
+                first: () {
+                  _autoSave();
+                  ref.read(phieuXuatProvider.notifier).getFirst();
+                },
+                last: () {
+                  _autoSave();
+                  ref.read(phieuXuatProvider.notifier).rebuild();
+                },
+                back: () {
+                  _autoSave();
+                  ref.read(phieuXuatProvider.notifier).getPrevious();
+                },
+                next: () {
+                  _autoSave();
+                  ref.read(phieuXuatProvider.notifier).getNext();
+                },
+                firstText: state.hasValue ? "${state.value?.phieuXuat.stt ?? '0'}" : '0',
+                secondText: state.hasValue ? "${state.value?.phieuXuat.tongStt ?? '0'}" : '0',
+              ),
+            ],
           ),
         ],
         headers: [
           AppBar(
             leading: [
               AppNewButton(
-                text: 'Thêm phiếu',
-                enabled: khoa || state.value == null,
+                text: 'Phiếu mới',
                 onPressed: () {
+                  _autoSave();
                   ref.read(phieuXuatProvider.notifier).addPhieu();
+
                 },
               ),
               Gap(5),
@@ -216,19 +250,29 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                   ref
                       .read(phieuXuatSaveProvider.notifier)
                       .save(PhieuXuatUpdateModel(phieuXuat: _model(), phieuXuatCT: _tableManager.toList(id)), id);
+                  isSave = true;
                 },
               ),
               Gap(5),
-              AppEditButton(enabled: khoa,onPressed: (){
-                ref.read(phieuXuatSaveProvider.notifier).updateKhoa(id);
-              },),
+              AppEditButton(
+                enabled: khoa,
+                onPressed: () {
+                  ref.read(phieuXuatSaveProvider.notifier).updateKhoa(id);
+                  isUpdateKhoa = true;
+                },
+              ),
               Gap(5),
-              AppDeleteButton(enabled: state.value != null && !khoa, onPressed: (){
-                showQuestion(context,onPressed: (){
-                  ref.read(phieuXuatDeleteProvider.notifier).delete(id);
-
-                });
-              },),
+              AppDeleteButton(
+                enabled: state.value != null && !khoa,
+                onPressed: () {
+                  showQuestion(
+                    context,
+                    onPressed: () {
+                      ref.read(phieuXuatDeleteProvider.notifier).delete(id);
+                    },
+                  );
+                },
+              ),
               Gap(5),
               AppPrintButton(enabled: khoa),
             ],
@@ -242,7 +286,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                 child: Text('Chưa có phiếu xuất', style: TextStyle(color: Colors.gray)),
               );
             }
-            return LoadingOverlay(
+            return AppLoadingOverlay(
               isLoading: stateSave.isLoading || stateDelete.isLoading,
               child: SingleChildScrollView(
                 child: Padding(
@@ -259,7 +303,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                             AppRow(
                               columnWidths: {0: 80, 2: 100, 4: 120, 8: 100},
                               items: [
-                                Text('Ngày'),
+                                Text('Ngày').medium,
                                 AppDateField(
                                   enabled: !khoa,
                                   value: ngay,
@@ -270,9 +314,9 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                     setState(() {});
                                   },
                                 ),
-                                Row(children: [Gap(30), Text('Số phiếu')]),
-                                AppTextField(enabled: !khoa, controller: txtSoPhieu, readOnly: true),
-                                Row(children: [Gap(30), Text('Kiểu xuất')]),
+                                Row(children: [Gap(30), Text('Số phiếu').medium]),
+                                AppTextField(enabled: !khoa, controller: txtSoPhieu, readOnly: true,fontWeight: FontWeight.w500,),
+                                Row(children: [Gap(30), Text('Kiểu xuất').medium]),
                                 NvuXuatCombobox(
                                   enabled: !khoa,
                                   selected: maNX,
@@ -282,7 +326,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                     });
                                   },
                                 ),
-                                Row(children: [Gap(30), Text('Ký hiệu hóa đơn')]),
+                                Row(children: [Gap(30), Text('Ký hiệu hóa đơn').medium]),
                                 AppTextField(
                                   enabled: !khoa,
                                   onFieldLeave: () async {
@@ -315,12 +359,15 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                             AppRow(
                               columnWidths: {0: 80, 1: 160, 2: 483, 3: 142, 4: 142},
                               items: [
-                                Text('Mã khách'),
+                                Text('Mã khách').medium,
                                 KhachCombobox(
                                   selected: maKH,
                                   enabled: !khoa,
                                   onChanged: (val) {
-                                    final kh = ref.read(khachLookupProvider(LoaiKH.Khach)).value?.firstWhereOrNull((e) => e.maKH == val);
+                                    final kh = ref
+                                        .read(khachLookupProvider(LoaiKH.Khach))
+                                        .value
+                                        ?.firstWhereOrNull((e) => e.maKH == val);
                                     if (kh != null) {
                                       txtTenKH.text = kh.tenKH;
                                       txtDienGiai.text = "Bán hàng cho khách $val";
@@ -339,7 +386,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                     AppTextField(enabled: !khoa, readOnly: true, controller: txtTenKH).expanded(),
                                   ],
                                 ),
-                                Row(children: [Gap(30), Text('Số hóa đơn')]),
+                                Row(children: [Gap(30), Text('Số hóa đơn').medium]),
                                 AppTextField(enabled: !khoa, controller: txtSoHD, onFieldLeave: () async {}),
                                 SizedBox(),
                               ],
@@ -347,12 +394,12 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                             AppRow(
                               columnWidths: {0: 80, 1: 643, 2: 142, 3: 142},
                               items: [
-                                Text('Diễn giải'),
+                                Text('Diễn giải').medium,
                                 AppTextField(enabled: !khoa, onFieldLeave: () async {}, controller: txtDienGiai),
-                                Row(children: [Gap(30), Text('Ngày hóa đơn')]),
+                                Row(children: [Gap(30), Text('Ngày hóa đơn').medium]),
                                 AppDateField(
                                   enabled: !khoa,
-                
+
                                   value: ngayHoaDon,
                                   onChanged: (val) async {
                                     ngayHoaDon = val;
@@ -375,7 +422,6 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                               Row(
                                 children: [
                                   OutlineButton(
-                
                                     leading: Icon(PhosphorIcons.plus, size: 15),
                                     onPressed: () {
                                       _tableManager.addRow();
@@ -392,11 +438,10 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                   onLoaded: (re) {
                                     _tableManager = PhieuXuatCTTableManager(re.stateManager);
                                     _tableManager.loadView(val.phieuXuatCT);
-                
                                   },
                                   changedThanhTien: () {
                                     tongTienHang = NumHelper.numFormat(_tableManager.tongTienHang());
-                
+
                                     if (thueSuat != null) {
                                       final x = (thueSuat! / 100) * NumHelper.stringToDouble(tongTienHang);
                                       tienThue = NumHelper.numFormat(x);
@@ -427,7 +472,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                   AppRow(
                                     columnWidths: {0: 80, 1: 100, 2: 100, 3: 80, 4: 140},
                                     items: [
-                                      Text('TK Nợ/Có'),
+                                      Text('TK Nợ/Có').medium,
                                       TaiKhoanXL0Combobox(
                                         enabled: !khoa,
                                         selected: tkNo,
@@ -446,7 +491,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                           });
                                         },
                                       ),
-                                      Row(children: [Gap(10), Text('Thuế suất')]),
+                                      Row(children: [Gap(10), Text('Thuế suất').medium]),
                                       ThueSuatCombobox(
                                         enabled: !khoa,
                                         selected: thueSuat,
@@ -461,7 +506,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                             tienThue = '0';
                                             tongThanhToan = tongTienHang;
                                           }
-                
+
                                           setState(() {
                                             thueSuat = val;
                                           });
@@ -473,7 +518,7 @@ class _PhieuXuatScreenState extends ConsumerState<PhieuXuatScreen> {
                                     AppRow(
                                       columnWidths: {0: 80, 1: 100, 2: 100, 3: 80, 4: 140},
                                       items: [
-                                        Text('TK VAT'),
+                                        Text('TK VAT').medium,
                                         TaiKhoanXL0Combobox(
                                           enabled: !khoa,
                                           selected: tkVatNo,

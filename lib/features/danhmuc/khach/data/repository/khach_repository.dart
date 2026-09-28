@@ -20,14 +20,12 @@ class KhachRepository implements IKhachRepository {
   KhachRepository(this._dio);
 
   @override
-  Future<int> add(KhachRequestModel khach) async {
+  Future<KhachViewModel> add(KhachRequestModel khach) async {
     // TODO: implement add
     try{
       final response = await _dio.post("/KhachHang",data: khach.toMap());
-      if(response.statusCode == 200){
-        return response.data;
-      }
-      return 0;
+      final data = response.data as Map<String, dynamic>;
+      return KhachViewModel.fromMap(data);
     }on DioException catch (e){
       throw ApiException.handleDioException(e);
     }catch (e) {
@@ -36,11 +34,11 @@ class KhachRepository implements IKhachRepository {
   }
 
   @override
-  Future<bool> delete(int id) async {
+  Future<int> delete(int id) async {
     // TODO: implement delete
     try{
       final response =  await _dio.delete("/KhachHang/$id");
-      return response.data > 0;
+      return response.data;
     }on DioException catch (e){
       throw ApiException.handleDioException(e);
     }catch (e) {
@@ -89,10 +87,12 @@ class KhachRepository implements IKhachRepository {
     }
   }
   @override
-  Future<List<KhachViewModel>> getView() async {
+  Future<List<KhachViewModel>> getView({bool? isActive}) async {
     // TODO: implement getView
     try {
-      final response = await _dio.get("/KhachHang");
+      final response = await _dio.get("/KhachHang", queryParameters: {
+        'isActive': isActive
+      });
       final data = response.data as List;
       return data.map((e) => KhachViewModel.fromMap(e)).toList();
     } on DioException catch (e) {
@@ -103,10 +103,12 @@ class KhachRepository implements IKhachRepository {
   }
 
   @override
-  Future<void> update(KhachRequestModel khach, int id) async {
+  Future<KhachViewModel> update(KhachRequestModel khach, int id) async {
     // TODO: implement update
     try{
-      await _dio.put("/KhachHang/$id",data: khach.toMap());
+      final response = await _dio.put("/KhachHang/$id",data: khach.toMap());
+      final data = response.data as Map<String, dynamic>;
+      return KhachViewModel.fromMap(data);
     }on DioException catch (e){
       throw ApiException.handleDioException(e);
     }catch (e) {

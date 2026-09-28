@@ -8,6 +8,7 @@ class HangHoaViewModel{
   final String? loaiHang;
   final String? nhomHang;
   final String? maNC;
+  final bool isActive;
 
   const HangHoaViewModel({
     required this.id,
@@ -18,7 +19,7 @@ class HangHoaViewModel{
     required this.giaBan,
     this.loaiHang,
     this.nhomHang,
-    this.maNC,
+    this.maNC,required this.isActive
   });
 
   // Map<String, dynamic> toMap() {
@@ -46,6 +47,7 @@ class HangHoaViewModel{
       loaiHang: map['loaiHang']??'',
       nhomHang: map['nhomHang']??'',
       maNC: map['maNC']??'',
+      isActive: map['isActive']
     );
   }
 }

@@ -10,6 +10,7 @@ class AppCombobox extends mt.StatefulWidget {
   final dynamic value;
   final List<ComboboxItem> items;
   final void Function(dynamic value)? onChanged;
+
   // final void Function()? onClear;
   final bool noSearch;
   final List<double>? columnWidth;
@@ -19,6 +20,7 @@ class AppCombobox extends mt.StatefulWidget {
   final bool noBorder;
   final void Function()? onTap;
   final void Function()? onReload;
+  final void Function()? onAdd;
   final void Function(dynamic)? onDoubleTap;
   final double? sizeText;
   final bool enabledClear;
@@ -37,7 +39,9 @@ class AppCombobox extends mt.StatefulWidget {
     this.onTap,
     this.onDoubleTap,
     this.sizeText,
-    this.enabledClear = true,this.onReload
+    this.enabledClear = true,
+    this.onReload,
+    this.onAdd,
     // this.onClear,
   });
 
@@ -93,7 +97,7 @@ class _AppComboboxState extends mt.State<AppCombobox> {
               : context.theme.colorScheme.border,
           padding: EdgeInsets.symmetric(horizontal: 5),
           // width: 300,
-          height:26,
+          height: 26,
           child: Row(
             children: [
               mt.InkWell(
@@ -107,22 +111,30 @@ class _AppComboboxState extends mt.State<AppCombobox> {
                         : widget.onDoubleTap == null
                         ? Colors.black
                         : Colors.red,
+                    overflow: TextOverflow.ellipsis
                   ),
                 ),
               ),
               Spacer(),
-              if (widget.enabled && widget.onReload!=null)
+              if (widget.enabled && widget.onReload != null)
                 mt.InkWell(
                   child: Icon(PhosphorIcons.arrowsClockwise, size: 15, color: Colors.gray.shade400),
                   onTap: () {
                     widget.onReload?.call();
                   },
                 ),
-              if (widget.value != null  && widget.enabled && widget.enabledClear)
+              if (widget.value != null && widget.enabled && widget.enabledClear)
                 mt.InkWell(
                   child: Icon(PhosphorIcons.x, size: 15, color: Colors.gray.shade400),
                   onTap: () {
                     widget.onChanged?.call(null);
+                  },
+                ),
+              if (widget.enabled && widget.onAdd != null)
+                mt.InkWell(
+                  child: Icon(PhosphorIcons.plusCircle, size: 20, color: Colors.green),
+                  onTap: () {
+                    widget.onAdd?.call();
                   },
                 ),
               Icon(PhosphorIcons.caretUpDown, size: 15, color: Colors.gray.shade400),
@@ -168,7 +180,6 @@ class _AppComboboxState extends mt.State<AppCombobox> {
           padding: EdgeInsets.zero,
           elevation: 2,
           decoration: BoxDecoration(border: Border.all(width: .2)),
-
         ),
 
         menuItemStyleData: MenuItemStyleData(

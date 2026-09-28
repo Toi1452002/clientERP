@@ -19,29 +19,47 @@ class KhachTable extends ConsumerStatefulWidget {
 
 class _KhachTableState extends ConsumerState<KhachTable> {
   late KhachTableManager _tableManager;
+  bool isInit = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.listenManual(khachViewProvider, (_, next) {
+      if (isInit) {
+        next.whenOrNull(
+            data: (val) {
+              _tableManager.loadView(val);
+              _tableManager.closeLoading();
+              _tableManager.clearFilter();
+            },
+            loading: () {
+              _tableManager.showLoading();
+            },
+            error: (e,s){
+              isInit = false;
+              _tableManager.closeLoading();
+
+              showInfo(context, e.toString());
+            }
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(khachViewProvider);
     return state.when(
-      skipLoadingOnRefresh: false,
+      skipLoadingOnReload: isInit,
+      skipLoadingOnRefresh: isInit,
       data: (val) {
         return Scaffold(
-          headers: [
-            Container(
-              decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-              child: AppBar(
-                leading: [
-                  AppPrintButton()
-                ],
-              ),
-            )
-          ],
           child: AppTable(
             onLoaded: (e){
               _tableManager = KhachTableManager(e.stateManager);
               _tableManager.loadView(val);
               _tableManager.showFilter();
+              isInit = true;
             },
             onRowDoubleTap: (re){
               if(re.cell.column.field == "MaKH"){
@@ -51,7 +69,7 @@ class _KhachTableState extends ConsumerState<KhachTable> {
             },
             columns: [
               AppTableColumn(
-                title: ['', 'stt'],
+                title: ['#', 'stt'],
                 width: 35,
                 readOnly: true,
                 showFilter: false,
@@ -64,17 +82,18 @@ class _KhachTableState extends ConsumerState<KhachTable> {
                 showFilter: false,
                 renderer: (re) => AppTableCell.delete(() {
                   _tableManager.setCurrent(re);
+                  _tableManager.showLoading();
                   showQuestion(
                     context,
                     onPressed: () async {
                       try {
                         await ref.read(khachViewProvider.notifier).delete(re.cell.value);
-                        _tableManager.delete(re);
                       } catch (e) {
                         if (context.mounted) showError(context, e.toString());
                       }
                     },
                   );
+                  _tableManager.closeLoading();
                 }),
               ),
 

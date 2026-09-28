@@ -27,9 +27,9 @@ class UserChangePasswordState extends ConsumerState<UserChangePassword> {
           Navigator.pop(context);
           showInfo(context, "Thay đổi mật khẩu thành công");
         },
-        error: (e, s) {
-          showError(context, e.toString());
-        },
+        // error: (e, s) {
+        //   showError(context, e.toString());
+        // },
       );
     });
   }
@@ -41,12 +41,15 @@ class UserChangePasswordState extends ConsumerState<UserChangePassword> {
       width: 350,
       height: 160,
       title: "Thay đổi mật khẩu",
-      child: LoadingOverlay(
+      child: AppLoadingOverlay(
         isLoading: state.isLoading,
         child: Scaffold(
           footers: [
             Divider(color: AppColor.border300,),
             AppBar(
+              leading: [
+                if(state.hasError) Text(state.error.toString(),style: TextStyle(color: Colors.red),)
+              ],
               trailing: [
                 AppSaveButton(
                   onPressed: () {

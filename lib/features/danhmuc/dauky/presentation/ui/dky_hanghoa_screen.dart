@@ -1,12 +1,11 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
 import 'package:erp_client_1/core/widgets/app_alert.dart';
 import 'package:erp_client_1/core/widgets/app_button.dart';
+import 'package:erp_client_1/core/widgets/app_container_border.dart';
 import 'package:erp_client_1/core/widgets/app_header.dart';
 import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
 import 'package:erp_client_1/features/danhmuc/dauky/presentation/notifier/dky_update_notifier.dart';
-import 'package:erp_client_1/features/danhmuc/dauky/presentation/notifier/dky_khachhang_view_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/state/dky_hanghoa_table_manager.dart';
-import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/state/dky_khachhang_table_manager.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +21,7 @@ class DKyHangHoaScreen extends ConsumerStatefulWidget {
 
 class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
   late DKyHangHoaTableManager _manager;
-
+  bool isInit = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -42,17 +41,19 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
 
   void refresh() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.listenManual(dkyHangHoaViewProvider, (_, next) {
-        next.whenOrNull(
-          data: (val) {
-            // _manager.closeLoading();
-            _manager.loadView(val);
-          },
-          loading: () {
-            // _manager.showLoading();
-          },
-        );
-      });
+      if(isInit){
+        ref.listenManual(dkyHangHoaViewProvider, (_, next) {
+          next.whenOrNull(
+            data: (val) {
+              // _manager.closeLoading();
+              _manager.loadView(val);
+            },
+            loading: () {
+              // _manager.showLoading();
+            },
+          );
+        });
+      }
     });
   }
 
@@ -65,15 +66,15 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
       headers: [
         AppHeader(
           title: "Danh sách tồn đầu kỳ",
-          trailing: [
-            AppReloadButton(
-              onPressed: () {
-                ref.refresh(dkyHangHoaViewProvider);
-                refresh();
-              },
-            ),
-            Gap(10),
-          ],
+          // trailing: [
+          //   AppReloadButton(
+          //     onPressed: () {
+          //       ref.refresh(dkyHangHoaViewProvider);
+          //       refresh();
+          //     },
+          //   ),
+          //   Gap(10),
+          // ],
         ),
       ],
       backgroundColor: AppColor.background,
@@ -84,8 +85,7 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
             isLoading: stateUpdate.isLoading,
             child: Scaffold(
               headers: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                AppContainerBorder(
                   child: AppBar(
                     trailing: [
                       AppSaveButton(
@@ -107,6 +107,7 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
                 onLoaded: (e) {
                   _manager = DKyHangHoaTableManager(e.stateManager);
                   _manager.loadView(val);
+                  isInit = true;
                 },
                 columns: [
                   AppTableColumn(

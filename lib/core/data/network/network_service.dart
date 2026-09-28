@@ -8,11 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'network_config.dart';
 import 'network_service_interceptor.dart';
 
-final apiUriProvider = FutureProvider<String>((ref) async {
-  final file = File("Config/appsettings.json");
-  final json = jsonDecode(await file.readAsString());
-  return json["ApiUri"];
-});
+// final apiUriProvider = FutureProvider<String>((ref) async {
+//   final file = File("Config/appsettings.json");
+//   final json = jsonDecode(await file.readAsString());
+//   return json["ApiUri"];
+// });
 
 final networkServiceProvider = Provider<Dio>((ref) {
   final options = BaseOptions(

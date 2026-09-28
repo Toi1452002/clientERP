@@ -11,7 +11,7 @@ class ThuDeleteNotifier extends AsyncNotifier<void>{
   @override
   FutureOr<void> build() {
     // TODO: implement build
-    throw UnimplementedError();
+
   }
 
   Future<void> delete(int id)async{

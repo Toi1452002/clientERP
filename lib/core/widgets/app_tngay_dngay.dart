@@ -3,7 +3,8 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'app_datefield.dart';
 
 class AppTngayDngay extends StatefulWidget {
-  const AppTngayDngay({super.key, this.onSubmit});
+  const AppTngayDngay({super.key, this.onSubmit, this.tuNgay});
+  final DateTime? tuNgay;
 
   final void Function(DateTime, DateTime)? onSubmit;
 
@@ -14,6 +15,18 @@ class AppTngayDngay extends StatefulWidget {
 class _AppTngayDngayState extends State<AppTngayDngay> {
   DateTime tN = DateTime.now().copyWith(day: 1);
   DateTime dN = DateTime.now();
+
+
+  @override
+  void didUpdateWidget(covariant AppTngayDngay oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.tuNgay != widget.tuNgay && widget.tuNgay!=null){
+      setState(() {
+        tN = widget.tuNgay!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

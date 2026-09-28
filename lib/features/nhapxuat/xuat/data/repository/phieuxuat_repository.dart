@@ -76,39 +76,39 @@ class PhieuXuatRepository implements IPhieuXuatRepository{
     }
   }
 
-  @override
-  Future<PhieuXuatRequestModel?> getNext(int id) async {
-    // TODO: implement getNext
-    try{
-      final response = await _dio.get("/Xuat/next/$id");
-      if(response.statusCode == 204){
-        return null;
-      }
-      final data = response.data as Map<String, dynamic>;
-      return PhieuXuatRequestModel.fromMap(data);
-    }on  DioException catch(e){
-      throw ApiException.handleDioException(e);
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  @override
-  Future<PhieuXuatRequestModel?> getPrevious(int id) async {
-    // TODO: implement getPrevious
-    try{
-      final response = await _dio.get("/Xuat/previous/$id");
-      if(response.statusCode == 204){
-        return null;
-      }
-      final data = response.data as Map<String, dynamic>;
-      return PhieuXuatRequestModel.fromMap(data);
-    }on  DioException catch(e){
-      throw ApiException.handleDioException(e);
-    }catch(e){
-      rethrow;
-    }
-  }
+  // @override
+  // Future<PhieuXuatRequestModel?> getNext(int id) async {
+  //   // TODO: implement getNext
+  //   try{
+  //     final response = await _dio.get("/Xuat/next/$id");
+  //     if(response.statusCode == 204){
+  //       return null;
+  //     }
+  //     final data = response.data as Map<String, dynamic>;
+  //     return PhieuXuatRequestModel.fromMap(data);
+  //   }on  DioException catch(e){
+  //     throw ApiException.handleDioException(e);
+  //   }catch(e){
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<PhieuXuatRequestModel?> getPrevious(int id) async {
+  //   // TODO: implement getPrevious
+  //   try{
+  //     final response = await _dio.get("/Xuat/previous/$id");
+  //     if(response.statusCode == 204){
+  //       return null;
+  //     }
+  //     final data = response.data as Map<String, dynamic>;
+  //     return PhieuXuatRequestModel.fromMap(data);
+  //   }on  DioException catch(e){
+  //     throw ApiException.handleDioException(e);
+  //   }catch(e){
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Future<void> update(PhieuXuatUpdateModel x, int id) async {
@@ -147,6 +147,23 @@ class PhieuXuatRepository implements IPhieuXuatRepository{
     // TODO: implement getByPhieu
     try{
       final response = await _dio.get("/Xuat/$maPhieu");
+      if(response.statusCode == 204){
+        return null;
+      }
+      final data = response.data as Map<String, dynamic>;
+      return PhieuXuatRequestModel.fromMap(data);
+    }on  DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PhieuXuatRequestModel?> getById(int id) async {
+    // TODO: implement getById
+    try{
+      final response = await _dio.get("/Xuat/get-by-id/$id");
       if(response.statusCode == 204){
         return null;
       }

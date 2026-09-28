@@ -83,7 +83,7 @@ class _TNCNScreenState extends ConsumerState<TNCNScreen> {
             columns: [
               AppTableColumn(title: ['', 'PhanCap'], hide: true),
               AppTableColumn(
-                title: ['', 'stt'],
+                title: ['#', 'stt'],
                 width: 40,
                 readOnly: true,
                 renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

@@ -20,6 +20,8 @@ import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/ba
 import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_kqkd_screen.dart';
 import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_lctt_screen.dart';
 import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_tmtc_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/chuyenlo_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/sothue_view.dart';
 import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tncn_screen.dart';
 import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_screen.dart';
 import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_tt_screen.dart';
@@ -28,15 +30,20 @@ import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socaitk_sc
 import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socttk_screen.dart';
 import 'package:erp_client_1/features/system/auth/presentation/notifier/auth_notifier.dart';
 import 'package:erp_client_1/features/system/auth/presentation/ui/login_screen.dart';
+import 'package:erp_client_1/features/system/home/presentation/notifier/menu_notifier.dart';
 import 'package:erp_client_1/features/system/home/presentation/ui/home_screen.dart';
 import 'package:erp_client_1/features/system/home/presentation/ui/splash_screen.dart';
 import 'package:erp_client_1/features/system/home/presentation/ui/widget/shell_widget.dart';
 import 'package:erp_client_1/features/system/menu_permission/presentation/ui/menu_permission_screen.dart';
 import 'package:erp_client_1/features/system/ttdn/presentation/ui/ttdn_screen.dart';
 import 'package:erp_client_1/features/system/users/presentation/ui/user_screen.dart';
+import 'package:erp_client_1/features/taisan/ccdc/presentation/ui/ccdc_screen.dart';
+import 'package:erp_client_1/features/taisan/tscd/presentation/ui/tscd_screen.dart';
 import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_phieuthu_screen.dart';
 import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_so_quy_tg_screen.dart';
 import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_so_quy_tm_screen.dart';
+import 'package:erp_client_1/features/tienluong/bangluong/presentation/ui/bangluong_screen.dart';
+import 'package:erp_client_1/features/tienluong/chamcong/presentation/ui/chamcong_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,9 +51,6 @@ import '../../features/thuchi/report/presentation/ui/bke_phieuchi_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    onException: (context, state, router) {
-      print('object');
-    },
     initialLocation: "/",
     redirect: (context, state) {
       final auth = ref.watch(authNotifierProvider);
@@ -61,11 +65,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (isLogin) {
         return '/';
       }
+      final nameMenu = state.topRoute?.name;
+      if(nameMenu!=RouterName.home){
+        final menu = ref.read(menuDataProvider);
+        if(menu.indexWhere((e)=>e.code==nameMenu)==-1){
+          return '/';
+        }
+      }
 
       return null;
     },
     routes: [
       ShellRoute(
+
         builder: (context, state, child) {
           return ShellWidget(child: child);
         },
@@ -121,6 +133,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: "/bao-cao-thue-tam-tinh", name: RouterName.bangTNDNtt, builder: (_,_)=>TNDNttScreen()),
           GoRoute(path: "/bao-cao-thue-tndn", name: RouterName.bangTNDN, builder: (_,_)=>TNDNScreen()),
           GoRoute(path: "/bao-cao-thue-tncn", name: RouterName.bangTNCN, builder: (_,_)=>TNCNScreen()),
+          GoRoute(path: "/chuyen-lo", name: RouterName.bangChuyenLo, builder: (_,_)=>ChuyenLoScreen()),
+          GoRoute(path: "/so-thue", name: RouterName.soThue, builder: (_,_)=>SoThueView()),
+
+
+          GoRoute(path: "/tscd", name: RouterName.tscd, builder: (_,_)=>TSCDScreen()),
+          GoRoute(path: "/ccdc", name: RouterName.ccdc, builder: (_,_)=>CCDCScreen()),
+
+
+          GoRoute(path: "/cham-cong", name: RouterName.chamCong, builder: (_,_)=>ChamCongScreen()),
+          GoRoute(path: "/bang-luong", name: RouterName.bangLuong, builder: (_,_)=>BangLuongScreen()),
 
 
 

@@ -26,11 +26,12 @@ class ThuNotifier extends AsyncNotifier<PhieuThuModel?> {
   }
 
   Future<void> getPrevious() async {
-    if (state.value != null) {
+    if (state.value != null && state.value?.idTruoc!=null) {
+      final  id = state.value!.idTruoc;
       state = AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final data = await _repo.getPrevious(state.value!.id);
-        if(data == null) return state.value;
+        final data = await _repo.getById(id!);
+        if (data == null) return state.value;
         return data;
       });
     }
@@ -38,12 +39,15 @@ class ThuNotifier extends AsyncNotifier<PhieuThuModel?> {
 
   Future<void> getNext() async {
     if (state.value != null) {
+      final  id = state.value!.idSau;
       state = AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final data = await _repo.getNext(state.value!.id);
-        if(data == null) return await getLast();
-
-        return data;
+        if(id==null){
+          return await getLast();
+        }else{
+          final data = await _repo.getById(id);
+          return data;
+        }
       });
     }
   }
@@ -63,9 +67,9 @@ class ThuNotifier extends AsyncNotifier<PhieuThuModel?> {
     });
   }
 
-  Future<void> updateEdit() async {
-    state = AsyncData(state.value?.copyWith(khoa: false));
-  }
+  // Future<void> updateEdit() async {
+  //   state = AsyncData(state.value?.copyWith(khoa: false));
+  // }
 
   Future<void> getByPhieu(String phieu) async {
     state = AsyncLoading();

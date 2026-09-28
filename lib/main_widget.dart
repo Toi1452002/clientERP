@@ -12,11 +12,13 @@ class MainWidget extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
       theme: ThemeData(
-        colorScheme: ColorSchemes.lightNeutral.blue,
+        colorScheme: ColorSchemes.lightNeutral.cyan,
         density: Density.compactDensity,
+
         typography: Typography.geist(
             base: TextStyle(fontWeight: FontWeight.normal, fontFamily: 'Arial'),
-            medium: TextStyle(fontWeight: FontWeight.w500,fontSize: 13)
+            medium: TextStyle(fontWeight: FontWeight.w500,fontSize: 13),
+
         ),
       ),
     );

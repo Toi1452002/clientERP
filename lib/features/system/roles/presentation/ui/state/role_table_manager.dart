@@ -17,4 +17,7 @@ class RoleTableManager extends AppTableState<RoleModel>{
       'RoleName': TrinaCell(value: e.roleName),
     })).toList());
   }
+
+  void showLoading()=>_stateManager.setShowLoading(true);
+  void closeLoading()=>_stateManager.setShowLoading(false);
 }

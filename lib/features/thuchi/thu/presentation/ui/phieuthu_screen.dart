@@ -8,8 +8,6 @@ import 'package:erp_client_1/features/thuchi/thu/data/model/phieuthu_save_model.
 import 'package:erp_client_1/features/thuchi/thu/presentation/notifier/thu_delete_notifier.dart';
 import 'package:erp_client_1/features/thuchi/thu/presentation/notifier/thu_notifier.dart';
 import 'package:erp_client_1/features/thuchi/thu/presentation/notifier/thu_save_notifier.dart';
-import 'package:erp_client_1/features/thuchi/thu/presentation/notifier/thu_update_edit_notifier.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +18,7 @@ import '../../data/model/phieuthu_model.dart';
 
 class PhieuThuScreen extends ConsumerStatefulWidget {
   final String? phieu;
+
   const PhieuThuScreen({super.key, this.phieu});
 
   @override
@@ -34,6 +33,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
   String? tkNo;
   String? tkCo;
   bool khoa = false;
+  int id = 0;
   final txtSoPhieu = TextEditingController();
   final txtTenKH = TextEditingController();
   final txtDiaChi = TextEditingController();
@@ -43,11 +43,14 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
   final txtLyDo = TextEditingController();
   final txtSoCT = TextEditingController();
 
+
+  bool isSave = false;
+  bool isUpdateKhoa = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.phieu != null) {
@@ -56,7 +59,6 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
         ref.read(thuProvider.notifier).rebuild();
       }
     });
-
 
     ref.listenManual(thuProvider, (pre, next) {
       next.whenOrNull(
@@ -77,16 +79,6 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
       );
     });
 
-    ref.listenManual(thuUpdateEditProvider, (pre, next) {
-      next.whenOrNull(
-        data: (val) {
-          ref.read(thuProvider.notifier).updateEdit();
-        },
-        error: (e, s) {
-          showInfo(context, e.toString());
-        },
-      );
-    });
 
     ref.listenManual(thuDeleteProvider, (pre, next) {
       next.whenOrNull(
@@ -112,6 +104,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
     tkCo = pt.tkCo;
     pttt = pt.pttt;
     khoa = pt.khoa;
+    id = pt.id;
     txtSoPhieu.text = pt.phieu;
     txtTenKH.text = pt.tenKH ?? "";
     txtDiaChi.text = pt.diaChi ?? "";
@@ -125,9 +118,25 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
   }
 
   void saveSuccess() {
-    setState(() {
-      khoa = true;
-    });
+    if (isSave) {
+      setState(() {
+        khoa = true;
+        isSave = false;
+      });
+    }
+
+    if(isUpdateKhoa){
+      setState(() {
+        khoa = !khoa;
+        isUpdateKhoa = false;
+      });
+    }
+  }
+
+  void _autoSave(){
+    if(!khoa){
+      ref.read(thuSaveProvider.notifier).save(_saveModel(), id);
+    }
   }
 
   PhieuThuSaveModel _saveModel() {
@@ -141,7 +150,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
       nguoiNop: txtNguoiNop.text,
       nguoiThu: txtNguoiThu.text,
       noiDung: txtLyDo.text,
-      soCT: txtSoCT.text.isEmpty?null:txtSoCT.text,
+      soCT: txtSoCT.text.isEmpty ? null : txtSoCT.text,
       tenKH: txtTenKH.text,
       tkCo: tkCo,
       tkNo: tkNo,
@@ -152,18 +161,17 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(thuProvider);
     final saveState = ref.watch(thuSaveProvider);
-    final editState = ref.watch(thuUpdateEditProvider);
     final deleteState = ref.watch(thuDeleteProvider);
     return DialogWindows(
       width: 550,
       beforeClose: () async {
         if (!khoa && txtSoPhieu.text.isNotEmpty) {
-          showQuestion(
+          showClosePhieu(
             context,
             onPressed: () {
+              ref.read(thuSaveProvider.notifier).save(_saveModel(), id);
               Navigator.pop(context);
             },
-            text: "Chưa lưu phiếu, có chắc muốn đóng?",
           );
         } else {
           Navigator.pop(context);
@@ -174,23 +182,29 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
       child: Scaffold(
         backgroundColor: AppColor.background,
         footers: [
-          Divider(color: AppColor.border,),
+          Divider(color: AppColor.border),
           AppBar(
             // backgroundColor: Colors.gray.shade200,
             leading: [
               AppButtonPage(
                 first: () {
+                  _autoSave();
                   ref.read(thuProvider.notifier).getFirst();
                 },
                 last: () {
+                  _autoSave();
                   ref.read(thuProvider.notifier).rebuild();
                 },
                 back: () {
+                  _autoSave();
                   ref.read(thuProvider.notifier).getPrevious();
                 },
                 next: () {
+                  _autoSave();
                   ref.read(thuProvider.notifier).getNext();
                 },
+                firstText: state.hasValue ? "${state.value?.stt ?? '0'}" : '0',
+                secondText: state.hasValue ? "${state.value?.tongStt ?? '0'}" : '0',
               ),
             ],
             // trailing: [
@@ -204,11 +218,12 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
             // backgroundColor: Colors.gray.shade200,
             leading: [
               AppNewButton(
-                text: 'Thêm',
+                text: 'Phiếu mới',
                 onPressed: () {
+                  _autoSave();
                   ref.read(thuProvider.notifier).addPhieu();
                 },
-                enabled: khoa || state.value == null,
+                // enabled: khoa || state.value == null,
               ),
               Gap(5),
               AppSaveButton(
@@ -216,6 +231,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                 onPressed: () {
                   final data = state.value;
                   if (data != null) {
+                    isSave = true;
                     ref.read(thuSaveProvider.notifier).save(_saveModel(), data.id);
                   }
                 },
@@ -226,7 +242,9 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                 onPressed: () {
                   final data = state.value;
                   if (data != null) {
-                    ref.read(thuUpdateEditProvider.notifier).updateEdit(data.id);
+                    ref.read(thuSaveProvider.notifier).updateKhoa(data.id);
+                    isUpdateKhoa = true;
+                    // ref.read(thuUpdateEditProvider.notifier).updateEdit(data.id);
                     // ref.read(thuProvider.notifier).updateEdit(data.id);
                   }
                 },
@@ -250,14 +268,13 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
               AppPrintButton(enabled: khoa),
             ],
           ),
-          Divider(color: AppColor.border,),
-
+          Divider(color: AppColor.border),
         ],
         child: state.when(
           data: (val) {
-            if (val == null) return Center(child: Text('Chưa có phiếu thu'));
-            return LoadingOverlay(
-              isLoading: saveState.isLoading || editState.isLoading || deleteState.isLoading,
+            if (val == null) return Center(child: Text('Chưa có phiếu thu',style: TextStyle(color: Colors.gray),));
+            return AppLoadingOverlay(
+              isLoading: saveState.isLoading || deleteState.isLoading,
               child: Container(
                 // margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(10),
@@ -268,7 +285,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110, 2: 90},
                       items: [
-                        Text('Ngày thu'),
+                        Text('Ngày thu').medium,
                         AppDateField(
                           enabled: !khoa,
                           value: ngay,
@@ -280,7 +297,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
 
                             // else{
                             //   showInfo(context, "Ngày không hợp lệ");
-                            //   ngay = ngay;
+                            //   ngay = ngay    ;
                             // }
                             // }else{
                             // showInfo(context, "Ngày không hợp lệ");
@@ -291,7 +308,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                           // await _controller.updateNgay(val!,user);
                           // },
                         ),
-                        Row(children: [Gap(20), Text('Số phiếu')]),
+                        Row(children: [Gap(20), Text('Số phiếu').medium]),
                         AppTextField(
                           readOnly: true,
                           fontWeight: FontWeight.w500,
@@ -303,7 +320,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110, 2: 90},
                       items: [
-                        Text('Kiểu thu'),
+                        Text('Kiểu thu').medium,
                         NvuThuCombobox(
                           enabled: !khoa,
                           selected: maTC,
@@ -313,14 +330,12 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                             });
                           },
                         ),
-                        Row(children: [Gap(20), Text('Mã khách')]),
+                        Row(children: [Gap(20), Text('Mã khách').medium]),
                         KhachCombobox(
                           enabled: !khoa,
                           selected: maKH,
                           onChanged: (val) {
-                            final k = ref
-                                .read(khachLookupProvider(LoaiKH.Khach))
-                                .value;
+                            final k = ref.read(khachLookupProvider(LoaiKH.Khach)).value;
                             final tmp = k?.firstWhereOrNull((e) => e.maKH == val);
                             if (tmp != null) {
                               txtTenKH.text = tmp.tenKH;
@@ -340,7 +355,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110},
                       items: [
-                        Text('Tên khách'),
+                        Text('Tên khách').medium,
                         AppTextField(
                           enabled: !khoa,
                           controller: txtTenKH,
@@ -354,7 +369,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110},
                       items: [
-                        Text('Địa chỉ'),
+                        Text('Địa chỉ').medium,
                         AppTextField(
                           enabled: !khoa,
                           controller: txtDiaChi,
@@ -368,7 +383,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110},
                       items: [
-                        Text('Người nộp tiền'),
+                        Text('Người nộp tiền').medium,
                         AppTextField(
                           enabled: !khoa,
                           controller: txtNguoiNop,
@@ -382,14 +397,14 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110},
                       items: [
-                        Text('Người thu tiền'),
+                        Text('Người thu tiền').medium,
                         AppTextField(controller: txtNguoiThu, enabled: !khoa),
                       ],
                     ),
                     AppRow(
                       columnWidths: {0: 110, 1: 120, 2: 50, 4: 50},
                       items: [
-                        Text('Số tiền'),
+                        Text('Số tiền').medium,
                         AppTextField(
                           enabled: !khoa,
                           // enabled: !_controller.khoa,
@@ -401,7 +416,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                             // await _controller.updateSoTien(_controller.txtSoTien.text,user);
                           },
                         ),
-                        Row(children: [Gap(20), Text('Nợ')]),
+                        Row(children: [Gap(20), Text('Nợ').medium]),
                         TaiKhoanXL0Combobox(
                           enabled: !khoa,
                           selected: tkNo,
@@ -411,7 +426,7 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                             });
                           },
                         ),
-                        Row(children: [Gap(20), Text('Có')]),
+                        Row(children: [Gap(20), Text('Có').medium]),
                         TaiKhoanXL0Combobox(
                           enabled: !khoa,
                           selected: tkCo,
@@ -426,37 +441,28 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
                     AppRow(
                       columnWidths: {0: 110},
                       items: [
-                        Text('Lý do nộp'),
+                        Text('Lý do nộp').medium,
                         AppTextField(
                           enabled: !khoa,
                           controller: txtLyDo,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateNoiDung(_controller.txtLyDo.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
                         ),
                       ],
                     ),
                     AppRow(
                       columnWidths: {0: 110, 2: 90},
                       items: [
-                        Text('Số chứng từ'),
+                        Text('Số chứng từ').medium,
                         AppTextField(
                           enabled: !khoa,
                           controller: txtSoCT,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateSoCT(_controller.txtSoCT.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
                         ),
-                        Row(children: [Gap(20), Text('PTTT')]),
+                        Row(children: [Gap(20), Text('PTTT').medium]),
                         AppCombobox(
                           // enabled: !_controller.khoa,
                           enabledClear: false,
                           value: pttt,
                           enabled: !khoa,
                           onChanged: (val) async {
-                            // await _controller.updatePTTT(val,user);
                             setState(() {
                               pttt = val;
                             });

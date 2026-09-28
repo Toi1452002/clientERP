@@ -19,34 +19,37 @@ class DvtNotifier extends AsyncNotifier<List<DvtModel>> {
     return await _repo.getAll();
   }
 
-  Future<void> addDvt(String dvt) async {
-    try {
-      await _repo.add(dvt);
-      state = const AsyncLoading();
-      state = await AsyncValue.guard(() async {
-        return await _repo.getAll();
+
+  Future<void> changedRow(DvtModel model) async {
+    final current = state.value ?? [];
+
+    if (current.indexWhere((e) => e.id == model.id) == -1) {
+      state = AsyncData([...current, model]);
+    } else {
+      final newList = current.map((e) {
+        if (e.id == model.id) {
+          return model;
+        }
+
+        return e;
       });
-    } catch (e) {
-      rethrow;
+      state = AsyncData(newList.toList());
     }
   }
 
-  Future<void> updateDvt(int id, String dvt) async {
-    try {
-      await _repo.update(id, dvt);
-      state = AsyncData(state.value!.map((e) => e.id == id ? e.copyWith(dvt: dvt) : e).toList());
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Future<void> updateDvt(int id, String dvt) async {
+  //   try {
+  //     await _repo.update(id, dvt);
+  //     state = AsyncData(state.value!.map((e) => e.id == id ? e.copyWith(dvt: dvt) : e).toList());
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   Future<void> delete(int id) async {
-    try {
-      await _repo.delete(id);
+    final result = await _repo.delete(id);
+    if (result > 0) {
       state = AsyncData(state.value!.where((e) => e.id != id).toList());
-
-    } catch (e) {
-      rethrow;
     }
   }
 }

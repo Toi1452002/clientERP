@@ -48,15 +48,15 @@ class NhanVienRepository implements INhanVienRepository {
   }
 
   @override
-  Future<int> add(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC) async {
+  Future<NhanVienViewModel> add(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC) async {
     // TODO: implement add
     try {
       final response = await _dio.post(
         "/NhanVien",
         data: {'nhanVien': nv.toMap(), 'pcgt': lstPC.map((e) => e.toMap()).toList()},
       );
-      final data = response.data;
-      return data;
+      final data = response.data as Map<String, dynamic>;
+      return NhanVienViewModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -79,15 +79,15 @@ class NhanVienRepository implements INhanVienRepository {
   }
 
   @override
-  Future<int> update(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC, int nhanVienId) async {
+  Future<NhanVienViewModel> update(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC, int nhanVienId) async {
     // TODO: implement update
     try {
       final response = await _dio.put(
         "/NhanVien/$nhanVienId",
         data: {'nhanVien': nv.toMap(), 'pcgt': lstPC.map((e) => e.toMap()).toList()},
       );
-      final data = response.data;
-      return data;
+      final data = response.data as Map<String, dynamic>;
+      return NhanVienViewModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {

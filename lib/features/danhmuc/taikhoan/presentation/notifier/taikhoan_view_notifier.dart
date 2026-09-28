@@ -16,10 +16,47 @@ class TaiKhoanViewNotifier extends AsyncNotifier<List<TaiKhoanViewModel>>{
     return await _repo.getView();
   }
 
+  void add(TaiKhoanViewModel model) {
+    state = AsyncLoading();
+    final current = state.value ?? [];
 
-  Future<int> delete(int id) async{
-    return await _repo.delete(id);
+    state = AsyncData([...current,model]);
+
+
+    // ref.invalidate(hangHoaLookupProvider);
   }
+
+  void updateRow(TaiKhoanViewModel model){
+    state = AsyncLoading();
+    final currentList = state.value ?? [];
+    final newList = currentList.map((item) {
+      if (item.id == model.id) {
+        return model;
+      }
+      return item;
+    }).toList();
+
+    state = AsyncData(newList);
+    // ref.invalidate(hangHoaLookupProvider);
+  }
+
+  Future<void> delete(int id) async {
+    state = AsyncLoading();
+    final result = await _repo.delete(id);
+
+    final currentList = state.value ?? [];
+    if(result>0){
+      currentList.removeWhere((e)=>e.id==id);
+    }
+
+    state = AsyncData(currentList);
+    // ref.invalidate(hangHoaLookupProvider);
+  }
+
+
+  // Future<int> delete(int id) async{
+  //   return await _repo.delete(id);
+  // }
 
 
 }

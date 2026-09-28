@@ -78,39 +78,39 @@ class ChiRepository implements IChiRepository{
     }
   }
 
-  @override
-  Future<PhieuChiModel?> getNext(int id) async {
-    // TODO: implement getNext
-    try {
-      final response = await _dio.get("/Chi/next/$id");
-      if(response.statusCode == 200){
-        final data = response.data as Map<String, dynamic>;
-        return PhieuChiModel.fromMap(data);
-      }
-      return null;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<PhieuChiModel?> getPrevious(int id) async {
-    // TODO: implement getPrevious
-    try {
-      final response = await _dio.get("/Chi/previous/$id");
-      if(response.statusCode == 200){
-        final data = response.data as Map<String, dynamic>;
-        return PhieuChiModel.fromMap(data);
-      }
-      return null;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // @override
+  // Future<PhieuChiModel?> getNext(int id) async {
+  //   // TODO: implement getNext
+  //   try {
+  //     final response = await _dio.get("/Chi/next/$id");
+  //     if(response.statusCode == 200){
+  //       final data = response.data as Map<String, dynamic>;
+  //       return PhieuChiModel.fromMap(data);
+  //     }
+  //     return null;
+  //   } on DioException catch (e) {
+  //     throw ApiException.handleDioException(e);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<PhieuChiModel?> getPrevious(int id) async {
+  //   // TODO: implement getPrevious
+  //   try {
+  //     final response = await _dio.get("/Chi/previous/$id");
+  //     if(response.statusCode == 200){
+  //       final data = response.data as Map<String, dynamic>;
+  //       return PhieuChiModel.fromMap(data);
+  //     }
+  //     return null;
+  //   } on DioException catch (e) {
+  //     throw ApiException.handleDioException(e);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Future<int> onSave(PhieuChiSaveModel pc, int id) async {
@@ -145,6 +145,23 @@ class ChiRepository implements IChiRepository{
     // TODO: implement getByPhieu
     try {
       final response = await _dio.get("/Chi/$phieu");
+      if(response.statusCode == 200){
+        final data = response.data as Map<String, dynamic>;
+        return PhieuChiModel.fromMap(data);
+      }
+      return null;
+    } on DioException catch (e) {
+      throw ApiException.handleDioException(e);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PhieuChiModel?> getById(int id) async{
+    // TODO: implement getById
+    try {
+      final response = await _dio.get("/Chi/get-by-id/$id");
       if(response.statusCode == 200){
         final data = response.data as Map<String, dynamic>;
         return PhieuChiModel.fromMap(data);

@@ -1,4 +1,3 @@
-import 'package:erp_client_1/features/thuchi/report/presentation/notifier/bke_so_quy_tg_notifier.dart';
 import 'package:erp_client_1/features/thuchi/report/presentation/ui/state/bke_so_quy_table_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,10 +55,7 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
         data: (val) {
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColor.border)
-                ),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [
                     AppPrintButton(),
@@ -72,10 +68,7 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
               )
             ],
             footers: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.border)
-                ),
+              AppContainerBorder(
                 child: AppBar(
                   trailing: [
                     Text('Tồn cuối kỳ: '),
@@ -93,7 +86,7 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   showFilter: false,

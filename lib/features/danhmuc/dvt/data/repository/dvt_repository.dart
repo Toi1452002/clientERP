@@ -30,10 +30,12 @@ class DvtRepository implements IDvtRepository {
   }
 
   @override
-  Future<void> add(String dvt) async {
+  Future<DvtModel> add(String dvt) async {
     // TODO: implement add
     try {
-      await _dio.post("/dvt", queryParameters: {'dvt': dvt});
+     final response =  await _dio.post("/dvt", queryParameters: {'dvt': dvt});
+     final data = response.data as Map<String, dynamic>;
+     return DvtModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -42,10 +44,11 @@ class DvtRepository implements IDvtRepository {
   }
 
   @override
-  Future<void> delete(int id) async {
+  Future<int> delete(int id) async {
     // TODO: implement delete
     try {
-      await _dio.delete("/dvt/$id");
+      final response = await _dio.delete("/dvt/$id");
+      return response.data;
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -54,9 +57,11 @@ class DvtRepository implements IDvtRepository {
   }
 
   @override
-  Future<void> update(int id, String dvt) async{
+  Future<DvtModel> update(int id, String dvt) async{
     try {
-      await _dio.patch("/dvt/$id",queryParameters: {'dvt': dvt});
+      final response = await _dio.patch("/dvt/$id",queryParameters: {'dvt': dvt});
+      final data = response.data as Map<String, dynamic>;
+      return DvtModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {

@@ -22,34 +22,44 @@ class RoleViewNotifier extends AsyncNotifier<List<RoleModel>> {
     return await _repo.getView();
   }
 
-  Future<void> add(String roleName) async {
-    try {
-      await _repo.add(roleName);
-      state = const AsyncLoading();
-      state = await AsyncValue.guard(() async {
-        return build();
+  Future<void> changedRow(RoleModel model) async {
+    final current = state.value ?? [];
+
+    if (current.indexWhere((e) => e.id == model.id) == -1) {
+      state = AsyncData([...current, model]);
+    } else {
+      final newList = current.map((e) {
+        if (e.id == model.id) {
+          return model;
+        }
+
+        return e;
       });
-    } catch (e) {
-      rethrow;
+      state = AsyncData(newList.toList());
     }
   }
 
-  Future<void> updateRoleName(int id, String roleName) async {
-    try {
-      await _repo.update(roleName, id);
-      state = AsyncData(state.value!.map((e) => e.id == id ? e.copyWith(roleName: roleName) : e).toList());
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Future<void> updateRoleName(int id, String roleName) async {
+  //   // try {
+  //   state = AsyncLoading();
+  //   final result = await _repo.update(roleName, id);
+  //   final current = state.value ?? [];
+  //
+  //   // } catch (e) {
+  //   //   rethrow;
+  //   // }
+  // }
 
   Future<void> delete(int id) async {
-    try {
-      await _repo.delete(id);
+    // try {
+    // state = AsyncLoading();
+    final result = await _repo.delete(id);
+    if (result > 0) {
       state = AsyncData(state.value!.where((e) => e.id != id).toList());
-
-    } catch (e) {
-      rethrow;
     }
+
+    // } catch (e) {
+    //   rethrow;
+    // }
   }
 }

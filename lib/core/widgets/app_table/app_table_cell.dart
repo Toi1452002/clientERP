@@ -2,6 +2,8 @@ import 'package:flutter/material.dart' as mt;
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../constain/app_color.dart';
+
 class AppTableCell{
   AppTableCell._();
 
@@ -32,19 +34,27 @@ class AppTableCell{
     child: Icon(PhosphorIcons.pencilSimple, color: enabled ? Colors.green.shade700 : Colors.gray),
   );
 }
-
-CustomTitle(String s1, String s2) {
+Widget CustomTitle(String text) {
   return Container(
-    alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: Colors.gray.shade200,
-      border: Border(right: BorderSide(color: Colors.black, width: .5)),
+      color: Colors.gray.shade100,
+      border: Border(right: BorderSide(color: AppColor.border300)),
     ),
-    child: Basic(
-      subtitleAlignment: Alignment.center,
-      titleAlignment: Alignment.center,
-      title: Text('$s1\n$s2', textAlign: TextAlign.center),
-      // subtitle: Text(s2),
-    ),
+    child: Center(child: Text(text, textAlign: TextAlign.center, softWrap: true).medium),
   );
 }
+// CustomTitle(String s1, String s2) {
+//   return Container(
+//     alignment: Alignment.center,
+//     decoration: BoxDecoration(
+//       color: Colors.gray.shade200,
+//       border: Border(right: BorderSide(color: Colors.black, width: .5)),
+//     ),
+//     child: Basic(
+//       subtitleAlignment: Alignment.center,
+//       titleAlignment: Alignment.center,
+//       title: Text('$s1\n$s2', textAlign: TextAlign.center),
+//       // subtitle: Text(s2),
+//     ),
+//   );
+// }

@@ -49,7 +49,7 @@ class _BangCDPSScreenState extends ConsumerState<BangCDPSScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(bangCDPSProvider);
     final stateLuuSD = ref.watch(luuSoDuNotifier);
-    return LoadingOverlay(
+    return AppLoadingOverlay(
       isLoading: stateLuuSD.isLoading,
       child: Scaffold(
         footers: [AppFooter()],

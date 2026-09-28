@@ -1,8 +1,5 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_button.dart';
-import 'package:erp_client_1/core/widgets/app_header.dart';
-import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
-import 'package:erp_client_1/core/widgets/app_tngay_dngay.dart';
+import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/kho/presentation/notifier/bkehangnhap_notifier.dart';
 import 'package:erp_client_1/features/kho/presentation/ui/state/bke_nhapxuat_table_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -28,14 +25,15 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
       footers: [AppFooter()],
       headers: [
         AppHeader(title: "Bảng kê hàng nhập"),
-        AppBar(
-          leading: [
-            AppTngayDngay(onSubmit: (t,d){
-              ref.read(bKeHangNhapProvider.notifier).get(t, d);
-            },)
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              AppTngayDngay(onSubmit: (t,d){
+                ref.read(bKeHangNhapProvider.notifier).get(t, d);
+              },)
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: Padding(
         padding: EdgeInsets.all(0),
@@ -43,8 +41,7 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
           data: (val) {
             return Scaffold(
               headers: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+                AppContainerBorder(
                   child: AppBar(
                     leading: [
                       AppPrintButton()
@@ -59,7 +56,7 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
                 },
                 columns: [
                   AppTableColumn(
-                    title: ['', 'stt'],
+                    title: ['#', 'stt'],
                     width: 35,
                     readOnly: true,
                     showFilter: false,

@@ -19,36 +19,27 @@ class NhomHangNotifier extends AsyncNotifier<List<NhomHangModel>> {
     return await _repo.getAll();
   }
 
+  Future<void> changedRow(NhomHangModel model) async {
+    final current = state.value ?? [];
 
-  Future<void> add(String value) async {
-    try {
-      await _repo.add(value);
-      state = const AsyncLoading();
-      state = await AsyncValue.guard(() async {
-        return await _repo.getAll();
+    if (current.indexWhere((e) => e.id == model.id) == -1) {
+      state = AsyncData([...current, model]);
+    } else {
+      final newList = current.map((e) {
+        if (e.id == model.id) {
+          return model;
+        }
+
+        return e;
       });
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-
-  Future<void> updateNhomHang(int id, String value) async {
-    try {
-      await _repo.update(id, value);
-      state = AsyncData(state.value!.map((e) => e.id == id ? e.copyWith(nhomHang: value) : e).toList());
-    } catch (e) {
-      rethrow;
+      state = AsyncData(newList.toList());
     }
   }
 
   Future<void> delete(int id) async {
-    try {
-      await _repo.delete(id);
+    final result = await _repo.delete(id);
+    if (result > 0) {
       state = AsyncData(state.value!.where((e) => e.id != id).toList());
-
-    } catch (e) {
-      rethrow;
     }
   }
 }

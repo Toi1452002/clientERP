@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:erp_client_1/core/data/network/network_service.dart';
 import 'package:erp_client_1/features/system/users/data/model/user_add_model.dart';
+import 'package:erp_client_1/features/system/users/data/model/user_changed_info_model.dart';
 import 'package:erp_client_1/features/system/users/data/model/user_edit_model.dart';
 import 'package:erp_client_1/features/system/users/data/model/user_update_model.dart';
 import 'package:erp_client_1/features/system/users/data/model/user_view_model.dart';
@@ -21,10 +22,12 @@ class UserRepository implements IUserRepository {
   UserRepository(this._dio);
 
   @override
-  Future<void> add(UserAddModel user) async {
+  Future<UserViewModel> add(UserAddModel user) async {
     // TODO: implement add
     try {
-      await _dio.post("/user", data: user.toMap());
+      final response = await _dio.post("/user", data: user.toMap());
+      final data = response.data as Map<String, dynamic>;
+      return UserViewModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -74,10 +77,12 @@ class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<void> update(UserUpdateModel user, int id) async {
+  Future<UserViewModel> update(UserUpdateModel user, int id) async {
     // TODO: implement update
     try {
-      await _dio.put("/user/$id", data: user.toMap());
+      final response = await _dio.put("/user/$id", data: user.toMap());
+      final data = response.data as Map<String, dynamic>;
+      return UserViewModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -94,6 +99,19 @@ class UserRepository implements IUserRepository {
       throw ApiException.handleDioException(e);
     } catch (e) {
       throw Exception("Unknown error");
+    }
+  }
+
+  @override
+  Future<int> changeInfoUser(UserChangedInfoModel model) async{
+    // TODO: implement changeInfoUser
+    try {
+      final response = await _dio.put("/user/change-info", data: model.toMap());
+      return response.data;
+    } on DioException catch (e) {
+      throw ApiException.handleDioException(e);
+    } catch (e) {
+      rethrow;
     }
   }
 }

@@ -27,6 +27,9 @@ class MenuPermissionTableManager extends AppTableState<MenuPermissionModel> {
     );
   }
 
+  void showLoading()=>_stateManager.setShowLoading(true);
+  void closeLoading()=>_stateManager.setShowLoading(false);
+
   List<int> listKChoPhep() {
     final x = _stateManager.rows.where((e) => e.cells['Status']?.value == false).toList();
     final lstJson = x.map((e) => e.toJson()).toList();

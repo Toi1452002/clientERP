@@ -4,7 +4,6 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../core/utils/num_helper.dart';
-import '../../../../../core/widgets/app_alert.dart';
 import '../../../../../core/widgets/widget.dart';
 import '../notifier/bang_tmp_bctc_notifier.dart';
 import '../notifier/luusodu_notifier.dart';
@@ -42,7 +41,7 @@ class _BangKQKDScreenState extends ConsumerState<BangKQKDScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(bangTmpCBTCProvider);
     final stateSave = ref.watch(luuNamTruocNotifier);
-    return LoadingOverlay(
+    return AppLoadingOverlay(
       isLoading: stateSave.isLoading,
       child: Scaffold(
         footers: [AppFooter()],
@@ -93,7 +92,7 @@ class _BangKQKDScreenState extends ConsumerState<BangKQKDScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

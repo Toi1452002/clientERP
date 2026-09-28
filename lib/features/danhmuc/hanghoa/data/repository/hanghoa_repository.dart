@@ -22,16 +22,18 @@ class HangHoaRepository implements IHangHoaRepository{
   HangHoaRepository(this._dio);
   
   @override
-  Future<List<HangHoaViewModel>> getView() async {
+  Future<List<HangHoaViewModel>> getView({bool? isActive}) async {
     // TODO: implement getView
     try{
-      final response = await _dio.get("/HangHoa");
+      final response = await _dio.get("/HangHoa", queryParameters: {
+        'isActive': isActive
+      });
       final data = response.data as List;
       return data.map((e)=>HangHoaViewModel.fromMap(e)).toList();
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 
@@ -45,21 +47,21 @@ class HangHoaRepository implements IHangHoaRepository{
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 
   @override
-  Future<int> add(HangHoaModel hangHoa) async {
+  Future<HangHoaViewModel> add(HangHoaModel hangHoa) async {
     // TODO: implement add
     try{
       final response = await _dio.post("/HangHoa",data: hangHoa.toMap());
-      final data = response.data;
-      return data;
+      final data = response.data as Map<String, dynamic>;
+      return HangHoaViewModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 
@@ -73,31 +75,34 @@ class HangHoaRepository implements IHangHoaRepository{
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 
   @override
-  Future<void> update(HangHoaModel hangHoa, int id) async{
+  Future<HangHoaViewModel> update(HangHoaModel hangHoa, int id) async{
     // TODO: implement update
     try{
-      await _dio.put("/HangHoa/$id",data: hangHoa.toMap());
+     final response = await _dio.put("/HangHoa/$id",data: hangHoa.toMap());
+     final data = response.data as Map<String, dynamic>;
+     return HangHoaViewModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 
   @override
-  Future<void> delete(int id) async {
+  Future<int> delete(int id) async {
     // TODO: implement delete
     try{
-      await _dio.delete("/HangHoa/$id");
+     final response =  await _dio.delete("/HangHoa/$id");
+     return response.data;
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
-      throw ApiException('Unknown error');
+      rethrow;
     }
   }
 

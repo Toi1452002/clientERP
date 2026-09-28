@@ -1,5 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:erp_client_1/core/data/network/network_config.dart';
+import 'package:erp_client_1/core/widgets/app_dialog.dart';
 import 'package:erp_client_1/features/system/ttdn/presentation/notifier/ttdn_notifier.dart';
+import 'package:erp_client_1/features/system/users/presentation/dialog/user_change_info_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -31,7 +34,7 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('PHẦN MỀM KẾ TOÁN').h4(),
-                  Text('PMN-KT Copyright by RBG - version 1.0').large(),
+                  Text('PMN-KT Copyright by RBG - version ${NetworkConfig.version}').large(),
                   Text('Tên: $tenCty').medium(),
                   Text('ĐC:  $diaChi').medium(),
                   // Gap(10),
@@ -45,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
                       OutlineButton(
                         child: Text('Thay đổi tài khoản người dùng'),
                         onPressed: () {
-                          // showDoiTaiKhoan(context);
+                          showAppDialog(context, child: UserChangeInfoDialog());
                         },
                       ),
                       // OutlineButton(

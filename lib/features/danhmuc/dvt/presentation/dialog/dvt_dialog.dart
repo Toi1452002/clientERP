@@ -1,5 +1,5 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_notifier.dart';
+import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_edit_notifier.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,24 +16,27 @@ class DvtDialog extends ConsumerStatefulWidget {
 class DonViTinhScreenState extends ConsumerState<DvtDialog> {
   final txtDVT = TextEditingController();
 
-  Future<void> onSubmit(String dvt) async {
-    try {
-      if (dvt.isEmpty) return;
-      await ref.read(dvtProvider.notifier).addDvt(txtDVT.text);
-      txtDVT.clear();
-    } catch (e) {
-      if (context.mounted) showInfo(context, e.toString());
-    }
+  void onSubmit(String dvt)  {
+    ref.read(dvtEditProvider.notifier).add(dvt);
+    txtDVT.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(dvtEditProvider);
     return DialogWindows(
       width: 330,
       height: 500,
       title: "DANH SÁCH ĐƠN VỊ TÍNH",
       child: Scaffold(
         backgroundColor: AppColor.background,
+        footers: [
+          AppFooter(
+            leading: [
+              if(state.hasError) Text(state.error.toString(),style: TextStyle(color: Colors.red),)
+            ],
+          )
+        ],
         child: Scaffold(headers: [
           Container(
 
@@ -45,11 +48,9 @@ class DonViTinhScreenState extends ConsumerState<DvtDialog> {
                 AppTextField(
                   hintText: 'Nhập đơn vị tính',
                   controller: txtDVT,
-                  onSubmitted: (val) async {
-                    await onSubmit(val);
-                  },
+                  onSubmitted: onSubmit,
                 ),
-                AppAddButton(onPressed: () async => await onSubmit(txtDVT.text.trim())),
+                AppAddButton(onPressed: ()  =>  onSubmit(txtDVT.text.trim())),
               ],
             ),
           )

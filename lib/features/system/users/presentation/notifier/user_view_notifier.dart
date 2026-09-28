@@ -23,8 +23,36 @@ class UserViewNotifier extends AsyncNotifier<List<UserViewModel>> {
     return await _repo.getView();
   }
 
-  Future<bool> delete(int id) async {
+  Future<void> delete(int id) async {
+    state = AsyncLoading();
     final result = await _repo.delete(id);
-    return result > 0;
+
+    final currentList = state.value ?? [];
+    if(result>0){
+      currentList.removeWhere((e)=>e.id==id);
+    }
+
+    state = AsyncData(currentList);
+
+  }
+
+  void add(UserViewModel model) {
+    state = AsyncLoading();
+    final current = state.value ?? [];
+    state = AsyncData([...current, model]);
+  }
+
+  void updateRow(UserViewModel model){
+    state = AsyncLoading();
+    final currentList = state.value ?? [];
+
+    final newList = currentList.map((item) {
+      if (item.id == model.id) {
+        return model;
+      }
+      return item;
+    }).toList();
+
+    state = AsyncData(newList);
   }
 }

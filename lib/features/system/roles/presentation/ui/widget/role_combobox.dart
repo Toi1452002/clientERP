@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class RoleCombobox extends ConsumerWidget {
   final int? selectId;
   final void Function(dynamic)? onChanged;
-
-  const RoleCombobox({super.key, this.onChanged, this.selectId});
+  final void Function()? onAdd;
+  const RoleCombobox({super.key, this.onChanged, this.selectId, this.onAdd});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,6 +15,7 @@ class RoleCombobox extends ConsumerWidget {
     return state.when(
       data: (value) {
         return AppCombobox(
+          onAdd: onAdd,
           enabledClear: false,
           items: value.map((e) => ComboboxItem(value: e.id, text: [e.roleName])).toList(),
           onChanged: onChanged,

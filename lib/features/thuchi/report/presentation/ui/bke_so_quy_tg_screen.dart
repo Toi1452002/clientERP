@@ -36,28 +36,26 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
       backgroundColor: AppColor.background,
       headers: [
         AppHeader(title: "Sổ chi tiết quỹ tiền gửi"),
-        AppBar(
-          leading: [
-
-            AppTngayDngay(
-              onSubmit: (tn, dn){
-                ref.read(bkeSoQuyTGProvider.notifier).get(tn, dn);
-                tN = tn;
-                dN = dN;
-              },
-            ),
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+          
+              AppTngayDngay(
+                onSubmit: (tn, dn){
+                  ref.read(bkeSoQuyTGProvider.notifier).get(tn, dn);
+                  tN = tn;
+                  dN = dN;
+                },
+              ),
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.border)
-                ),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [
                     AppPrintButton(),
@@ -70,10 +68,7 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
               )
             ],
             footers: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.border)
-                ),
+              AppContainerBorder(
                 child: AppBar(
                   trailing: [
                     Text('Tồn cuối kỳ: '),
@@ -91,7 +86,7 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   showFilter: false,

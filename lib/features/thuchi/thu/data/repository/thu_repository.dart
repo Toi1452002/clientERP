@@ -107,45 +107,62 @@ class ThuRepository implements IThuRepository {
     }
   }
 
-  @override
-  Future<PhieuThuModel?> getNext(int id) async {
-    // TODO: implement getNext
-    try {
-      final response = await _dio.get("/Thu/next/$id");
-      if(response.statusCode == 200){
-        final data = response.data as Map<String, dynamic>;
-        return PhieuThuModel.fromMap(data);
-      }
-      return null;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<PhieuThuModel?> getPrevious(int id) async{
-    // TODO: implement getPrevious
-    try {
-      final response = await _dio.get("/Thu/previous/$id");
-      if(response.statusCode == 200){
-        final data = response.data as Map<String, dynamic>;
-        return PhieuThuModel.fromMap(data);
-      }
-      return null;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // @override
+  // Future<PhieuThuModel?> getNext(int id) async {
+  //   // TODO: implement getNext
+  //   try {
+  //     final response = await _dio.get("/Thu/next/$id");
+  //     if(response.statusCode == 200){
+  //       final data = response.data as Map<String, dynamic>;
+  //       return PhieuThuModel.fromMap(data);
+  //     }
+  //     return null;
+  //   } on DioException catch (e) {
+  //     throw ApiException.handleDioException(e);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<PhieuThuModel?> getPrevious(int id) async{
+  //   // TODO: implement getPrevious
+  //   try {
+  //     final response = await _dio.get("/Thu/previous/$id");
+  //     if(response.statusCode == 200){
+  //       final data = response.data as Map<String, dynamic>;
+  //       return PhieuThuModel.fromMap(data);
+  //     }
+  //     return null;
+  //   } on DioException catch (e) {
+  //     throw ApiException.handleDioException(e);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Future<PhieuThuModel?> getByPhieu(String phieu) async {
     // TODO: implement getByPhieu
     try {
       final response = await _dio.get("/Thu/$phieu");
+      if(response.statusCode == 200){
+        final data = response.data as Map<String, dynamic>;
+        return PhieuThuModel.fromMap(data);
+      }
+      return null;
+    } on DioException catch (e) {
+      throw ApiException.handleDioException(e);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PhieuThuModel?> getById(int id) async{
+    // TODO: implement getById
+    try {
+      final response = await _dio.get("/Thu/get-by-id/$id");
       if(response.statusCode == 200){
         final data = response.data as Map<String, dynamic>;
         return PhieuThuModel.fromMap(data);

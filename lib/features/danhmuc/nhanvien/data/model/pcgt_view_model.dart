@@ -24,3 +24,26 @@ class PCGTRequestModel {
     return {'maPC': maPC, 'soTieuChuan': soTieuChuan};
   }
 }
+
+
+class PCGTViewCTModel{
+  final String moTa;
+  final num soTieuChuan;
+  final num soThucTe;
+
+  const PCGTViewCTModel({
+    required this.moTa,
+    required this.soTieuChuan,
+    required this.soThucTe,
+  });
+
+
+  factory PCGTViewCTModel.fromMap(Map<String, dynamic> map) {
+    return PCGTViewCTModel(
+      moTa: map['moTa'] ,
+      soTieuChuan: map['soTieuChuan'],
+      soThucTe: map['soThucTe'],
+    );
+  }
+
+}

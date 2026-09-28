@@ -1,3 +1,4 @@
+import 'package:erp_client_1/features/danhmuc/khach/presentation/dialog/khach_form_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +11,8 @@ class NhaCungCombobx extends ConsumerWidget {
   final void Function(dynamic)? onChanged;
   final bool enabled;
   final bool clear;
-  const NhaCungCombobx({super.key, this.selected, this.onChanged, this.enabled=true, this.clear = true});
+  final bool showAdd;
+  const NhaCungCombobx({super.key, this.selected, this.onChanged, this.enabled=true, this.clear = true, this.showAdd = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,6 +21,9 @@ class NhaCungCombobx extends ConsumerWidget {
       skipLoadingOnRefresh: false,
       data: (value) {
         return AppCombobox(
+          onAdd:!showAdd?null: (){
+            showAppDialog(context, child: KhachFormDialog());
+          },
           noSearch: false,
           enabled: enabled,
           onChanged: onChanged,

@@ -9,13 +9,13 @@ import '../model/loaihang_model.dart';
 
 
 abstract interface class IHangHoaRepository{
-  Future<List<HangHoaViewModel>> getView();
+  Future<List<HangHoaViewModel>> getView({bool? isActive});
 
   Future<List<LoaiHangModel>> getLoaiHang();
 
-  Future<int> add(HangHoaModel hangHoa);
+  Future<HangHoaViewModel> add(HangHoaModel hangHoa);
   Future<HangHoaModel> getById(int id);
-  Future<void> update(HangHoaModel hangHoa, int id);
-  Future<void> delete(int id);
+  Future<HangHoaViewModel> update(HangHoaModel hangHoa, int id);
+  Future<int> delete(int id);
   Future<List<HangHoaLookupModel>> getLookup();
 }

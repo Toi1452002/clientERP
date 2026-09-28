@@ -1,3 +1,4 @@
+import 'package:erp_client_1/core/data/network/network_config.dart';
 import 'package:erp_client_1/features/system/auth/presentation/notifier/auth_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,58 +22,73 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    ref.listenManual(authNotifierProvider, (pre, next) {
-      next.whenOrNull(
-        data: (val) {
-          ref.refresh(loginErrorState);
-        },
-        error: (e, s) {
-          ref.read(loginErrorState.notifier).state = e.toString();
-        },
-      );
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authNotifierProvider);
-    final err = ref.watch(loginErrorState);
-    return LoadingOverlay(
-      isLoading: state.isLoading,
-      child: Scaffold(
-        backgroundColor: Colors.cyan[700],
-        child: Center(
-          child: Card(
-            padding: EdgeInsets.all(20),
-            boxShadow: [BoxShadow(color: Colors.cyan[800], blurRadius: 20)],
-            fillColor: Colors.white.withValues(alpha: .9),
-            filled: true,
-            child: Column(
-              spacing: 10,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Phần mềm kế toán',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.cyan[700]),
+
+
+    return Scaffold(
+      backgroundColor: Colors.cyan[700],
+      child: Container(
+        decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.cyan[800], Colors.cyan.shade200])),
+        child: Row(
+          children: [
+            Expanded(child: SizedBox(), flex: 4),
+            Expanded(
+              flex: 3,
+              child: Container(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(50),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Phần mềm kế toán',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.cyan[700]),
+                    ),
+                    Text("Phiên bản: ${NetworkConfig.version}", style: TextStyle(color: Colors.gray)).medium,
+                    Gap(150),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Log In', style: TextStyle(fontSize: 25)).medium,
+                        Gap(30),
+                        AppTextField(hintText: "Nhập vào tài khoản", controller: txtUsername, autofocus: true),
+                        Gap(10),
+                        AppTextField(hintText: "Nhập vào mật khẩu", controller: txtPassword, obscureText: true),
+                        Gap(10),
+                        Builder(
+                          builder: (context) {
+                            if (state.isLoading) {
+                              return Center(child: CircularProgressIndicator(size: 20));
+                            }
+                            return PrimaryButton(
+                              child: Text(
+                                'Đăng nhập',
+                                style: TextStyle(color: Colors.white),
+                              ).withAlign(Alignment.center),
+                              onPressed: () {
+                                ref.read(authNotifierProvider.notifier).login(txtUsername.text, txtPassword.text);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    if (state.hasError)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(state.error.toString(), style: TextStyle(color: Colors.red)),
+                      ),
+                  ],
                 ),
-                Gap(5),
-                AppTextField(hintText: "Username", controller: txtUsername, autofocus: true),
-                AppTextField(hintText: "Password", controller: txtPassword, obscureText: true),
-                Gap(5),
-                PrimaryButton(
-                  child: Text('Đăng nhập', style: TextStyle(color: Colors.white)).withAlign(Alignment.center),
-                  onPressed: () {
-                    ref.read(authNotifierProvider.notifier).login(txtUsername.text, txtPassword.text);
-                  },
-                ),
-                if (err != null)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(err, style: TextStyle(color: Colors.red)),
-                  ),
-              ],
+              ),
             ),
-          ).sized(width: 350),
+          ],
         ),
       ),
     );

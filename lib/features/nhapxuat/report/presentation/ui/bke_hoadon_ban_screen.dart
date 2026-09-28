@@ -27,23 +27,23 @@ class _BkeHoaDonBanScreenState extends ConsumerState<BkeHoaDonBanScreen> {
       backgroundColor: AppColor.background,
       headers: [
         AppHeader(title: "Bảng kê hóa đơn bán ra"),
-        AppBar(
-          leading: [
-            AppSelectDate(
-              onSubmit: (t,d,type){
-                ref.read(bkeHoaDonBanProvider.notifier).get(tuNgay: t,denNgay: d);
-              },
-            )
-          ],
+        AppContainerBorder(
+          child: AppBar(
+            leading: [
+              AppSelectDate(
+                onSubmit: (t,d,type){
+                  ref.read(bkeHoaDonBanProvider.notifier).get(tuNgay: t,denNgay: d);
+                },
+              )
+            ],
+          ),
         ),
-        Divider(color: AppColor.border300,)
       ],
       child: state.when(
         data: (val){
           return Scaffold(
             headers: [
-              Container(
-                decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
+              AppContainerBorder(
                 child: AppBar(
                   leading: [
                     AppPrintButton()
@@ -65,7 +65,7 @@ class _BkeHoaDonBanScreenState extends ConsumerState<BkeHoaDonBanScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   showFilter: false,

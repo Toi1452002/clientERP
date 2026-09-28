@@ -23,9 +23,9 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
   int? selectRole;
   bool enableSave = false;
 
-
-  void save() async{
-    if(enableSave){
+  void save() async {
+    if (enableSave) {
+      _stateManager.showLoading();
       try {
         if (selectRole != null) {
           final result = await ref
@@ -38,9 +38,11 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
             });
           }
         }
+
       } catch (e) {
         if (context.mounted) showInfo(context, e.toString());
       }
+      _stateManager.closeLoading();
     }
   }
 
@@ -50,22 +52,15 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.keyS, control: true): () {
-           save();
+          save();
         },
       },
       child: Scaffold(
-        backgroundColor: AppColor.background,
-        footers: [
-          AppFooter()
-        ],
+        footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Phân quyền người dùng",trailing: [ AppReloadButton(
-            onPressed: (){
-              ref.refresh(roleViewProvider);
-              // ref.invalidate(menuPermissionProvider);
-            },
+          AppHeader(
+            title: "Phân quyền người dùng",
           ),
-            Gap(10),],),
           AppBar(
             leading: [
               Text('Vai trò'),
@@ -73,6 +68,10 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
               SizedBox(
                 width: 200,
                 child: RoleCombobox(
+                  onAdd: (){
+                    showAppDialog(context, child: RoleDialog());
+
+                  },
                   selectId: selectRole,
                   onChanged: (val) {
                     ref.read(menuPermissionProvider.notifier).loadMenu(val);
@@ -82,40 +81,34 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
                   },
                 ),
               ),
-              AppAddButton(
-                onPressed: (){
-                  showAppDialog(context, child: RoleDialog());
+              // AppAddButton(
+              //   onPressed: () {
+              //   },
+              // ),
+              // Gap(5),
+            ],
+            trailing: [
+              AppSaveButton(
+                enabled: enableSave,
+                onPressed: () async {
+                  save();
                 },
               ),
-              Gap(5),
             ],
           ),
-          Divider(color: AppColor.border300,)
+          Divider(color: AppColor.border300),
         ],
         child: Padding(
           padding: const EdgeInsets.all(0),
           child: state.when(
             skipLoadingOnRefresh: false,
             data: (val) {
-              if (val.isEmpty) return Center(child: Text('Chọn vai trò',style: TextStyle(color: Colors.gray),));
+              if (val.isEmpty) {
+                return Center(
+                  child: Text('Chọn vai trò', style: TextStyle(color: Colors.gray)),
+                );
+              }
               return Scaffold(
-                headers: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColor.border)
-                    ),
-                    child: AppBar(
-                      trailing: [
-                        AppSaveButton(
-                          enabled: enableSave,
-                          onPressed: ()  async {
-                            save();
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                ],
                 child: AppTable(
                   onLoaded: (e) {
                     _stateManager = MenuPermissionTableManager(e.stateManager);
@@ -130,15 +123,15 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
                   columns: [
                     AppTableColumn(title: ['', 'Level'], columnType: ColumnType.num, hide: true),
                     AppTableColumn(
-                      title: ['', 'stt'],
+                      title: ['#', 'stt'],
                       width: 35,
                       readOnly: true,
                       renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
                     ),
                     AppTableColumn(title: ["Mô tả", "TreeName"], width: 400),
                     AppTableColumn(
-                      title: ["Cho phép", "Status"],
-                      width: 100,
+                      title: ["Cho phép xem", "Status"],
+                      width: 120,
                       columnType: ColumnType.boolean,
                       renderer: (re) {
                         return Align(

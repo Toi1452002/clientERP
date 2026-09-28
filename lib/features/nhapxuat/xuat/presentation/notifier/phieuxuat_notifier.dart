@@ -33,25 +33,30 @@ class PhieuXuatNotifier extends AsyncNotifier<PhieuXuatRequestModel?> {
     });
   }
 
-  Future<void> getPrevious(int id) async {
-    if (state.value != null) {
+  Future<void> getPrevious() async {
+    if (state.value != null && state.value?.phieuXuat.idTruoc!=null) {
+      final  id = state.value!.phieuXuat.idTruoc;
+
       state = AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final data = await _repo.getPrevious(id);
+        final data = await _repo.getById(id!);
         if (data == null) return state.value;
         return data;
       });
     }
   }
 
-  Future<void> getNext(int id) async {
+  Future<void> getNext() async {
     if (state.value != null) {
+      final  id = state.value!.phieuXuat.idSau;
       state = AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final data = await _repo.getNext(id);
-        if (data == null) return await getLast();
-
-        return data;
+        if(id==null){
+          return await getLast();
+        }else{
+          final data = await _repo.getById(id);
+          return data;
+        }
       });
     }
   }

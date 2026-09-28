@@ -20,11 +20,31 @@ class UserTable extends ConsumerStatefulWidget {
 }
 
 class UserTableState extends ConsumerState<UserTable> {
-  late UserTableManager _tableState;
+  late UserTableManager _manager;
+  bool isInit = false;
 
   @override
   void initState() {
     super.initState();
+
+
+    ref.listenManual(userViewProvider, (_,next){
+      if(isInit){
+        next.whenOrNull(
+          data: (val){
+            _manager.loadView(val);
+            _manager.closeLoading();
+          },
+          loading: (){
+            _manager.showLoading();
+          },
+          error: (e,s){
+            showInfo(context, e.toString());
+          }
+        );
+      }
+    });
+
   }
 
   @override
@@ -33,7 +53,8 @@ class UserTableState extends ConsumerState<UserTable> {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: state.when(
-        skipLoadingOnRefresh: false,
+        // skipLoadingOnRefresh: false,
+        skipLoadingOnReload: isInit,
         data: (users) {
           return AppTable(
             onRowDoubleTap: (event) {
@@ -44,12 +65,13 @@ class UserTableState extends ConsumerState<UserTable> {
               }
             },
             onLoaded: (e) {
-              _tableState = UserTableManager(e.stateManager);
-              _tableState.loadView(users);
+              _manager = UserTableManager(e.stateManager);
+              _manager.loadView(users);
+              isInit = true;
             },
             columns: [
               AppTableColumn(
-                title: ['', 'stt'],
+                title: ['#', 'stt'],
                 width: 35,
                 readOnly: true,
                 renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
@@ -61,11 +83,11 @@ class UserTableState extends ConsumerState<UserTable> {
                   showQuestion(
                     context,
                     onPressed: () async {
-                      _tableState.setCurrent(re);
-                      final result = await ref.read(userViewProvider.notifier).delete(re.cell.value!);
-                      if (result) {
-                        _tableState.delete(re);
-                      }
+                      _manager.setCurrent(re);
+                      await ref.read(userViewProvider.notifier).delete(re.cell.value!);
+                      // if (result) {
+                      //   _manager.delete(re);
+                      // }
                     },
                   );
                 }),
@@ -83,9 +105,9 @@ class UserTableState extends ConsumerState<UserTable> {
                 width: 150,
                 renderer: (re) {
                   return LinkButton(
-                    child: Text('Change Password', style: TextStyle(color: Colors.blue.shade800)),
+                    child: Text('Đổi mật khẩu', style: TextStyle(color: Colors.blue.shade800)),
                     onPressed: () {
-                      _tableState.setCurrent(re);
+                      _manager.setCurrent(re);
                       final id = re.row.cells['delete']?.value;
                       final username = re.row.cells['Username']?.value;
                       showAppDialog(

@@ -82,7 +82,7 @@ class _TNDNttScreenState extends ConsumerState<TNDNttScreen> {
             },
             columns: [
               AppTableColumn(
-                title: ['', 'stt'],
+                title: ['#', 'stt'],
                 width: 35,
                 readOnly: true,
                 renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

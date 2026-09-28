@@ -18,7 +18,10 @@ class PhieuXuatModel{
   final String tkVatNo;
   final String tkVatCo;
   final String pttt;
-
+  final int stt;
+  final int tongStt;
+  final int? idTruoc;
+  final int? idSau;
   const PhieuXuatModel({
     this.id,
     this.ngay,
@@ -39,6 +42,10 @@ class PhieuXuatModel{
     required this.tkVatNo,
     required this.tkVatCo,
     required this.pttt,
+    required this.stt,
+    required this.tongStt,
+    this.idSau,
+    this.idTruoc
   });
 
 
@@ -63,6 +70,10 @@ class PhieuXuatModel{
       tkVatNo: map['tkVatNo'] ,
       tkVatCo: map['tkVatCo'] ,
       pttt: map['pttt'] ,
+      stt: map['stt'],
+      tongStt: map['tongStt'],
+      idSau: map['idSau'],
+      idTruoc: map['idTruoc']
     );
   }
 

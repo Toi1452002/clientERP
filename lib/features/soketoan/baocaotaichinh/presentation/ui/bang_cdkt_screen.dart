@@ -1,6 +1,7 @@
 import 'package:erp_client_1/core/widgets/app_alert.dart';
 import 'package:erp_client_1/core/widgets/app_container_border.dart';
 import 'package:erp_client_1/core/widgets/app_header.dart';
+import 'package:erp_client_1/core/widgets/app_loading_overlay.dart';
 import 'package:erp_client_1/core/widgets/app_table/app_table.dart';
 import 'package:erp_client_1/core/widgets/app_textfield.dart';
 import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/notifier/bang_tmp_bctc_notifier.dart';
@@ -46,7 +47,7 @@ class _BangCDKTScreenState extends ConsumerState<BangCDKTScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(bangTmpCBTCProvider);
     final stateSave = ref.watch(luuNamTruocNotifier);
-    return LoadingOverlay(
+    return AppLoadingOverlay(
       isLoading: stateSave.isLoading,
       child: Scaffold(
         footers: [AppFooter()],
@@ -97,7 +98,7 @@ class _BangCDKTScreenState extends ConsumerState<BangCDKTScreen> {
               },
               columns: [
                 AppTableColumn(
-                  title: ['', 'stt'],
+                  title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

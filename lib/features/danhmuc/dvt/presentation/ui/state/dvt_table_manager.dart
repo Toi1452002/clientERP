@@ -18,4 +18,8 @@ class DvtTableManager extends AppTableState<DvtModel>{
     })).toList());
   }
 
+
+  void closeLoading()=>_stateManager.setShowLoading(false);
+  void showLoading()=>_stateManager.setShowLoading(true);
+
 }

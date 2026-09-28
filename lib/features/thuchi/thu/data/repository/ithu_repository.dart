@@ -6,11 +6,13 @@ abstract interface class IThuRepository {
 
   Future<PhieuThuModel?> getFirstPhieu();
 
-  Future<PhieuThuModel?> getPrevious(int id);
-
-  Future<PhieuThuModel?> getNext(int id);
+  // Future<PhieuThuModel?> getPrevious(int id);
+  //
+  // Future<PhieuThuModel?> getNext(int id);
 
   Future<PhieuThuModel?> getByPhieu(String phieu);
+
+  Future<PhieuThuModel?> getById(int id);
 
   Future<int> onSave(PhieuThuSaveModel pt, int id);
 

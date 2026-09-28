@@ -89,11 +89,12 @@ class TaiKhoanRepository implements ITaiKhoanRepository{
   }
 
   @override
-  Future<int> add(TaiKhoanRequestModel model) async{
+  Future<TaiKhoanViewModel> add(TaiKhoanRequestModel model) async{
     // TODO: implement add
     try{
       final response = await _dio.post("/TaiKhoan",data: model.toMap());
-      return response.data;
+      final data = response.data as Map<String, dynamic>;
+      return TaiKhoanViewModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
@@ -129,11 +130,12 @@ class TaiKhoanRepository implements ITaiKhoanRepository{
   }
 
   @override
-  Future<int> update(TaiKhoanRequestModel model, int id) async{
+  Future<TaiKhoanViewModel> update(TaiKhoanRequestModel model, int id) async{
     // TODO: implement update
     try{
       final response = await _dio.put("/TaiKhoan/$id",data: model.toMap());
-      return response.data;
+      final data = response.data as Map<String,dynamic>;
+      return TaiKhoanViewModel.fromMap(data);
     }on DioException catch(e){
       throw ApiException.handleDioException(e);
     }catch(e){
@@ -146,6 +148,34 @@ class TaiKhoanRepository implements ITaiKhoanRepository{
     // TODO: implement getTKSoCai
     try{
       final response = await _dio.get("/TaiKhoan/tk-so-cai");
+      final data = response.data as List;
+      return data.map((e)=> TaiKhoanLookupModel.fromMap(e)).toList();
+    }on DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      throw Exception("Unknown error");
+    }
+  }
+
+  @override
+  Future<List<TaiKhoanLookupModel>> getTKChiPhi() async {
+    // TODO: implement getTKChiPhi
+    try{
+      final response = await _dio.get("/TaiKhoan/tk-chi-phi");
+      final data = response.data as List;
+      return data.map((e)=> TaiKhoanLookupModel.fromMap(e)).toList();
+    }on DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      throw Exception("Unknown error");
+    }
+  }
+
+  @override
+  Future<List<TaiKhoanLookupModel>> getTKHaoMon() async {
+    // TODO: implement getTKHaoMon
+    try{
+      final response = await _dio.get("/TaiKhoan/tk-hao-mon");
       final data = response.data as List;
       return data.map((e)=> TaiKhoanLookupModel.fromMap(e)).toList();
     }on DioException catch(e){

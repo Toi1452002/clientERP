@@ -9,11 +9,11 @@ abstract interface class INhanVienRepository{
 
   Future<List<PCGTViewModel>> getPCGTView(int? nhanVienId);
 
-  Future<int> add(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC);
+  Future<NhanVienViewModel> add(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC);
 
   Future<NhanVienEditModel> getById(int id);
 
-  Future<int> update(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC, int nhanVienId);
+  Future<NhanVienViewModel> update(NhanVienRequestModel nv, List<PCGTRequestModel> lstPC, int nhanVienId);
 
   Future<int> delete(int nhanVienId);
 

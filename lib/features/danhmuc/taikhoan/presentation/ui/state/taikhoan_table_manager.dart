@@ -21,4 +21,7 @@ class TaiKhoanTablemanager extends AppTableState<TaiKhoanViewModel>{
     })).toList());
   }
 
+  void showLoading()=>_stateManager.setShowLoading(true);
+  void closeLoading()=>_stateManager.setShowLoading(false);
+
 }

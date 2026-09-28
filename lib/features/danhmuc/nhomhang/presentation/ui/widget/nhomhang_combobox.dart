@@ -1,3 +1,5 @@
+import 'package:erp_client_1/core/widgets/app_dialog.dart';
+import 'package:erp_client_1/features/danhmuc/nhomhang/presentation/dialog/nhomhang_dialog.dart';
 import 'package:erp_client_1/features/danhmuc/nhomhang/presentation/notifier/nhomhang_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -17,6 +19,9 @@ class NhomHangCombobox extends ConsumerWidget {
       return AppCombobox(
           noSearch: false,
           value: selected,
+          onAdd: (){
+            showAppDialog(context, child: NhomHangDialog());
+          },
           items: value.map((e) => ComboboxItem(value: e.nhomHang, text: [e.nhomHang])).toList(),
           onChanged: onChanged
       );

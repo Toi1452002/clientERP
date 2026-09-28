@@ -6,10 +6,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class NhanVienCombobox extends ConsumerWidget {
-  const NhanVienCombobox({super.key, this.selected, this.onChanged, this.enabled = true});
+  const NhanVienCombobox({
+    super.key,
+    this.selected,
+    this.onChanged,
+    this.enabled = true,
+    this.noBorder = false,
+    this.enabledClear = true,
+  });
+
   final String? selected;
+  final bool noBorder;
   final void Function(dynamic)? onChanged;
   final bool enabled;
+  final bool enabledClear;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,6 +29,8 @@ class NhanVienCombobox extends ConsumerWidget {
       data: (val) {
         return AppCombobox(
           noSearch: false,
+          noBorder: noBorder,
+          enabledClear: enabledClear,
           enabled: enabled,
           onChanged: onChanged,
           value: selected,

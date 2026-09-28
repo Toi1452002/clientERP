@@ -28,10 +28,12 @@ class NhomHangRepository implements INhomHangRepository{
     }
   }
   @override
-  Future<void> add(String nhomHang) async {
+  Future<NhomHangModel> add(String nhomHang) async {
     // TODO: implement add
     try {
-      await _dio.post("/NhomHang", queryParameters: {'nhomHang': nhomHang});
+     final response = await _dio.post("/NhomHang", queryParameters: {'nhomHang': nhomHang});
+     final data = response.data as Map<String, dynamic>;
+     return NhomHangModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -40,10 +42,11 @@ class NhomHangRepository implements INhomHangRepository{
   }
 
   @override
-  Future<void> delete(int id) async {
+  Future<int> delete(int id) async {
     // TODO: implement delete
     try {
-      await _dio.delete("/NhomHang/$id");
+      final response = await _dio.delete("/NhomHang/$id");
+      return  response.data;
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -52,9 +55,11 @@ class NhomHangRepository implements INhomHangRepository{
   }
 
   @override
-  Future<void> update(int id, String nhomHang) async{
+  Future<NhomHangModel> update(int id, String nhomHang) async{
     try {
-      await _dio.patch("/NhomHang/$id",queryParameters: {'nhomHang': nhomHang});
+      final response = await _dio.patch("/NhomHang/$id",queryParameters: {'nhomHang': nhomHang});
+      final data = response.data as Map<String, dynamic>;
+      return NhomHangModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {

@@ -31,4 +31,8 @@ class KhachTableManager extends AppTableState<KhachViewModel> {
     );
   }
   void showFilter()=> _stateManager.setShowColumnFilter(true);
+
+  void showLoading ()=> _stateManager.setShowLoading(true);
+  void closeLoading ()=> _stateManager.setShowLoading(false);
+  void clearFilter ()=> _stateManager.clearAllColumnFilters();
 }

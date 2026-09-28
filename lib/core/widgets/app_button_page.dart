@@ -7,13 +7,13 @@ class AppButtonPage extends StatelessWidget {
   final void Function()? back;
   final void Function()? next;
   final void Function()? last;
-  // final String firstText;
-  // final String secondText;
+  final String firstText;
+  final String secondText;
 
   const AppButtonPage({
     super.key,
-    // required this.firstText,
-    // required this.secondText,
+    required this.firstText,
+    required this.secondText,
     required this.first,
     required this.last,
     required this.back,
@@ -32,20 +32,20 @@ class AppButtonPage extends StatelessWidget {
           size: ButtonSize(.7),
         ),
         IconButton.secondary(icon: Icon(PhosphorIcons.skipBack), onPressed: back, size: ButtonSize(.7)),
-        // SizedBox(
-        //   width: 50,
-        //   child: ColoredBox(
-        //     color: context.theme.colorScheme.card,
-        //     child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         Text(firstText),
-        //         Text("/"),
-        //         Text(secondText),
-        //       ],
-        //     ),
-        //   ),
-        // ),
+        SizedBox(
+          width: 50,
+          child: ColoredBox(
+            color: context.theme.colorScheme.card,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(firstText),
+                Text("/"),
+                Text(secondText),
+              ],
+            ),
+          ),
+        ),
         IconButton.secondary(
           icon: Icon(PhosphorIcons.skipForward),
           onPressed: next,

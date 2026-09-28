@@ -19,41 +19,58 @@ class HangHoaTable extends ConsumerStatefulWidget {
 
 class _HangHoaTableState extends ConsumerState<HangHoaTable> {
   late HangHoaTableManager _tableState;
+  bool isInit = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.listenManual(hangHoaViewProvider, (_, next) {
+      if (isInit) {
+        next.whenOrNull(
+          data: (val) {
+            _tableState.loadView(val);
+            _tableState.closeLoading();
+            _tableState.clearFilter();
+          },
+          loading: () {
+            _tableState.showLoading();
+          },
+          error: (e,s){
+            _tableState.closeLoading();
+            showInfo(context, e.toString());
+          }
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(hangHoaViewProvider);
 
     return state.when(
-      skipLoadingOnRefresh: false,
+      // skipLoadingOnRefresh: false,
+      skipLoadingOnReload: isInit,
       data: (value) {
         return Scaffold(
-          headers: [
-            Container(
-              decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-              child: AppBar(
-                leading: [
-                  AppPrintButton()
-                ],
-              ),
-            )
-          ],
           child: AppTable(
-            onLoaded: (e){
+            onLoaded: (e) {
               _tableState = HangHoaTableManager(e.stateManager);
               _tableState.loadView(value);
               _tableState.showFilter();
+              isInit = true;
             },
-            onRowDoubleTap: (event){
-              if(_tableState.getColumnField(event.cell)=="MaHH"){
+            onRowDoubleTap: (event) {
+              if (_tableState.getColumnField(event.cell) == "MaHH") {
                 final id = event.row.cells['delete']?.value;
-                showAppDialog(context, child: HangHoaFormDialog(id: id,));
+                showAppDialog(context, child: HangHoaFormDialog(id: id));
                 // context.goNamed(hangHoaEdit,pathParameters: {'id': id.toString()});
               }
             },
             columns: [
               AppTableColumn(
-                title: ['', 'stt'],
+                title: ['#', 'stt'],
                 width: 35,
                 readOnly: true,
                 showFilter: false,
@@ -66,15 +83,19 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
                 showFilter: false,
                 renderer: (re) => AppTableCell.delete(() {
                   _tableState.setCurrent(re);
-                  showQuestion(context,onPressed: () async{
-                    try{
-                      final id = re.cell.value;
-                      await ref.read(hangHoaViewProvider.notifier).deleteHangHoa(id);
-                      _tableState.delete(re);
-                    }catch(e){
-                      if(context.mounted) showInfo(context, e.toString());
-                    }
-                  });
+                  _tableState.showLoading();
+                  showQuestion(
+                    context,
+                    onPressed: () async {
+                      try {
+                        final id = re.cell.value;
+                        await ref.read(hangHoaViewProvider.notifier).delete(id);
+                      } catch (e) {
+                        if (context.mounted) showInfo(context, e.toString());
+                      }
+                    },
+                  );
+                  _tableState.closeLoading();
                 }),
               ),
 
@@ -101,7 +122,7 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
         );
       },
       error: (e, s) => Center(child: Text(e.toString())),
-      loading: () => Center(child: CircularProgressIndicator(size: 50,)),
+      loading: () => Center(child: CircularProgressIndicator(size: 50)),
     );
   }
 }

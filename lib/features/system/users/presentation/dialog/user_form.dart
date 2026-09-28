@@ -3,12 +3,14 @@ import 'package:erp_client_1/features/system/roles/presentation/ui/widget/role_c
 import 'package:erp_client_1/features/system/users/data/model/user_add_model.dart';
 import 'package:erp_client_1/features/system/users/data/model/user_update_model.dart';
 import 'package:erp_client_1/features/system/users/presentation/notifier/user_edit_notifier.dart';
+import 'package:erp_client_1/features/system/users/presentation/notifier/user_get_edit_notifier.dart';
 import 'package:erp_client_1/features/system/users/presentation/notifier/user_view_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../../../core/widgets/widget.dart';
+import '../../data/model/user_edit_model.dart';
 
 class UserForm extends ConsumerStatefulWidget {
   final int? id;
@@ -29,41 +31,60 @@ class _UserFormState extends ConsumerState<UserForm> {
   final txtPassword = TextEditingController();
   int selectRoleID = 1;
 
+  bool themTiep = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(widget.id!=null){
-      loadUser(widget.id!);
-    }
-    ref.listenManual(userEditProvider, (pre, next) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userGetEditProvider.notifier).get(id: widget.id);
+    });
+
+    ref.listenManual(userGetEditProvider, (_, next) {
       next.whenOrNull(
         data: (val) {
-          ref.invalidate(userViewProvider);
-          context.pop();
+          if (val != null) {
+            loadUser(val);
+          }
         },
         error: (e, s) {
           showInfo(context, e.toString());
         },
       );
     });
+
+    ref.listenManual(userEditProvider, (pre, next) {
+      next.whenOrNull(
+        data: (val) {
+          if (val != null) {
+            if (widget.id == null) {
+              ref.read(userViewProvider.notifier).add(val);
+            } else {
+              ref.read(userViewProvider.notifier).updateRow(val);
+            }
+            if (themTiep) {
+              clear();
+            } else {
+              context.pop();
+            }
+          }
+        },
+      );
+    });
   }
 
-  Future<void> loadUser(int id) async {
-    try {
-      final user = await ref.read(userEditProvider.notifier).loadUser(id);
-      if (user == null) return;
-      txtUsername.text = user.username;
-      txtFullName.text = user.fullName;
-      txtPhone.text = user.phone ?? '';
-      txtNote.text = user.note ?? '';
-      txtEmail.text = user.email ?? '';
-      txtAddress.text = user.address ?? '';
-      selectRoleID = user.roleId;
-      setState(() {});
-    } catch (e) {
-      if (context.mounted) showError(context, e.toString());
-    }
+  Future<void> loadUser(UserEditModel user) async {
+    txtUsername.text = user.username;
+    txtFullName.text = user.fullName;
+    txtPhone.text = user.phone ?? '';
+    txtNote.text = user.note ?? '';
+
+    txtEmail.text = user.email ?? '';
+    txtAddress.text = user.address ?? '';
+    selectRoleID = user.roleId;
+    setState(() {});
   }
 
   UserUpdateModel _userUpdateModel() => UserUpdateModel(
@@ -87,32 +108,55 @@ class _UserFormState extends ConsumerState<UserForm> {
     phone: txtPhone.text.trim(),
   );
 
+  void clear() {
+    txtUsername.clear();
+    txtFullName.clear();
+    txtPhone.clear();
+    txtNote.clear();
+    txtEmail.clear();
+    txtAddress.clear();
+    selectRoleID = 1;
+    txtPassword.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(userEditProvider);
+    final getEditState = ref.watch(userGetEditProvider);
     return DialogWindows(
       width: 500,
       height: 420,
       title: 'Thông tin người dùng',
-      child: LoadingOverlay(
-        isLoading: state.isLoading,
+      child: AppLoadingOverlay(
+        isLoading: state.isLoading || getEditState.isLoading,
         child: Scaffold(
-          backgroundColor: AppColor.background,
+          // backgroundColor: AppColor.background,
           footers: [
-            Divider(color: AppColor.border300,),
+            Divider(color: AppColor.border300),
             AppBar(
+              leading: [if (state.hasError) Text(state.error.toString(), style: TextStyle(color: Colors.red))],
               trailing: [
                 AppSaveButton(
+                  text: "Lưu & đóng",
                   onPressed: () {
+                    themTiep = false;
                     if (widget.id == null) {
                       ref.read(userEditProvider.notifier).add(_userAddModel());
                     } else {
                       ref.read(userEditProvider.notifier).updateUser(_userUpdateModel(), widget.id!);
                     }
                   },
-                )
+                ),
+                AppSaveButton(
+                  text: "Lưu",
+                  onPressed: () {
+                    themTiep = true;
+                    ref.read(userEditProvider.notifier).add(_userAddModel());
+                  },
+                ),
               ],
-            )
+            ),
           ],
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -120,85 +164,79 @@ class _UserFormState extends ConsumerState<UserForm> {
               child: Column(
                 spacing: 10,
                 children: [
-                  OutlinedContainer(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Họ và tên').medium,
-                            AppTextField(controller: txtFullName),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Điện thoại').medium,
-                            AppTextField(controller: txtPhone),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Địa chỉ').medium,
-                            AppTextField(controller: txtAddress),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Email').medium,
-                            AppTextField(controller: txtEmail),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Ghi chú').medium,
-                            AppTextField(controller: txtNote, maxLines: 2),
-                          ],
-                        ),
-                      ],
-                    ),
+                  Column(
+                    spacing: 10,
+                    children: [
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Họ và tên').medium,
+                          AppTextField(controller: txtFullName),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Điện thoại').medium,
+                          AppTextField(controller: txtPhone),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Địa chỉ').medium,
+                          AppTextField(controller: txtAddress),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Email').medium,
+                          AppTextField(controller: txtEmail),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Ghi chú').medium,
+                          AppTextField(controller: txtNote, maxLines: 2),
+                        ],
+                      ),
+                    ],
                   ),
-                  OutlinedContainer(
-                    padding: EdgeInsets.all(10),
-
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Username').medium,
-                            AppTextField(controller: txtUsername),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Password').medium,
-                            AppTextField(obscureText: true, controller: txtPassword, enabled: widget.id == null),
-                          ],
-                        ),
-                        AppRow(
-                          columnWidths: {0: 100},
-                          items: [
-                            Text('Vai trò').medium,
-                            RoleCombobox(
-                              selectId: selectRoleID,
-                              onChanged: (val) {
-                                setState(() {
-                                  selectRoleID = val;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  Divider(),
+                  Column(
+                    spacing: 10,
+                    children: [
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Username').medium,
+                          AppTextField(controller: txtUsername),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Password').medium,
+                          AppTextField(obscureText: true, controller: txtPassword, enabled: widget.id == null),
+                        ],
+                      ),
+                      AppRow(
+                        columnWidths: {0: 100},
+                        items: [
+                          Text('Vai trò').medium,
+                          RoleCombobox(
+                            selectId: selectRoleID,
+                            onChanged: (val) {
+                              setState(() {
+                                selectRoleID = val;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),

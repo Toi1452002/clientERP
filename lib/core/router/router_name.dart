@@ -48,5 +48,13 @@ abstract class RouterName {
   static const String bangTNDNtt = "SKT_BCT_TTT";
   static const String bangTNDN = "SKT_BCT_TNDN";
   static const String bangTNCN = "SKT_BCT_TNCN";
+  static const String bangChuyenLo = "SKT_BCT_CL";
+  static const String soThue = "SKT_BCT_ST";
+
+  static const String tscd = "TS_TSCD";
+  static const String ccdc = "TS_CCDC";
+
+  static const String chamCong = "TL_BCC";
+  static const String bangLuong = "TL_BTTL";
 
 }

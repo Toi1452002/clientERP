@@ -1,20 +1,14 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
-import 'package:erp_client_1/core/widgets/app_alert.dart';
-import 'package:erp_client_1/core/widgets/app_dialog.dart';
-import 'package:erp_client_1/features/danhmuc/dvt/presentation/dialog/dvt_dialog.dart';
+import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_notifier.dart';
-import 'package:erp_client_1/features/danhmuc/nhomhang/presentation/dialog/nhomhang_dialog.dart';
+import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/notifier/hanghoa_get_edit_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/nhomhang/presentation/notifier/nhomhang_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/utils/num_helper.dart';
-import '../../../../../../core/widgets/app_button.dart';
-import '../../../../../../core/widgets/app_row.dart';
-import '../../../../../../core/widgets/app_textfield.dart';
 import 'package:collection/collection.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 
 import '../../../dvt/presentation/ui/widget/dvt_combobox.dart';
 import '../../../khach/presentation/ui/widget/nhacung_combobox.dart';
@@ -48,21 +42,48 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
   bool tinhToanTonKho = false;
   bool theoDoi = true;
 
+
+  bool tiepTucThem = false;
+
   @override
   void initState() {
     super.initState();
-    if (widget.id != null) {
-      loadHangHoa(widget.id!);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(hangHoaGetEditProvider.notifier).get(id:widget.id);
+    });
+
+    ref.listenManual(hangHoaGetEditProvider, (_,next){
+      next.whenOrNull(
+        data: (val){
+          if(val!=null){
+            loadHangHoa(val);
+          }
+        },
+        error: (e,s){
+          showInfo(context, e.toString());
+        }
+      );
+    });
 
     ref.listenManual(hangHoaEditProvider, (pre, next) {
       next.whenOrNull(
-        data: (v) {
-          context.pop();
-          ref.invalidate(hangHoaViewProvider);
-        },
-        error: (e, s) {
-          showInfo(context, e.toString());
+        data: (val) {
+          if(val!=null){
+            if(widget.id==null){
+              ref.read(hangHoaViewProvider.notifier).add(val);
+            }else{
+              ref.read(hangHoaViewProvider.notifier).updateRow(val);
+            }
+
+            if(!tiepTucThem){
+              context.pop();
+            }else{
+              clear();
+
+            }
+
+          }
+
         },
       );
     });
@@ -87,9 +108,9 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
     );
   }
 
-  Future<void> loadHangHoa(int id) async {
-    final hangHoa = await ref.read(hangHoaEditProvider.notifier).getById(id);
-    if (hangHoa != null) {
+  void loadHangHoa(HangHoaModel hangHoa)  {
+    // final hangHoa = await ref.read(hangHoaEditProvider.notifier).getById(id);
+    // if (hangHoa != null) {
       final donViTinh = hangHoa.dvtId == null
           ? null
           : ref.read(dvtProvider).value?.firstWhereOrNull((e) => e.id == hangHoa.dvtId);
@@ -110,28 +131,47 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
       tinhToanTonKho = hangHoa.tinhTon;
       theoDoi = hangHoa.isActive;
       setState(() {});
-    }
+    // }
+  }
+
+  void clear(){
+    txtMaHH.clear();
+    txtTenHH.clear();
+    loaiHang =null;
+    dvt = null;
+    nhomHang = null;
+    maNC = null;
+    khoNgamDinh = '156';
+    txtGiaMua.clear();
+    txtGiaBan.clear();
+    txtGhiChu.clear();
+    tinhToanTonKho = false;
+    theoDoi = true;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(hangHoaEditProvider);
+    final getState = ref.watch(hangHoaGetEditProvider);
     return DialogWindows(
       width: 600,
       height: 340,
       title: 'THÔNG TIN HÀNG HÓA',
-      child: LoadingOverlay(
-        isLoading: state.isLoading,
+      child: AppLoadingOverlay(
+        isLoading: state.isLoading || getState.isLoading,
         child: Scaffold(
           // backgroundColor: AppColor.background,
           footers: [
-            Divider(color: AppColor.border300,),
+            Divider(color: AppColor.border300),
             AppBar(
-              trailing: [
+              leading: [if (state.hasError) Text(state.error.toString(), style: TextStyle(color: Colors.red))],
 
+              trailing: [
                 AppSaveButton(
-                  // text: 'Lưu',
+                  text: 'Lưu & đóng',
                   onPressed: () async {
+                    tiepTucThem=false;
                     if (widget.id == null) {
                       ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
                     } else {
@@ -139,8 +179,15 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                     }
                   },
                 ),
+                if(widget.id==null) AppSaveButton(
+                  text: 'Lưu',
+                  onPressed: (){
+                    tiepTucThem = true;
+                    ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+                  },
+                )
               ],
-            )
+            ),
           ],
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -151,9 +198,9 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                 AppRow(
                   columnWidths: {0: 80, 1: 180, 3: 180},
                   items: [
-                    Text('Mã hàng'),
-                    AppTextField(controller: txtMaHH),
-                    Row(children: [Gap(10), Text('Loại hàng')]),
+                    Text('Mã hàng').medium,
+                    AppTextField(controller: txtMaHH,autofocus: true,),
+                    Row(children: [Gap(10), Text('Loại hàng').medium]),
                     LoaiHangCombobox(
                       selected: loaiHang,
                       onChanged: (val) {
@@ -167,34 +214,25 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                 AppRow(
                   columnWidths: {0: 80},
                   items: [
-                    Text('Tên hàng'),
+                    Text('Tên hàng').medium,
                     AppTextField(controller: txtTenHH),
                   ],
                 ),
                 AppRow(
-                  columnWidths: {0: 80, 1: 150, 2: 30, 4: 150, 5: 30},
+                  columnWidths: {0: 80, 1: 180, 3: 180},
                   items: [
-                    Text('Đơn vị tính'),
+                    Text('Đơn vị tính').medium,
                     DvtCombobox(
                       selected: dvt,
+                      showAdd: true,
                       onChanged: (val) {
                         setState(() {
                           dvt = val;
                         });
                       },
                     ),
-                    Row(
-                      children: [
-                        Gap(5),
-                        AppAddButton(
-                          onPressed: () {
-                            showAppDialog(context, child: DvtDialog());
-                          },
-                        ),
-                      ],
-                    ),
 
-                    Row(children: [Gap(10), Text('Nhóm hàng')]),
+                    Row(children: [Gap(10), Text('Nhóm hàng').medium]),
                     NhomHangCombobox(
                       onChanged: (val) {
                         setState(() {
@@ -203,23 +241,13 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                       },
                       selected: nhomHang,
                     ),
-                    Row(
-                      children: [
-                        Gap(5),
-                        AppAddButton(
-                          onPressed: () {
-                            showAppDialog(context, child: NhomHangDialog());
-                          },
-                        ),
-                      ],
-                    ),
                   ],
                 ),
 
                 AppRow(
                   columnWidths: {0: 80, 1: 180, 3: 180},
                   items: [
-                    Text('Nhà cung'),
+                    Text('Nhà cung').medium,
                     NhaCungCombobx(
                       selected: maNC,
                       onChanged: (val) {
@@ -228,7 +256,7 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                         });
                       },
                     ),
-                    Row(children: [Gap(10), Text('Kho ngầm định')]),
+                    Row(children: [Gap(10), Text('Kho ngầm định').medium]),
                     TaiKhoanKhoCombobox(
                       selected: khoNgamDinh,
                       onChanged: (val) {
@@ -243,7 +271,7 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                 AppRow(
                   columnWidths: {0: 80, 1: 180, 3: 180},
                   items: [
-                    Text('Giá mua'),
+                    Text('Giá mua').medium,
 
                     AppTextField(
                       isNumber: true,
@@ -253,7 +281,7 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                         txtGiaMua.text = NumHelper.numFormat(txtGiaMua.text);
                       },
                     ),
-                    Row(children: [Gap(10), Text('Giá bán')]),
+                    Row(children: [Gap(10), Text('Giá bán').medium]),
 
                     AppTextField(
                       // focusNode: focusGiaBan,
@@ -270,7 +298,7 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
                 AppRow(
                   columnWidths: {0: 80},
                   items: [
-                    Text('Ghi chú'),
+                    Text('Ghi chú').medium,
                     AppTextField(controller: txtGhiChu),
                   ],
                 ),

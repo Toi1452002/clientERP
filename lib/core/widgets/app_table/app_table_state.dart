@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 abstract class AppTableState<T>{
@@ -5,6 +6,8 @@ abstract class AppTableState<T>{
     context.stateManager.setCurrentCell(context.cell, context.rowIdx);
     context.stateManager.setKeepFocus(true);
   }
+
+
 
   void delete(TrinaColumnRendererContext context) {
     context.stateManager.removeCurrentRow();

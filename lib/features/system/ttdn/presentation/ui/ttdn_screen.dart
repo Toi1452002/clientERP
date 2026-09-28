@@ -29,15 +29,6 @@ class _TTDNScreenState extends ConsumerState<TTDNScreen> {
       headers: [
         AppHeader(
           title: "Thông tin doanh nghiệp",
-          trailing: [
-            AppReloadButton(
-              onPressed: () {
-                ref.refresh(ttdnProvider);
-
-              },
-            ),
-            Gap(10)
-          ],
         ),
       ],
       child: state.when(
@@ -48,12 +39,12 @@ class _TTDNScreenState extends ConsumerState<TTDNScreen> {
               _manager = TTDNTableManager(e.stateManager);
               _manager.loadView(val);
             },
-            onChange: (re){
+            onChange: (re) async {
               final field = re.column.field;
               final id = re.row.cells['Id']?.value;
               if(field == "NoiDung"){
                try{
-                 ref.read(ttdnProvider.notifier).updateNoiDung(re.value, id);
+                await ref.read(ttdnProvider.notifier).updateNoiDung(re.value, id);
                }catch(e){
                  showInfo(context, e.toString());
                }

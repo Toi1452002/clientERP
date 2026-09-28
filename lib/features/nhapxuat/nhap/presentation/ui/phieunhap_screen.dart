@@ -62,6 +62,9 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
 
   late PhieuNhapCTTableManager _tableManager;
 
+  bool isSave = false;
+  bool isUpdateKhoa = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -86,9 +89,19 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
     ref.listenManual(phieuNhapSaveProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
-          setState(() {
-            khoa = !khoa;
-          });
+          if (isSave) {
+            setState(() {
+              khoa = true;
+              isSave = false;
+            });
+          }
+
+          if(isUpdateKhoa){
+            setState(() {
+              khoa = !khoa;
+              isUpdateKhoa = false;
+            });
+          }
         },
         error: (e, s) {
           showInfo(context, e.toString());
@@ -99,7 +112,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
     ref.listenManual(phieuNhapDeleteProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
-          ref.read(phieuNhapProvider.notifier).getNext(id);
+          ref.read(phieuNhapProvider.notifier).getNext();
         },
         error: (e, s) {
           showInfo(context, e.toString());
@@ -108,7 +121,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
     });
   }
 
-  Future<void> setValue(PhieuNhapRequestModel? x)  async {
+  Future<void> setValue(PhieuNhapRequestModel? x) async {
     if (x == null) {
       txtSoPhieu.clear();
       return;
@@ -142,7 +155,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
 
   PhieuNhapSaveModel _model() {
     return PhieuNhapSaveModel(
-      soCT: txtSoHD.text.isEmpty?null:txtSoHD.text,
+      soCT: txtSoHD.text.isEmpty ? null : txtSoHD.text,
       maKH: maKH,
       tienThue: NumHelper.stringToDouble(tienThue),
       congTien: NumHelper.stringToDouble(tongTienHang),
@@ -170,12 +183,14 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
       height: 600,
       beforeClose: () async {
         if (!khoa && state.value != null) {
-          showQuestion(
+          showClosePhieu(
             context,
             onPressed: () {
+              ref
+                  .read(phieuNhapSaveProvider.notifier)
+                  .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
               Navigator.pop(context);
             },
-            text: "Chưa lưu phiếu, có chắc muốn đóng?",
           );
         } else {
           Navigator.pop(context);
@@ -191,17 +206,39 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
             leading: [
               AppButtonPage(
                 first: () {
+                  if (!khoa) {
+                    ref
+                        .read(phieuNhapSaveProvider.notifier)
+                        .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
+                  }
                   ref.read(phieuNhapProvider.notifier).getFirst();
                 },
                 last: () {
+                  if (!khoa) {
+                    ref
+                        .read(phieuNhapSaveProvider.notifier)
+                        .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
+                  }
                   ref.read(phieuNhapProvider.notifier).rebuild();
                 },
                 back: () {
-                  ref.read(phieuNhapProvider.notifier).getPrevious(id);
+                  if (!khoa) {
+                    ref
+                        .read(phieuNhapSaveProvider.notifier)
+                        .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
+                  }
+                  ref.read(phieuNhapProvider.notifier).getPrevious();
                 },
                 next: () {
-                  ref.read(phieuNhapProvider.notifier).getNext(id);
+                  if (!khoa) {
+                    ref
+                        .read(phieuNhapSaveProvider.notifier)
+                        .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
+                  }
+                  ref.read(phieuNhapProvider.notifier).getNext();
                 },
+                firstText: state.hasValue ? "${state.value?.phieuNhap.stt ?? '0'}" : '0',
+                secondText: state.hasValue ? "${state.value?.phieuNhap.tongStt ?? '0'}" : '0',
               ),
             ],
           ),
@@ -210,16 +247,22 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
           AppBar(
             leading: [
               AppNewButton(
-                text: 'Thêm phiếu',
-                enabled: khoa || state.value == null,
+                text: 'Phiếu mới',
+                // enabled: khoa || state.value == null,
                 onPressed: () {
                   ref.read(phieuNhapProvider.notifier).addPhieu();
+                  if (!khoa) {
+                    ref
+                        .read(phieuNhapSaveProvider.notifier)
+                        .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
+                  }
                 },
               ),
               Gap(5),
               AppSaveButton(
                 enabled: !khoa && state.value != null,
                 onPressed: () {
+                  isSave = true;
                   ref
                       .read(phieuNhapSaveProvider.notifier)
                       .save(PhieuNhapUpdateModel(phieuNhap: _model(), phieuNhapCT: _tableManager.toList(id)), id);
@@ -230,6 +273,10 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                 enabled: khoa,
                 onPressed: () {
                   ref.read(phieuNhapSaveProvider.notifier).updateKhoa(id);
+                  isUpdateKhoa = true;
+                  // setState(() {
+                  //   khoa = !khoa;
+                  // });
                 },
               ),
               Gap(5),
@@ -257,7 +304,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                 child: Text('Chưa có phiếu nhập', style: TextStyle(color: Colors.gray)),
               );
             }
-            return LoadingOverlay(
+            return AppLoadingOverlay(
               isLoading: stateSave.isLoading || stateDelete.isLoading,
               child: SingleChildScrollView(
                 child: Padding(
@@ -274,7 +321,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                             AppRow(
                               columnWidths: {0: 80, 2: 100, 4: 120, 8: 100},
                               items: [
-                                Text('Ngày'),
+                                Text('Ngày').medium,
                                 AppDateField(
                                   enabled: !khoa,
                                   value: ngay,
@@ -285,9 +332,14 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                     setState(() {});
                                   },
                                 ),
-                                Row(children: [Gap(30), Text('Số phiếu')]),
-                                AppTextField(enabled: !khoa, controller: txtSoPhieu, readOnly: true),
-                                Row(children: [Gap(30), Text('Kiểu nhập')]),
+                                Row(children: [Gap(30), Text('Số phiếu').medium]),
+                                AppTextField(
+                                  enabled: !khoa,
+                                  controller: txtSoPhieu,
+                                  readOnly: true,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                Row(children: [Gap(30), Text('Kiểu nhập').medium]),
                                 NvuNhapCombobox(
                                   enabled: !khoa,
                                   selected: maNX,
@@ -297,7 +349,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                     });
                                   },
                                 ),
-                                Row(children: [Gap(30), Text('Ký hiệu hóa đơn')]),
+                                Row(children: [Gap(30), Text('Ký hiệu hóa đơn').medium]),
                                 AppTextField(
                                   enabled: !khoa,
                                   onFieldLeave: () async {
@@ -330,7 +382,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                             AppRow(
                               columnWidths: {0: 80, 1: 160, 2: 483, 3: 142, 4: 142},
                               items: [
-                                Text('Mã khách'),
+                                Text('Mã khách').medium,
                                 NhaCungCombobx(
                                   selected: maKH,
                                   enabled: !khoa,
@@ -357,7 +409,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                     AppTextField(enabled: !khoa, readOnly: true, controller: txtTenKH).expanded(),
                                   ],
                                 ),
-                                Row(children: [Gap(30), Text('Số hóa đơn')]),
+                                Row(children: [Gap(30), Text('Số hóa đơn').medium]),
                                 AppTextField(enabled: !khoa, controller: txtSoHD, onFieldLeave: () async {}),
                                 SizedBox(),
                               ],
@@ -365,12 +417,12 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                             AppRow(
                               columnWidths: {0: 80, 1: 643, 2: 142, 3: 142},
                               items: [
-                                Text('Diễn giải'),
+                                Text('Diễn giải').medium,
                                 AppTextField(enabled: !khoa, onFieldLeave: () async {}, controller: txtDienGiai),
-                                Row(children: [Gap(30), Text('Ngày hóa đơn')]),
+                                Row(children: [Gap(30), Text('Ngày hóa đơn').medium]),
                                 AppDateField(
                                   enabled: !khoa,
-                
+
                                   value: ngayHoaDon,
                                   onChanged: (val) async {
                                     ngayHoaDon = val;
@@ -412,7 +464,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                   },
                                   changedThanhTien: () {
                                     tongTienHang = NumHelper.numFormat(_tableManager.tongTienHang());
-                
+
                                     if (thueSuat != null) {
                                       final x = (thueSuat! / 100) * NumHelper.stringToDouble(tongTienHang);
                                       tienThue = NumHelper.numFormat(x);
@@ -443,7 +495,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                   AppRow(
                                     columnWidths: {0: 80, 1: 100, 2: 100, 3: 80, 4: 140},
                                     items: [
-                                      Text('TK Nợ/Có'),
+                                      Text('TK Nợ/Có').medium,
                                       TaiKhoanXL0Combobox(
                                         enabled: !khoa,
                                         selected: tkNo,
@@ -462,7 +514,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                           });
                                         },
                                       ),
-                                      Row(children: [Gap(10), Text('Thuế suất')]),
+                                      Row(children: [Gap(10), Text('Thuế suất').medium]),
                                       ThueSuatCombobox(
                                         enabled: !khoa,
                                         selected: thueSuat,
@@ -477,7 +529,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                             tienThue = '0';
                                             tongThanhToan = tongTienHang;
                                           }
-                
+
                                           setState(() {
                                             thueSuat = val;
                                           });
@@ -489,7 +541,7 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
                                     AppRow(
                                       columnWidths: {0: 80, 1: 100, 2: 100, 3: 80, 4: 140},
                                       items: [
-                                        Text('TK VAT'),
+                                        Text('TK VAT').medium,
                                         TaiKhoanXL0Combobox(
                                           enabled: !khoa,
                                           selected: tkVatNo,
@@ -576,7 +628,10 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
               ),
             );
           },
-          error: (e, s) => Center(child: Text(e.toString())),
+          error: (e, s) {
+            // print(s);
+            return Center(child: Text(e.toString()));
+          },
           loading: () => Center(child: CircularProgressIndicator(size: 50)),
         ),
       ),

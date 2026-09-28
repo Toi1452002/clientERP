@@ -4,9 +4,10 @@ import '../model/phieuxuat_update_model.dart';
 abstract interface class IPhieuXuatRepository{
   Future<PhieuXuatRequestModel?> getLast();
   Future<PhieuXuatRequestModel?> getFirst();
-  Future<PhieuXuatRequestModel?> getNext(int id);
-  Future<PhieuXuatRequestModel?> getPrevious(int id);
+  // Future<PhieuXuatRequestModel?> getNext(int id);
+  // Future<PhieuXuatRequestModel?> getPrevious(int id);
   Future<PhieuXuatRequestModel?> getByPhieu(String maPhieu);
+  Future<PhieuXuatRequestModel?> getById(int id);
 
   Future<PhieuXuatRequestModel> add();
 

@@ -8,24 +8,35 @@ class HangHoaCombobox extends ConsumerWidget {
   final bool enabled;
   final bool noBorder;
   final void Function(dynamic)? onChanged;
-
-  const HangHoaCombobox({super.key, this.enabled = true, this.noBorder = false, this.selected, this.onChanged});
+  final bool noDVT;
+  final void Function()? onTap;
+  const HangHoaCombobox({
+    super.key,
+    this.enabled = true,
+    this.noBorder = false,
+    this.selected,
+    this.onChanged,
+    this.noDVT = false,
+    this.onTap
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(hangHoaLookupProvider);
     return state.when(
+      skipLoadingOnRefresh: false,
       data: (val) {
         return AppCombobox(
+          onTap: onTap,
           noBorder: noBorder,
           enabled: enabled,
           onChanged: onChanged,
           value: selected,
           noSearch: false,
           enabledClear: false,
-          menuWidth:540 ,
-          columnWidth: [150,300,90],
-          items: val.map((e) => ComboboxItem(value: e.maHH, text: [e.maHH, e.tenHH,e.dvt??""])).toList(),
+          menuWidth:!noDVT? 540: 300,
+          columnWidth: [!noDVT?150:90,!noDVT? 300:190, if(!noDVT)90],
+          items: val.map((e) => ComboboxItem(value: e.maHH, text: [e.maHH, e.tenHH,if(!noDVT) e.dvt ?? ""])).toList(),
         );
       },
       error: (e, s) => Center(child: Text(e.toString())),

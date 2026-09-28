@@ -73,11 +73,12 @@ class MaNghiepVuRepository implements IMaNghiepVuRepository {
   }
 
   @override
-  Future<int> add(MaNghiepVuRequestModel model) async {
+  Future<MaNghiepVuModel> add(MaNghiepVuRequestModel model) async {
     // TODO: implement add
     try {
       final response = await _dio.post("/MaNghiepVu", data: model.toMap());
-      return response.data;
+      final data =  response.data as Map<String, dynamic>;
+      return MaNghiepVuModel.fromMap(data);
     } on DioException catch (e) {
       throw ApiException.handleDioException(e);
     } catch (e) {
@@ -112,42 +113,43 @@ class MaNghiepVuRepository implements IMaNghiepVuRepository {
     }
   }
 
+  @override
+  Future<MaNghiepVuModel> update(MaNghiepVuRequestModel model, int id) async {
+    // TODO: implement update
+    try{
+      final response = await _dio.put("/MaNghiepVu/$id", data: model.toMap());
+      final data =  response.data as Map<String, dynamic>;
+      return MaNghiepVuModel.fromMap(data);
+    }on DioException catch(e){
+      throw ApiException.handleDioException(e);
+    }catch(e){
+      rethrow;
+    }
+  }
+
   // @override
-  // Future<int> update(MaNghiepVuRequestModel model, int id) async {
-  //   // TODO: implement update
-  //   try{
-  //     final response = await _dio.put("/MaNghiepVu/$id", data: model.toMap());
+  // Future<int> updateMaNV(String ma, int id) async {
+  //   // TODO: implement updateMaNV
+  //   try {
+  //     final response = await _dio.patch("/MaNghiepVu/ma/$id", queryParameters: {'ma': ma});
   //     return response.data;
-  //   }on DioException catch(e){
+  //   } on DioException catch (e) {
   //     throw ApiException.handleDioException(e);
-  //   }catch(e){
+  //   } catch (e) {
   //     rethrow;
   //   }
   // }
-
-  @override
-  Future<int> updateMaNV(String ma, int id) async {
-    // TODO: implement updateMaNV
-    try {
-      final response = await _dio.patch("/MaNghiepVu/ma/$id", queryParameters: {'ma': ma});
-      return response.data;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<int> updateMoTa(String moTa, int id) async {
-    // TODO: implement updateMoTa
-    try {
-      final response = await _dio.patch("/MaNghiepVu/mo-ta/$id", queryParameters: {'moTa': moTa});
-      return response.data;
-    } on DioException catch (e) {
-      throw ApiException.handleDioException(e);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  //
+  // @override
+  // Future<int> updateMoTa(String moTa, int id) async {
+  //   // TODO: implement updateMoTa
+  //   try {
+  //     final response = await _dio.patch("/MaNghiepVu/mo-ta/$id", queryParameters: {'moTa': moTa});
+  //     return response.data;
+  //   } on DioException catch (e) {
+  //     throw ApiException.handleDioException(e);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }

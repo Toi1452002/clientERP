@@ -68,6 +68,9 @@ class PhieuNhapCTTable extends ConsumerWidget {
             return HangHoaCombobox(
               enabled: !re.stateManager.mode.isReadOnly,
               selected: hangHoaModel?.maHH,
+              onTap: (){
+                re.stateManager.setCurrentCell(re.cell, re.rowIdx);
+              },
               noBorder: true,
               onChanged: (val) {
                 final hh = ref.read(hangHoaLookupProvider).value?.firstWhereOrNull((e) => e.maHH == val);
@@ -94,6 +97,10 @@ class PhieuNhapCTTable extends ConsumerWidget {
           padding: 0,
           renderer: (re) {
             return DvtCombobox(
+              onTap: (){
+                re.stateManager.setCurrentCell(re.cell, re.rowIdx);
+
+              },
               enabled: !re.stateManager.mode.isReadOnly,
               selected: re.cell.value,
               noBorder: true,
