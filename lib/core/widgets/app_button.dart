@@ -54,7 +54,7 @@ class AppPrintButton extends StatelessWidget {
       // icon: Icon(PhosphorIcons.printer,size: 16, color: enabled? Colors.orange.shade900: Colors.gray),
       enabled: enabled,
       onPressed: onPressed,
-      child: Text('Print PDF', style: TextStyle(color: enabled ? Colors.orange.shade900 : Colors.gray)),
+      child: Text('In', style: TextStyle(color: enabled ? Colors.orange.shade900 : Colors.gray)),
     );
   }
 }
@@ -110,7 +110,7 @@ class AppSettingButton extends StatelessWidget {
 }
 
 class AppSaveButton extends StatelessWidget {
-  const AppSaveButton({super.key, this.onPressed, this.text = "Lưu lại", this.enabled = true, this.toolTip = false});
+  const AppSaveButton({super.key, this.onPressed, this.text = "Lưu", this.enabled = true, this.toolTip = false});
 
   final String text;
   final void Function()? onPressed;

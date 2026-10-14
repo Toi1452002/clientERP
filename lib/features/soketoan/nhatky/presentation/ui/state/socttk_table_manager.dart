@@ -23,6 +23,7 @@ class SoCTTKTableManager extends AppTableState<SoCTTKModel>{
       'SDNo': TrinaCell(value: e.soDuNo),
       'SDCo': TrinaCell(value: e.soDuCo),
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

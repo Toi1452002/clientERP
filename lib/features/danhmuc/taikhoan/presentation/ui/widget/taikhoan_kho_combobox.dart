@@ -10,14 +10,15 @@ class TaiKhoanKhoCombobox extends ConsumerWidget {
   final String? selected;
   final bool enabled;
   final bool noBorder;
-  const TaiKhoanKhoCombobox({super.key, this.selected, this.onChanged, this.noBorder=false, this.enabled=true});
+  final bool enableClear;
+  const TaiKhoanKhoCombobox({super.key, this.selected, this.onChanged, this.noBorder=false, this.enabled=true, this.enableClear=false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(taiKhoanLookupProvider(LoaiTaiKhoan.khoND));
     return state.when(data: (value){
       return  AppCombobox(
-        enabledClear: false,
+        enabledClear: enableClear,
         noBorder: noBorder,
         enabled: enabled,
         menuWidth: 300,

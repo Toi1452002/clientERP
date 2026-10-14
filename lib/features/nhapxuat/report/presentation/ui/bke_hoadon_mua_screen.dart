@@ -56,6 +56,7 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
               onLoaded: (e){
                 _manager = BkeHoaDonMuaManager(e.stateManager);
                 _manager.loadView(val);
+
               },
               onRowDoubleTap: (re){
                 final field = re.cell.column.field;

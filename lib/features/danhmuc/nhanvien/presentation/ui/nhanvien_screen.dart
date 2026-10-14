@@ -2,13 +2,10 @@ import 'package:erp_client_1/core/widgets/app_container_border.dart';
 import 'package:erp_client_1/core/widgets/app_dialog.dart';
 import 'package:erp_client_1/core/widgets/app_header.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/dialog/nhanvien_form_dialog.dart';
-import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/notifier/nhanvien_view_notifier.dart';
-import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/state/nhanvien_lookup_state.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/widget/nhanvien_table.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/constain/app_color.dart';
 import '../../../../../core/widgets/app_button.dart';
 
 class NhanVienScreen extends ConsumerWidget {

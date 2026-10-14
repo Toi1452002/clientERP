@@ -1,7 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:erp_client_1/core/widgets/app_combobox.dart';
+import 'package:erp_client_1/core/widgets/app_dialog.dart';
+import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/dialog/hanghoa_form_dialog.dart';
 import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/ui/state/hanghoa_lookup_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../../../core/widgets/app_alert.dart';
 
 class HangHoaCombobox extends ConsumerWidget {
   final String? selected;
@@ -31,6 +36,15 @@ class HangHoaCombobox extends ConsumerWidget {
           noBorder: noBorder,
           enabled: enabled,
           onChanged: onChanged,
+          onDoubleTap: (hh){
+            final hangHoa = val.firstWhereOrNull((e)=>e.maHH==hh);
+            if(hangHoa!=null){
+              showAppDialog(context, child: HangHoaFormDialog(id: hangHoa.id,));
+            }else{
+              showInfo(context, "Không tìm thấy hàng hóa!");
+
+            }
+          },
           value: selected,
           noSearch: false,
           enabledClear: false,

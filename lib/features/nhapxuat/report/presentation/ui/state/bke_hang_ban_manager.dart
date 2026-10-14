@@ -21,6 +21,7 @@ class BkeHangBanManager extends AppTableState<BkeHangBanModel>{
       'TienThue': TrinaCell(value: e.tienThue),
       'CongTien': TrinaCell(value: e.congTien),
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

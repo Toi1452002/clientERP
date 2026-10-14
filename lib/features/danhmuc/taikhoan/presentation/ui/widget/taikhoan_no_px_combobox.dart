@@ -17,7 +17,7 @@ class TaiKhoanNoPxCombobox extends ConsumerWidget {
     final state = ref.watch(taiKhoanLookupProvider(LoaiTaiKhoan.tkNoPx));
     return state.when(data: (value){
       return  AppCombobox(
-        enabledClear: false,
+        enabledClear: true,
         noBorder: noBorder,
         enabled: enabled,
         menuWidth: 300,

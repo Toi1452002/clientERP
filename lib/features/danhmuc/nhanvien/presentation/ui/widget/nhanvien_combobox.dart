@@ -1,6 +1,10 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+import 'package:erp_client_1/core/widgets/app_alert.dart';
 import 'package:erp_client_1/core/widgets/app_combobox.dart';
+import 'package:erp_client_1/core/widgets/app_dialog.dart';
+import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/dialog/nhanvien_form_dialog.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/state/nhanvien_lookup_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -28,6 +32,14 @@ class NhanVienCombobox extends ConsumerWidget {
       skipLoadingOnRefresh: false,
       data: (val) {
         return AppCombobox(
+          onDoubleTap: (maNV){
+            final nv = val.firstWhereOrNull((e)=>e.maNV==maNV);
+            if(nv!=null){
+              showAppDialog(context, child: NhanVienFormDialog(id: nv.id,));
+            }else{
+              showInfo(context, "Không tìm thấy nhân viên!");
+            }
+          },
           noSearch: false,
           noBorder: noBorder,
           enabledClear: enabledClear,

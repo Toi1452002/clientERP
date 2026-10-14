@@ -1,4 +1,5 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
+import 'package:erp_client_1/core/shortcut/shortcut_config.dart';
 import 'package:erp_client_1/core/widgets/widget.dart';
 import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/notifier/hanghoa_get_edit_notifier.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/utils/num_helper.dart';
 import 'package:collection/collection.dart';
 
+import '../../../../../core/shortcut/Shortcut_intent.dart';
 import '../../../dvt/presentation/ui/widget/dvt_combobox.dart';
 import '../../../khach/presentation/ui/widget/nhacung_combobox.dart';
 import '../../../nhomhang/presentation/ui/widget/nhomhang_combobox.dart';
@@ -43,7 +45,8 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
   bool theoDoi = true;
 
 
-  bool tiepTucThem = false;
+  bool themTiep = false;
+  final _maHHFocus = FocusNode();
 
   @override
   void initState() {
@@ -75,11 +78,11 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
               ref.read(hangHoaViewProvider.notifier).updateRow(val);
             }
 
-            if(!tiepTucThem){
+            if(!themTiep){
               context.pop();
             }else{
               clear();
-
+              _maHHFocus.requestFocus();
             }
 
           }
@@ -154,197 +157,225 @@ class _HangHoaFormDialogState extends ConsumerState<HangHoaFormDialog> {
   Widget build(BuildContext context) {
     final state = ref.watch(hangHoaEditProvider);
     final getState = ref.watch(hangHoaGetEditProvider);
-    return DialogWindows(
-      width: 600,
-      height: 340,
-      title: 'THÔNG TIN HÀNG HÓA',
-      child: AppLoadingOverlay(
-        isLoading: state.isLoading || getState.isLoading,
-        child: Scaffold(
-          // backgroundColor: AppColor.background,
-          footers: [
-            Divider(color: AppColor.border300),
-            AppBar(
-              leading: [if (state.hasError) Text(state.error.toString(), style: TextStyle(color: Colors.red))],
+    return Shortcuts(
+      shortcuts: ShortcutConfig.shortcut,
+      child: Actions(
+        actions: {
+          SaveAndCloseIntent: CallbackAction<SaveAndCloseIntent>(
+            onInvoke: (SaveAndCloseIntent intent) {
+              themTiep = false;
+              if (widget.id == null) {
+                ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+              } else {
+                ref.read(hangHoaEditProvider.notifier).updateHangHoa(_hangHoaModel(), widget.id!);
+              }
+              return null;
+            },
+          ),
+          SaveConfirmIntent: CallbackAction<SaveConfirmIntent>(
+            onInvoke: (SaveConfirmIntent intent) {
+              if (widget.id == null) {
+                themTiep = true;
+                ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+              }
 
-              trailing: [
-                AppSaveButton(
-                  text: 'Lưu & đóng',
-                  onPressed: () async {
-                    tiepTucThem=false;
-                    if (widget.id == null) {
-                      ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
-                    } else {
-                      ref.read(hangHoaEditProvider.notifier).updateHangHoa(_hangHoaModel(), widget.id!);
-                    }
-                  },
+              return null;
+            },
+          ),
+        },
+        child: DialogWindows(
+          width: 600,
+          height: 340,
+          title: 'THÔNG TIN HÀNG HÓA',
+          child: AppLoadingOverlay(
+            isLoading: state.isLoading || getState.isLoading,
+            child: Scaffold(
+              // backgroundColor: AppColor.background,
+              footers: [
+                Divider(color: AppColor.border300),
+                AppBar(
+                  leading: [if (state.hasError) Text(state.error.toString(), style: TextStyle(color: Colors.red))],
+
+                  trailing: [
+                    AppSaveButton(
+                      text: 'Lưu & đóng',
+                      onPressed: () async {
+                        themTiep=false;
+                        if (widget.id == null) {
+                          ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+                        } else {
+                          ref.read(hangHoaEditProvider.notifier).updateHangHoa(_hangHoaModel(), widget.id!);
+                        }
+                      },
+                    ),
+                    if(widget.id==null) AppSaveButton(
+                      text: 'Lưu',
+                      onPressed: (){
+                        themTiep = true;
+                        ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+                      },
+                    )
+                  ],
                 ),
-                if(widget.id==null) AppSaveButton(
-                  text: 'Lưu',
-                  onPressed: (){
-                    tiepTucThem = true;
-                    ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
-                  },
-                )
               ],
-            ),
-          ],
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
-              children: [
-                AppRow(
-                  columnWidths: {0: 80, 1: 180, 3: 180},
-                  items: [
-                    Text('Mã hàng').medium,
-                    AppTextField(controller: txtMaHH,autofocus: true,),
-                    Row(children: [Gap(10), Text('Loại hàng').medium]),
-                    LoaiHangCombobox(
-                      selected: loaiHang,
-                      onChanged: (val) {
-                        setState(() {
-                          loaiHang = val;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 80},
-                  items: [
-                    Text('Tên hàng').medium,
-                    AppTextField(controller: txtTenHH),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 80, 1: 180, 3: 180},
-                  items: [
-                    Text('Đơn vị tính').medium,
-                    DvtCombobox(
-                      selected: dvt,
-                      showAdd: true,
-                      onChanged: (val) {
-                        setState(() {
-                          dvt = val;
-                        });
-                      },
-                    ),
-
-                    Row(children: [Gap(10), Text('Nhóm hàng').medium]),
-                    NhomHangCombobox(
-                      onChanged: (val) {
-                        setState(() {
-                          nhomHang = val;
-                        });
-                      },
-                      selected: nhomHang,
-                    ),
-                  ],
-                ),
-
-                AppRow(
-                  columnWidths: {0: 80, 1: 180, 3: 180},
-                  items: [
-                    Text('Nhà cung').medium,
-                    NhaCungCombobx(
-                      selected: maNC,
-                      onChanged: (val) {
-                        setState(() {
-                          maNC = val;
-                        });
-                      },
-                    ),
-                    Row(children: [Gap(10), Text('Kho ngầm định').medium]),
-                    TaiKhoanKhoCombobox(
-                      selected: khoNgamDinh,
-                      onChanged: (val) {
-                        setState(() {
-                          khoNgamDinh = val;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-
-                AppRow(
-                  columnWidths: {0: 80, 1: 180, 3: 180},
-                  items: [
-                    Text('Giá mua').medium,
-
-                    AppTextField(
-                      isNumber: true,
-                      textAlign: TextAlign.end,
-                      controller: txtGiaMua,
-                      onFieldLeave: () {
-                        txtGiaMua.text = NumHelper.numFormat(txtGiaMua.text);
-                      },
-                    ),
-                    Row(children: [Gap(10), Text('Giá bán').medium]),
-
-                    AppTextField(
-                      // focusNode: focusGiaBan,
-                      onFieldLeave: () {
-                        txtGiaBan.text = NumHelper.numFormat(txtGiaBan.text);
-                      },
-                      isNumber: true,
-                      textAlign: TextAlign.end,
-                      controller: txtGiaBan,
-                    ),
-                  ],
-                ),
-
-                AppRow(
-                  columnWidths: {0: 80},
-                  items: [
-                    Text('Ghi chú').medium,
-                    AppTextField(controller: txtGhiChu),
-                  ],
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
                   children: [
-                    Checkbox(
-                      state: tinhToanTonKho ? CheckboxState.checked : CheckboxState.unchecked,
-                      onChanged: (val) {
-                        setState(() {
-                          tinhToanTonKho = val.index == 0;
-                        });
-                      },
-                      trailing: Text('Tính toán tồn kho'),
+                    AppRow(
+                      columnWidths: {0: 80, 1: 180, 3: 180},
+                      items: [
+                        Text('Mã hàng').medium,
+                        AppTextField(controller: txtMaHH,autofocus: true,focusNode: _maHHFocus,),
+                        Row(children: [Gap(10), Text('Loại hàng').medium]),
+                        LoaiHangCombobox(
+                          selected: loaiHang,
+                          onChanged: (val) {
+                            setState(() {
+                              loaiHang = val;
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                    Checkbox(
-                      state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
-                      onChanged: (val) {
-                        setState(() {
-                          theoDoi = val.index == 0;
-                        });
-                      },
-                      trailing: Text('Mặc hàng đang theo dõi'),
+                    AppRow(
+                      columnWidths: {0: 80},
+                      items: [
+                        Text('Tên hàng').medium,
+                        AppTextField(controller: txtTenHH),
+                      ],
                     ),
+                    AppRow(
+                      columnWidths: {0: 80, 1: 180, 3: 180},
+                      items: [
+                        Text('Đơn vị tính').medium,
+                        DvtCombobox(
+                          selected: dvt,
+                          showAdd: true,
+                          onChanged: (val) {
+                            setState(() {
+                              dvt = val;
+                            });
+                          },
+                        ),
+
+                        Row(children: [Gap(10), Text('Nhóm hàng').medium]),
+                        NhomHangCombobox(
+                          onChanged: (val) {
+                            setState(() {
+                              nhomHang = val;
+                            });
+                          },
+                          selected: nhomHang,
+                        ),
+                      ],
+                    ),
+
+                    AppRow(
+                      columnWidths: {0: 80, 1: 180, 3: 180},
+                      items: [
+                        Text('Nhà cung').medium,
+                        NhaCungCombobx(
+                          selected: maNC,
+                          onChanged: (val) {
+                            setState(() {
+                              maNC = val;
+                            });
+                          },
+                        ),
+                        Row(children: [Gap(10), Text('Kho ngầm định').medium]),
+                        TaiKhoanKhoCombobox(
+                          selected: khoNgamDinh,
+                          onChanged: (val) {
+                            setState(() {
+                              khoNgamDinh = val;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+
+                    AppRow(
+                      columnWidths: {0: 80, 1: 180, 3: 180},
+                      items: [
+                        Text('Giá mua').medium,
+
+                        AppTextField(
+                          isNumber: true,
+                          textAlign: TextAlign.end,
+                          controller: txtGiaMua,
+                          onFieldLeave: () {
+                            txtGiaMua.text = NumHelper.numFormat(txtGiaMua.text);
+                          },
+                        ),
+                        Row(children: [Gap(10), Text('Giá bán').medium]),
+
+                        AppTextField(
+                          // focusNode: focusGiaBan,
+                          onFieldLeave: () {
+                            txtGiaBan.text = NumHelper.numFormat(txtGiaBan.text);
+                          },
+                          isNumber: true,
+                          textAlign: TextAlign.end,
+                          controller: txtGiaBan,
+                        ),
+                      ],
+                    ),
+
+                    AppRow(
+                      columnWidths: {0: 80},
+                      items: [
+                        Text('Ghi chú').medium,
+                        AppTextField(controller: txtGhiChu),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Checkbox(
+                          state: tinhToanTonKho ? CheckboxState.checked : CheckboxState.unchecked,
+                          onChanged: (val) {
+                            setState(() {
+                              tinhToanTonKho = val.index == 0;
+                            });
+                          },
+                          trailing: Text('Tính toán tồn kho'),
+                        ),
+                        Checkbox(
+                          state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
+                          onChanged: (val) {
+                            setState(() {
+                              theoDoi = val.index == 0;
+                            });
+                          },
+                          trailing: Text('Mặc hàng đang theo dõi'),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    // Row(
+                    //   spacing: 10,
+                    //   crossAxisAlignment: CrossAxisAlignment.end,
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     AppSaveButton(
+                    //       // text: 'Lưu',
+                    //       onPressed: () async {
+                    //         if (widget.id == null) {
+                    //           ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
+                    //         } else {
+                    //           ref.read(hangHoaEditProvider.notifier).updateHangHoa(_hangHoaModel(), widget.id!);
+                    //         }
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
-                // Spacer(),
-                // Row(
-                //   spacing: 10,
-                //   crossAxisAlignment: CrossAxisAlignment.end,
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     AppSaveButton(
-                //       // text: 'Lưu',
-                //       onPressed: () async {
-                //         if (widget.id == null) {
-                //           ref.read(hangHoaEditProvider.notifier).addHangHoa(_hangHoaModel());
-                //         } else {
-                //           ref.read(hangHoaEditProvider.notifier).updateHangHoa(_hangHoaModel(), widget.id!);
-                //         }
-                //       },
-                //     ),
-                //   ],
-                // ),
-              ],
+              ),
             ),
           ),
         ),

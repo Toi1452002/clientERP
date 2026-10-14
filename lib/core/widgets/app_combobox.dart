@@ -100,44 +100,60 @@ class _AppComboboxState extends mt.State<AppCombobox> {
           height: 26,
           child: Row(
             children: [
-              mt.InkWell(
-                onDoubleTap: widget.onDoubleTap == null ? null : () => widget.onDoubleTap?.call(widget.value),
-                child: Text(
-                  selectString,
-                  style: TextStyle(
-                    fontSize: widget.noBorder ? 13 : 13,
-                    color: !widget.enabled
-                        ? Colors.gray.shade400
-                        : widget.onDoubleTap == null
-                        ? Colors.black
-                        : Colors.red,
-                    overflow: TextOverflow.ellipsis
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: mt.GestureDetector(
+                    behavior: HitTestBehavior.deferToChild,
+                    onDoubleTap: widget.onDoubleTap == null ? null : () => widget.onDoubleTap?.call(widget.value),
+                    child: Text(
+                      selectString,
+                      maxLines: 1,
+                      style: TextStyle(
+
+                        fontSize: widget.noBorder ? 13 : 13,
+                        color: !widget.enabled
+                            ? Colors.gray.shade400
+                            : widget.onDoubleTap == null
+                            ? Colors.black
+                            : Colors.red,
+                        overflow: TextOverflow.ellipsis
+                      ),
+                    ),
                   ),
                 ),
               ),
-              Spacer(),
-              if (widget.enabled && widget.onReload != null)
-                mt.InkWell(
-                  child: Icon(PhosphorIcons.arrowsClockwise, size: 15, color: Colors.gray.shade400),
-                  onTap: () {
-                    widget.onReload?.call();
-                  },
+              // Spacer(),
+              mt.Container(
+                color: Colors.gray.shade100,
+                // width: 50,
+                child: Row(
+                  children: [
+                    if (widget.enabled && widget.onReload != null)
+                      mt.InkWell(
+                        child: Icon(PhosphorIcons.arrowsClockwise, size: 15, color: Colors.gray.shade400),
+                        onTap: () {
+                          widget.onReload?.call();
+                        },
+                      ),
+                    if (widget.value != null && widget.enabled && widget.enabledClear)
+                      mt.InkWell(
+                        child: Icon(PhosphorIcons.x, size: 15, color: Colors.red.shade400),
+                        onTap: () {
+                          widget.onChanged?.call(null);
+                        },
+                      ),
+                    if (widget.enabled && widget.onAdd != null)
+                      mt.InkWell(
+                        child: Icon(PhosphorIcons.plusCircle, size: 20, color: Colors.green),
+                        onTap: () {
+                          widget.onAdd?.call();
+                        },
+                      ),
+                    Icon(PhosphorIcons.caretDown, size: 15, color: Colors.gray.shade400),
+                  ],
                 ),
-              if (widget.value != null && widget.enabled && widget.enabledClear)
-                mt.InkWell(
-                  child: Icon(PhosphorIcons.x, size: 15, color: Colors.gray.shade400),
-                  onTap: () {
-                    widget.onChanged?.call(null);
-                  },
-                ),
-              if (widget.enabled && widget.onAdd != null)
-                mt.InkWell(
-                  child: Icon(PhosphorIcons.plusCircle, size: 20, color: Colors.green),
-                  onTap: () {
-                    widget.onAdd?.call();
-                  },
-                ),
-              Icon(PhosphorIcons.caretUpDown, size: 15, color: Colors.gray.shade400),
+              )
             ],
           ),
         ),
@@ -175,6 +191,7 @@ class _AppComboboxState extends mt.State<AppCombobox> {
             .toList(),
         dropdownStyleData: DropdownStyleData(
           // isOverButton: !widget.noSearch,
+
           width: widget.menuWidth,
           maxHeight: 260,
           padding: EdgeInsets.zero,

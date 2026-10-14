@@ -120,6 +120,7 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
                   title: ['#', 'stt'],
                   width: 35,
                   readOnly: true,
+                  showFilter: false,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
                 ),
                 AppTableColumn(

@@ -9,7 +9,9 @@ class AppDateField extends StatefulWidget {
   final DateTime? value;
   final void Function(DateTime? date)? onChanged;
   final bool enabled;
-  const AppDateField({super.key, this.value, this.onChanged, this.enabled = true});
+  final bool autofocus;
+  final FocusNode? focusNode;
+  const AppDateField({super.key, this.value, this.onChanged, this.enabled = true, this.autofocus = false,this.focusNode});
 
   @override
   State<AppDateField> createState() => _AppDateFieldState();
@@ -17,7 +19,7 @@ class AppDateField extends StatefulWidget {
 
 class _AppDateFieldState extends State<AppDateField> {
   final _controller = TextEditingController();
-  final _focus = FocusNode();
+  // final _focus = FocusNode();
   @override
   void initState() {
     if(widget.value!=null){
@@ -38,7 +40,7 @@ class _AppDateFieldState extends State<AppDateField> {
   @override
   void dispose() {
     _controller.dispose();
-    _focus.dispose();
+    // _focus.dispose();
     super.dispose();
   }
   @override
@@ -47,8 +49,10 @@ class _AppDateFieldState extends State<AppDateField> {
       enabled:widget.enabled ,
       hintText: "dd/mm/yyyy",
       controller: _controller,
-      focusNode: _focus,
+      focusNode: widget.focusNode,
       isDateField: true,
+      textAlign: TextAlign.center,
+      autofocus: widget.autofocus,
       onFieldLeave: (){
         final b = DateHelper.stringToDate(_controller.text);
         // if(b==null && _controller.text.isNotEmpty) {

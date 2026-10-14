@@ -22,6 +22,7 @@ class BKeSoQuyTableManager extends AppTableState<BKeSoQuyModel>{
       'Thu': TrinaCell(value: e.thu),
       'Chi': TrinaCell(value: e.chi),
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
   
 }

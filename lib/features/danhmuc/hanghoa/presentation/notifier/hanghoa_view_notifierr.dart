@@ -69,10 +69,12 @@ class HangHoaViewController extends AsyncNotifier<List<HangHoaViewModel>>{
     final currentList = state.value ?? [];
     if(result>0){
       currentList.removeWhere((e)=>e.id==id);
-    }
 
+      ref.invalidate(hangHoaLookupProvider);
+    }
     state = AsyncData(currentList);
-    ref.invalidate(hangHoaLookupProvider);
+
+
   }
 
 }

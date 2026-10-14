@@ -24,7 +24,7 @@ class BKeThuChiTableManager extends AppTableState<BKeThuChiModel>{
       'TKNo': TrinaCell(value: e.tkNo),
       'TKCo': TrinaCell(value: e.tkCo),
     })).toList());
-
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

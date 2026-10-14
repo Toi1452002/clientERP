@@ -24,6 +24,7 @@ class BkeHoaDonBanManager extends AppTableState<BKeHoaDonBanModel>{
       'TienThue': TrinaCell(value: e.tienThue),
       'DienGiai': TrinaCell(value: e.dienGiai)
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

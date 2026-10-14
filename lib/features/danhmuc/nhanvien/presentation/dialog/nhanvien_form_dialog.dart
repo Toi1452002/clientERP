@@ -1,4 +1,6 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
+import 'package:erp_client_1/core/shortcut/Shortcut_intent.dart';
+import 'package:erp_client_1/core/shortcut/shortcut_config.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/data/model/nhanvien_edit_model.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/data/model/nhanvien_request_model.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/notifier/nhanvien_edit_notifier.dart';
@@ -6,7 +8,6 @@ import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/notifier/nha
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/notifier/nhanvien_view_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/state/pcgt_table_manager.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -173,277 +174,313 @@ class _NhanVienFormDialogState extends ConsumerState<NhanVienFormDialog> {
     txtLuongCB.text = '0';
     setState(() {});
   }
+  void saveClose(){
+    if(isInit){
+      themTiep = false;
+      if (widget.id == null) {
+        ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
+      } else {
+        ref
+            .read(nhanVienEditProvider.notifier)
+            .updateNV(_model(), _pcgtTableManager.toRequest(), widget.id!);
+      }
+    }
+  }
+
+  void save(){
+    if(widget.id==null){
+      themTiep = true;
+      ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final editState = ref.watch(nhanVienEditProvider);
     final getEditState = ref.watch(nhanVienGetEditProvider);
-    return DialogWindows(
-      width: 820,
-      height: 460,
-      title: 'THÔNG TIN NHÂN VIÊN',
-      // beforeClose: (){
-      //   ref.invalidate(pcgtViewProvider);
-      //   context.pop();
-      // },
-      child: AppLoadingOverlay(
-        isLoading: editState.isLoading,
-        child: Scaffold(
-          footers: [
-            Divider(color: AppColor.border,),
-            AppBar(
-              leading: [
-                if(editState.hasError) Text(editState.error.toString(),style: TextStyle(color: Colors.red),)
-              ],
-              trailing: [
-                AppSaveButton(
-                  text: 'Lưu & đóng',
-                  onPressed: () async {
-                    if(isInit){
-                      themTiep = false;
-                      if (widget.id == null) {
-                        ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
-                      } else {
-                        ref
-                            .read(nhanVienEditProvider.notifier)
-                            .updateNV(_model(), _pcgtTableManager.toRequest(), widget.id!);
-                      }
-                    }
+    return Shortcuts(
+      shortcuts: ShortcutConfig.shortcut,
+      child: Actions(
+        actions: {
+          SaveAndCloseIntent: CallbackAction<SaveAndCloseIntent>(
+            onInvoke: (SaveAndCloseIntent intent){
+              saveClose();
+              return null;
+            }
+          ),
+          SaveConfirmIntent: CallbackAction<SaveConfirmIntent>(
+            onInvoke: (SaveConfirmIntent intent){
+              save();
+              return null;
+            }
+          )
+        },
+        child: DialogWindows(
+          width: 820,
+          height: 460,
+          title: 'THÔNG TIN NHÂN VIÊN',
+          child: AppLoadingOverlay(
+            isLoading: editState.isLoading,
+            child: Scaffold(
+              footers: [
+                Divider(color: AppColor.border,),
+                AppBar(
+                  leading: [
+                    if(editState.hasError) Text(editState.error.toString(),style: TextStyle(color: Colors.red),)
+                  ],
+                  trailing: [
+                    AppSaveButton(
+                      text: 'Lưu & đóng',
+                      onPressed: () async {
+                        saveClose();
+                        // if(isInit){
+                        //   themTiep = false;
+                        //   if (widget.id == null) {
+                        //     ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
+                        //   } else {
+                        //     ref
+                        //         .read(nhanVienEditProvider.notifier)
+                        //         .updateNV(_model(), _pcgtTableManager.toRequest(), widget.id!);
+                        //   }
+                        // }
 
-                  },
-                ),
-                if(widget.id==null)AppSaveButton(
-                  text: 'Lưu',
-                  onPressed: (){
-                    themTiep = true;
-                    ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
-                  },
+                      },
+                    ),
+                    if(widget.id==null)AppSaveButton(
+                      text: 'Lưu',
+                      onPressed: (){
+                        save();
+                        // themTiep = true;
+                        // ref.read(nhanVienEditProvider.notifier).add(_model(), _pcgtTableManager.toRequest());
+                      },
+                    )
+                  ],
                 )
               ],
-            )
-          ],
-          child: Padding(
-            padding: EdgeInsetsGeometry.zero,
-            child: Row(
-              // spacing: 10,
-              children: [
-                Expanded(
-                  child: FocusTraversalGroup(
-                    policy: WidgetOrderTraversalPolicy(),
-                    child: AppLoadingOverlay(
-                      isLoading: getEditState.isLoading,
-                      child: Scaffold(
+              child: Padding(
+                padding: EdgeInsetsGeometry.zero,
+                child: Row(
+                  // spacing: 10,
+                  children: [
+                    Expanded(
+                      child: FocusTraversalGroup(
+                        policy: WidgetOrderTraversalPolicy(),
+                        child: AppLoadingOverlay(
+                          isLoading: getEditState.isLoading,
+                          child: Scaffold(
 
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 10,
-                            children: [
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-                                items: [
-                                  Text('Mã nhân viên').medium,
-                                  AppTextField(controller: txtMaNV),
-                                  Text('Họ và tên').medium.withPadding(left: 20),
-                                  AppTextField(
-                                    controller: txtHoTen,
-                                    onFieldLeave: () {
-                                      txtHoTen.text = capitalizeFirstLetter(txtHoTen.text);
-                                    },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 10,
+                                children: [
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+                                    items: [
+                                      Text('Mã nhân viên').medium,
+                                      AppTextField(controller: txtMaNV, autofocus: true,),
+                                      Text('Họ và tên').medium.withPadding(left: 20),
+                                      AppTextField(
+                                        controller: txtHoTen,
+                                        onFieldLeave: () {
+                                          txtHoTen.text = capitalizeFirstLetter(txtHoTen.text);
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-                                items: [
-                                  Text('Ngày sinh').medium,
-                                  AppDateField(
-                                    onChanged: (val) {
-                                      ngaySinh = val;
-                                    },
-                                    value: ngaySinh,
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+                                    items: [
+                                      Text('Ngày sinh').medium,
+                                      AppDateField(
+                                        onChanged: (val) {
+                                          ngaySinh = val;
+                                        },
+                                        value: ngaySinh,
+                                      ),
+                                      Text('Giới tính').medium.withPadding(left: 20),
+                                      Checkbox(
+                                        state: gioiTinh ? CheckboxState.checked : CheckboxState.unchecked,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            gioiTinh = val.index == 0;
+                                          });
+                                        },
+                                        trailing: Text('Nữ'),
+                                      ),
+                                    ],
                                   ),
-                                  Text('Giới tính').medium.withPadding(left: 20),
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+                                    items: [
+                                      Text('CCCD').medium,
+                                      AppTextField(controller: txtCCCD),
+                                      Text('MST').medium.withPadding(left: 20),
+                                      AppTextField(controller: txtMST),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    columnWidths: {0: 100},
+                                    items: [
+                                      Text('Địa chỉ').medium,
+                                      AppTextField(controller: txtDiaChi),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+                                    items: [
+                                      Text('Điện thoại').medium,
+                                      AppTextField(controller: txtDienThoai),
+                                      Text('Chức danh').medium.withPadding(left: 20),
+                                      AppTextField(controller: txtChucDanh),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+                                    items: [
+                                      Text('Trình độ').medium,
+                                      AppTextField(controller: txtTrinhDo),
+                                      Text('Chuyên môn').medium.withPadding(left: 20),
+                                      AppTextField(controller: txtChuyenMon),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    columnWidths: {0: 100, 1: 120, 2: 110},
+
+                                    items: [
+                                      Text('Ngày vào làm').medium,
+                                      AppDateField(
+                                        value: ngayVaoLam,
+                                        onChanged: (val) {
+                                          ngayVaoLam = val;
+                                        },
+                                      ),
+                                      Text('Lương cơ bản').medium.withPadding(left: 20),
+                                      AppTextField(
+                                        isDouble: true,
+                                        textAlign: TextAlign.end,
+                                        controller: txtLuongCB,
+                                        onFieldLeave: () {
+                                          txtLuongCB.text = NumHelper.numFormat(txtLuongCB.text);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    columnWidths: {0: 100},
+                                    items: [
+                                      Text('Ghi chú').medium,
+                                      AppTextField(controller: txtGhiChu),
+                                    ],
+                                  ),
+                                  AppRow(
+                                    items: [
+                                      Checkbox(
+                                        state: thoiVu ? CheckboxState.checked : CheckboxState.unchecked,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            thoiVu = val.index == 0;
+                                          });
+                                        },
+                                        trailing: Text('Thời vụ'),
+                                      ),
+                                      Visibility(
+                                        visible: thoiVu,
+                                        child: Checkbox(
+                                          state: khongCuTru ? CheckboxState.checked : CheckboxState.unchecked,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              khongCuTru = val.index == 0;
+                                              coCamKet = !(val.index == 0);
+                                            });
+                                          },
+                                          trailing: Text('Không cư trú'),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: !khongCuTru && thoiVu,
+                                        child: Checkbox(
+                                          state: coCamKet ? CheckboxState.checked : CheckboxState.unchecked,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              coCamKet = val.index == 0;
+                                            });
+                                          },
+                                          trailing: Text('Có cam kết 08'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   Checkbox(
-                                    state: gioiTinh ? CheckboxState.checked : CheckboxState.unchecked,
+                                    state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
                                     onChanged: (val) {
                                       setState(() {
-                                        gioiTinh = val.index == 0;
+                                        theoDoi = val.index == 0;
                                       });
                                     },
-                                    trailing: Text('Nữ'),
+                                    trailing: Text('Đang làm việc'),
                                   ),
                                 ],
                               ),
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-                                items: [
-                                  Text('CCCD').medium,
-                                  AppTextField(controller: txtCCCD),
-                                  Text('MST').medium.withPadding(left: 20),
-                                  AppTextField(controller: txtMST),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100},
-                                items: [
-                                  Text('Địa chỉ').medium,
-                                  AppTextField(controller: txtDiaChi),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-                                items: [
-                                  Text('Điện thoại').medium,
-                                  AppTextField(controller: txtDienThoai),
-                                  Text('Chức danh').medium.withPadding(left: 20),
-                                  AppTextField(controller: txtChucDanh),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-                                items: [
-                                  Text('Trình độ').medium,
-                                  AppTextField(controller: txtTrinhDo),
-                                  Text('Chuyên môn').medium.withPadding(left: 20),
-                                  AppTextField(controller: txtChuyenMon),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100, 1: 120, 2: 110},
-
-                                items: [
-                                  Text('Ngày vào làm').medium,
-                                  AppDateField(
-                                    value: ngayVaoLam,
-                                    onChanged: (val) {
-                                      ngayVaoLam = val;
-                                    },
-                                  ),
-                                  Text('Lương cơ bản').medium.withPadding(left: 20),
-                                  AppTextField(
-                                    isDouble: true,
-                                    textAlign: TextAlign.end,
-                                    controller: txtLuongCB,
-                                    onFieldLeave: () {
-                                      txtLuongCB.text = NumHelper.numFormat(txtLuongCB.text);
-                                    },
-                                  ),
-                                ],
-                              ),
-                              AppRow(
-                                columnWidths: {0: 100},
-                                items: [
-                                  Text('Ghi chú').medium,
-                                  AppTextField(controller: txtGhiChu),
-                                ],
-                              ),
-                              AppRow(
-                                items: [
-                                  Checkbox(
-                                    state: thoiVu ? CheckboxState.checked : CheckboxState.unchecked,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        thoiVu = val.index == 0;
-                                      });
-                                    },
-                                    trailing: Text('Thời vụ'),
-                                  ),
-                                  Visibility(
-                                    visible: thoiVu,
-                                    child: Checkbox(
-                                      state: khongCuTru ? CheckboxState.checked : CheckboxState.unchecked,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          khongCuTru = val.index == 0;
-                                          coCamKet = !(val.index == 0);
-                                        });
-                                      },
-                                      trailing: Text('Không cư trú'),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: !khongCuTru && thoiVu,
-                                    child: Checkbox(
-                                      state: coCamKet ? CheckboxState.checked : CheckboxState.unchecked,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          coCamKet = val.index == 0;
-                                        });
-                                      },
-                                      trailing: Text('Có cam kết 08'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Checkbox(
-                                state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
-                                onChanged: (val) {
-                                  setState(() {
-                                    theoDoi = val.index == 0;
-                                  });
-                                },
-                                trailing: Text('Đang làm việc'),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: AppColor.background,
-                      border: Border(left: BorderSide(color: AppColor.border))
-                    ),
+                    SizedBox(
+                      width: 300,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppColor.background,
+                          border: Border(left: BorderSide(color: AppColor.border))
+                        ),
 
-                    padding: EdgeInsets.all(0),
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final state = ref.watch(pcgtViewProvider);
-                        return state.when(
-                          data: (val) {
-                            return AppTable(
-                              onLoaded: (e) {
-                                _pcgtTableManager = PCGTTableManager(e.stateManager);
-                                _pcgtTableManager.loadView(val);
-                                isInit = true;
+                        padding: EdgeInsets.all(0),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final state = ref.watch(pcgtViewProvider);
+                            return state.when(
+                              data: (val) {
+                                return AppTable(
+                                  onLoaded: (e) {
+                                    _pcgtTableManager = PCGTTableManager(e.stateManager);
+                                    _pcgtTableManager.loadView(val);
+                                    isInit = true;
+                                  },
+                                  columns: [
+                                    AppTableColumn(
+                                      title: ['', 'stt'],
+                                      width: 30,
+                                      readOnly: true,
+                                      renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
+                                    ),
+                                    AppTableColumn(
+                                      title: ['Mô tả', 'MoTa'],
+                                      width: 150,
+                                      renderer: (re) => AppTableCell.textBlue(re.cell.value),
+                                    ),
+                                    AppTableColumn(
+                                      title: ['Tiêu chuẩn', 'SoTieuChuan'],
+                                      showFooter: true,
+                                      columnType: ColumnType.num,
+                                      columnAlign: ColumnAlign.right,
+                                      isEdit: true,
+                                      width: 90,
+                                    ),
+                                  ],
+                                );
                               },
-                              columns: [
-                                AppTableColumn(
-                                  title: ['', 'stt'],
-                                  width: 30,
-                                  readOnly: true,
-                                  renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),
-                                ),
-                                AppTableColumn(
-                                  title: ['Mô tả', 'MoTa'],
-                                  width: 150,
-                                  renderer: (re) => AppTableCell.textBlue(re.cell.value),
-                                ),
-                                AppTableColumn(
-                                  title: ['Tiêu chuẩn', 'SoTieuChuan'],
-                                  showFooter: true,
-                                  columnType: ColumnType.num,
-                                  columnAlign: ColumnAlign.right,
-                                  isEdit: true,
-                                  width: 90,
-                                ),
-                              ],
+                              error: (e, s) => Center(child: Text(e.toString())),
+                              loading: () => Center(child: CircularProgressIndicator(size: 50)),
                             );
                           },
-                          error: (e, s) => Center(child: Text(e.toString())),
-                          loading: () => Center(child: CircularProgressIndicator(size: 50)),
-                        );
-                      },
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

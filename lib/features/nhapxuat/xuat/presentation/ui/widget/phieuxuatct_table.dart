@@ -130,6 +130,7 @@ class PhieuXuatCTTable extends ConsumerWidget {
           padding: 0,
           renderer: (re) {
             return TaiKhoanNoPxCombobox(
+
               noBorder: true,
               enabled: !re.stateManager.mode.isReadOnly,
 

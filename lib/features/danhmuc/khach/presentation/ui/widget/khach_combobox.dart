@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,12 +26,21 @@ class KhachCombobox extends ConsumerWidget {
           onAdd:!showAdd?null: (){
             showAppDialog(context, child: KhachFormDialog());
           },
+          onDoubleTap: (val){
+            final kh = value.firstWhereOrNull((e)=>e.maKH==val);
+            if(kh!=null){
+              showAppDialog(context, child: KhachFormDialog(id: kh.id,));
+            }else{
+              showInfo(context, "Không tìm thấy khách hàng!");
+            }
+
+          },
           onChanged: onChanged,
           enabled: enabled,
           value: selected,
           enabledClear: clear,
-          menuWidth: 300,
-          columnWidth: [50, 250],
+          menuWidth: 400,
+          columnWidth: [100, 300],
           items: value.map((e) => ComboboxItem(value: e.maKH, text: [e.maKH, e.tenKH])).toList(),
         );
       },

@@ -1,4 +1,6 @@
 import 'package:erp_client_1/core/constain/app_color.dart';
+import 'package:erp_client_1/core/shortcut/Shortcut_intent.dart';
+import 'package:erp_client_1/core/shortcut/shortcut_config.dart';
 import 'package:erp_client_1/features/danhmuc/khach/data/model/khach_edit_model.dart';
 import 'package:erp_client_1/features/danhmuc/khach/presentation/notifier/khach_edit_notifier.dart';
 import 'package:erp_client_1/features/danhmuc/khach/presentation/notifier/khach_get_edit_notifier.dart';
@@ -36,8 +38,7 @@ class _KhachFormDialogState extends ConsumerState<KhachFormDialog> {
   final txtGhiChu = TextEditingController();
 
   bool themTiep = false;
-
-
+  final _maKHFocus = FocusNode();
 
   Future<void> loadKhach(KhachEditModel result) async {
     txtMaKH.text = result.maKH;
@@ -76,46 +77,46 @@ class _KhachFormDialogState extends ConsumerState<KhachFormDialog> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      ref.read(khachGetEditProvider.notifier).get(id:widget.id);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(khachGetEditProvider.notifier).get(id: widget.id);
     });
 
-    ref.listenManual(khachGetEditProvider, (_,next){
+    ref.listenManual(khachGetEditProvider, (_, next) {
       next.whenOrNull(
-        data: (val){
-          if(val!=null){
+        data: (val) {
+          if (val != null) {
             loadKhach(val);
           }
         },
-        error: (e,s){
+        error: (e, s) {
           showInfo(context, e.toString());
-        }
+        },
       );
     });
 
     ref.listenManual(khachEditProvider, (pre, next) {
       next.whenOrNull(
         data: (val) {
-          if(val!=null){
-            if(widget.id==null){
+          if (val != null) {
+            if (widget.id == null) {
               ref.read(khachViewProvider.notifier).add(val);
-            }else{
+            } else {
               ref.read(khachViewProvider.notifier).updateRow(val);
             }
           }
 
-          if(themTiep){
+          if (themTiep) {
             clear();
-          }else{
+            _maKHFocus.requestFocus();
+          } else {
             context.pop();
           }
-
         },
       );
     });
   }
 
-  void clear (){
+  void clear() {
     txtMaKH.clear();
     txtTenKH.clear();
     txtDiaChi.clear();
@@ -131,134 +132,162 @@ class _KhachFormDialogState extends ConsumerState<KhachFormDialog> {
     theoDoi = true;
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(khachEditProvider);
     final getState = ref.watch(khachGetEditProvider);
-    return DialogWindows(
-      width: 600,
-      height: 400,
-      title: 'THÔNG TIN KHÁCH HÀNG',
-      child: AppLoadingOverlay(
-        isLoading: state.isLoading || getState.isLoading,
-        child: Scaffold(
-          footers: [
-            Divider(color: AppColor.border300,),
-            AppBar(
-              leading: [
-                if(state.hasError) Text(state.error.toString(),style: TextStyle(color: Colors.red),)
-              ],
-              trailing: [
-                AppSaveButton(
-                  text: "Lưu & đóng",
-                  onPressed: () async {
-                    themTiep = false;
-                    if (widget.id == null) {
-                      ref.read(khachEditProvider.notifier).addKhach(_requestModel());
-                    } else {
-                      ref.read(khachEditProvider.notifier).updateKhach(_requestModel(), widget.id!);
-                    }
-                  },
+    return Shortcuts(
+      shortcuts: ShortcutConfig.shortcut,
+      child: Actions(
+        actions: {
+          SaveAndCloseIntent: CallbackAction<SaveAndCloseIntent>(
+            onInvoke: (SaveAndCloseIntent intent) {
+              themTiep = false;
+              if (widget.id == null) {
+                ref.read(khachEditProvider.notifier).addKhach(_requestModel());
+              } else {
+                ref.read(khachEditProvider.notifier).updateKhach(_requestModel(), widget.id!);
+              }
+              return null;
+            },
+          ),
+          SaveConfirmIntent: CallbackAction<SaveConfirmIntent>(
+            onInvoke: (SaveConfirmIntent intent) {
+              if (widget.id == null) {
+                themTiep = true;
+                ref.read(khachEditProvider.notifier).addKhach(_requestModel());
+              }
+
+              return null;
+            },
+          ),
+        },
+        child: DialogWindows(
+          width: 650,
+          height: 400,
+          title: 'THÔNG TIN KHÁCH HÀNG',
+          child: AppLoadingOverlay(
+            isLoading: state.isLoading || getState.isLoading,
+            child: Scaffold(
+              footers: [
+                Divider(color: AppColor.border300),
+                AppBar(
+                  leading: [if (state.hasError) Text(state.error.toString(), style: TextStyle(color: Colors.red))],
+                  trailing: [
+                    AppSaveButton(
+                      text: "Lưu & đóng",
+                      onPressed: () async {
+                        themTiep = false;
+                        if (widget.id == null) {
+                          ref.read(khachEditProvider.notifier).addKhach(_requestModel());
+                        } else {
+                          ref.read(khachEditProvider.notifier).updateKhach(_requestModel(), widget.id!);
+                        }
+                      },
+                    ),
+                    if (widget.id == null)
+                      AppSaveButton(
+                        text: "Lưu",
+                        onPressed: () {
+                          themTiep = true;
+                          ref.read(khachEditProvider.notifier).addKhach(_requestModel());
+                        },
+                      ),
+                  ],
                 ),
-                if (widget.id == null) AppSaveButton(
-                  text: "Lưu",
-                  onPressed: (){
-                    themTiep = true;
-                    ref.read(khachEditProvider.notifier).addKhach(_requestModel());
-                  },
-                )
               ],
-            )
-          ],
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
-              children: [
-                AppRow(
-                  columnWidths: {0: 120, 2: 120},
-                  items: [
-                    Text('Mã khách hàng').medium,
-                    AppTextField(controller: txtMaKH, isUpperCase: true,autofocus: true,),
-                    Row(children: [Gap(20), Text('Loại khách').medium]),
-                    AppCombobox(
-                      enabledClear: false,
-                      value: loaiKH,
-                      onChanged: (val) => setState(() {
-                        loaiKH = val;
-                      }),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    AppRow(
+                      columnWidths: {0: 120, 2: 120},
                       items: [
-                        ComboboxItem(value: 'KH', text: ['Khách hàng']),
-                        ComboboxItem(value: 'NC', text: ['Nhà cung']),
-                        ComboboxItem(value: 'CH', text: ['Cả hai']),
+                        Text('Mã khách hàng').medium,
+                        AppTextField(controller: txtMaKH, isUpperCase: true, autofocus: true,focusNode: _maKHFocus,),
+                        Row(children: [Gap(20), Text('Loại khách').medium]),
+                        AppCombobox(
+                          enabledClear: false,
+                          value: loaiKH,
+                          onChanged: (val) => setState(() {
+                            loaiKH = val;
+                          }),
+                          items: [
+                            ComboboxItem(value: 'KH', text: ['Khách hàng']),
+                            ComboboxItem(value: 'NC', text: ['Nhà cung']),
+                            ComboboxItem(value: 'CH', text: ['Cả hai']),
+                          ],
+                        ),
                       ],
                     ),
+                    AppRow(
+                      columnWidths: {0: 120, 2: 120},
+                      items: [
+                        Text('Tên khách hàng').medium,
+                        AppTextField(controller: txtTenKH),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120},
+                      items: [
+                        Text('Địa chỉ').medium,
+                        AppTextField(controller: txtDiaChi),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120, 2: 120},
+                      items: [
+                        Text('Điện thoại').medium,
+                        AppTextField(controller: txtDienThoai),
+                        Row(children: [Gap(20), Text('Di động').medium]),
+                        AppTextField(controller: txtDiDong),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120, 2: 120},
+                      items: [
+                        Text('Fax').medium,
+                        AppTextField(controller: txtFax),
+                        Row(children: [Gap(20), Text('Email').medium]),
+                        AppTextField(controller: txtEmail),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120, 2: 120},
+                      items: [
+                        Text('Mã số thuế').medium,
+                        AppTextField(controller: txtMST),
+                        Row(children: [Gap(20), Text('Số tài khoản').medium]),
+                        AppTextField(controller: txtSTK),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120},
+                      items: [
+                        Text('Ngân hàng').medium,
+                        AppTextField(controller: txtNganHang),
+                      ],
+                    ),
+                    AppRow(
+                      columnWidths: {0: 120},
+                      items: [
+                        Text('Ghi chú').medium,
+                        AppTextField(controller: txtGhiChu),
+                      ],
+                    ),
+                    Checkbox(
+                      state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
+                      onChanged: (val) => setState(() {
+                        theoDoi = val.index == 0;
+                      }),
+                      trailing: Text('Khách đang theo dõi'),
+                    ).withPadding(left: 120),
                   ],
                 ),
-                AppRow(
-                  columnWidths: {0: 120, 2: 120},
-                  items: [
-                    Text('Tên khách hàng').medium,
-                    AppTextField(controller: txtTenKH),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120},
-                  items: [
-                    Text('Địa chỉ').medium,
-                    AppTextField(controller: txtDiaChi),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120, 2: 120},
-                  items: [
-                    Text('Điện thoại').medium,
-                    AppTextField(controller: txtDienThoai),
-                    Row(children: [Gap(20), Text('Di động').medium]),
-                    AppTextField(controller: txtDiDong),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120, 2: 120},
-                  items: [
-                    Text('Fax').medium,
-                    AppTextField(controller: txtFax),
-                    Row(children: [Gap(20), Text('Email').medium]),
-                    AppTextField(controller: txtEmail),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120, 2: 120},
-                  items: [
-                    Text('Mã số thuế').medium,
-                    AppTextField(controller: txtMST),
-                    Row(children: [Gap(20), Text('Số tài khoản').medium]),
-                    AppTextField(controller: txtSTK),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120},
-                  items: [
-                    Text('Ngân hàng').medium,
-                    AppTextField(controller: txtNganHang),
-                  ],
-                ),
-                AppRow(
-                  columnWidths: {0: 120},
-                  items: [
-                    Text('Ghi chú').medium,
-                    AppTextField(controller: txtGhiChu),
-                  ],
-                ),
-                Checkbox(
-                  state: theoDoi ? CheckboxState.checked : CheckboxState.unchecked,
-                  onChanged: (val) => setState(() {
-                    theoDoi = val.index == 0;
-                  }),
-                  trailing: Text('Khách đang theo dõi'),
-                ).withPadding(left: 120),
-              ],
+              ),
             ),
           ),
         ),

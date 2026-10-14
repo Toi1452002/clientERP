@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:erp_client_1/core/constain/app_color.dart';
+import 'package:erp_client_1/core/shortcut/shortcut_config.dart';
 import 'package:erp_client_1/features/danhmuc/khach/presentation/ui/widget/nhacung_combobox.dart';
 import 'package:erp_client_1/features/danhmuc/manghiepvu/presentation/ui/widget/nvu_chi_combobox.dart';
 import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/state/nhanvien_lookup_state.dart';
@@ -10,11 +11,14 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/shortcut/Shortcut_intent.dart';
 import '../../../../../core/utils/num_helper.dart';
 import '../../../../../core/widgets/widget.dart';
 import '../../../../danhmuc/khach/data/model/khach_lookup_model.dart';
 import '../../../../danhmuc/khach/presentation/ui/state/khach_lookup_state.dart';
 import '../../../../danhmuc/taikhoan/presentation/ui/widget/taikhoan_xl0_combobox.dart';
+import '../../../../report/presentation/dialog/report_dialog.dart';
+import '../../../../report/presentation/notifier/report_notifier.dart';
 import '../../data/model/phieuchi_save_model.dart';
 import '../notifier/chi_delete_notifier.dart';
 import '../notifier/chi_save_notifier.dart';
@@ -166,349 +170,401 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
     final state = ref.watch(chiProvider);
     final saveState = ref.watch(chiSaveProvider);
     final deleteState = ref.watch(chiDeleteProvider);
-    return DialogWindows(
-      width: 550,
-      beforeClose: () async {
-        if (!khoa && txtSoPhieu.text.isNotEmpty) {
-          showClosePhieu(
-            context,
-            onPressed: () {
-              ref.read(chiSaveProvider.notifier).save(_saveModel(), id);
-              Navigator.pop(context);
+    return Shortcuts(
+      shortcuts: ShortcutConfig.shortcut,
+      child: Actions(
+        actions: {
+          SaveIntent: CallbackAction<SaveIntent>(
+            onInvoke: (SaveIntent intent) {
+              isSave = true;
+              _autoSave();
+              return null;
             },
-          );
-        } else {
-          Navigator.pop(context);
-        }
-      },
-      height: 440,
-      title: 'PHIẾU CHI',
-      child: Scaffold(
-        backgroundColor: AppColor.background,
-        footers: [
-          Divider(color: AppColor.border),
-          AppBar(
-            // backgroundColor: Colors.gray.shade200,
-            leading: [
-              AppButtonPage(
-                first: () {
-                  _autoSave();
-                  ref.read(chiProvider.notifier).getFirst();
+          ),
+          EditIntent: CallbackAction<EditIntent>(
+            onInvoke: (EditIntent intent) {
+              if(khoa){
+                ref.read(chiSaveProvider.notifier).updateEdit(id);
+                isUpdateKhoa = true;
+              }
+              return null;
+            },
+          ),
+          NewIntent: CallbackAction<NewIntent>(
+            onInvoke: (NewIntent intent) {
+              _autoSave();
+              ref.read(chiProvider.notifier).addPhieu();
+              return null;
+            },
+          ),
+          DeleteIntent: CallbackAction<DeleteIntent>(
+            onInvoke: (DeleteIntent intent) {
+              if(!khoa && state.value != null){
+                showQuestion(context,onPressed: (){
+                  ref.read(chiDeleteProvider.notifier).delete(id);
+                });
+              }
+              return null;
+            },
+          ),
+        },
+        child: DialogWindows(
+          width: 550,
+          beforeClose: () async {
+            if (!khoa && txtSoPhieu.text.isNotEmpty) {
+              showClosePhieu(
+                context,
+                onPressed: () {
+                  ref.read(chiSaveProvider.notifier).save(_saveModel(), id);
+                  Navigator.pop(context);
                 },
-                last: () {
-                  _autoSave();
-                  ref.read(chiProvider.notifier).rebuild();
-                },
-                back: () {
-                  _autoSave();
-                  ref.read(chiProvider.notifier).getPrevious();
-                },
-                next: () {
-                  _autoSave();
-                  ref.read(chiProvider.notifier).getNext();
-                },
-                firstText: state.hasValue ? "${state.value?.stt ?? '0'}" : '0',
-                secondText: state.hasValue ? "${state.value?.tongStt ?? '0'}" : '0',
+              );
+            } else {
+              Navigator.pop(context);
+            }
+          },
+          height: 440,
+          title: 'PHIẾU CHI',
+          child: Scaffold(
+            backgroundColor: AppColor.background,
+            footers: [
+              Divider(color: AppColor.border),
+              AppBar(
+                // backgroundColor: Colors.gray.shade200,
+                leading: [
+                  AppButtonPage(
+                    first: () {
+                      _autoSave();
+                      ref.read(chiProvider.notifier).getFirst();
+                    },
+                    last: () {
+                      _autoSave();
+                      ref.read(chiProvider.notifier).rebuild();
+                    },
+                    back: () {
+                      _autoSave();
+                      ref.read(chiProvider.notifier).getPrevious();
+                    },
+                    next: () {
+                      _autoSave();
+                      ref.read(chiProvider.notifier).getNext();
+                    },
+                    firstText: state.hasValue ? "${state.value?.stt ?? '0'}" : '0',
+                    secondText: state.hasValue ? "${state.value?.tongStt ?? '0'}" : '0',
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
-        headers: [
-          AppBar(
-            // height: 25,
-            // backgroundColor: Colors.gray.shade200,
-            leading: [
-              AppNewButton(
-                text: 'Phiếu mới',
-                onPressed: () {
-                  _autoSave();
-                  ref.read(chiProvider.notifier).addPhieu();
-                },
-              ),
-              Gap(5),
-              AppSaveButton(
-                enabled: !khoa && state.value != null,
-                onPressed: () {
-                  final data = state.value;
-                  if (data != null) {
-                    isSave = true;
-                    ref.read(chiSaveProvider.notifier).save(_saveModel(), data.id);
-                  }
-                },
-              ),
-              Gap(5),
-              AppEditButton(
-                enabled: khoa,
-                onPressed: () {
-                  final data = state.value;
-                  if (data != null) {
-                    isUpdateKhoa = true;
-                    ref.read(chiSaveProvider.notifier).updateEdit(data.id);
-                  }
-                },
-              ),
-              Gap(5),
-              AppDeleteButton(
-                enabled: !khoa && state.value != null,
-                onPressed: () {
-                  showQuestion(
-                    context,
+            headers: [
+              AppBar(
+                // height: 25,
+                // backgroundColor: Colors.gray.shade200,
+                leading: [
+                  Focus(
+                    autofocus: true,
+                    child: AppNewButton(
+                      text: 'Phiếu mới',
+                      onPressed: () {
+                        _autoSave();
+                        ref.read(chiProvider.notifier).addPhieu();
+                      },
+                    ),
+                  ),
+                  Gap(5),
+                  AppSaveButton(
+                    enabled: !khoa && state.value != null,
                     onPressed: () {
                       final data = state.value;
                       if (data != null) {
-                        ref.read(chiDeleteProvider.notifier).delete(data.id);
+                        isSave = true;
+                        ref.read(chiSaveProvider.notifier).save(_saveModel(), data.id);
                       }
                     },
-                  );
-                },
-              ),
-              Gap(5),
-              AppPrintButton(enabled: khoa),
-            ],
-          ),
-          Divider(color: AppColor.border),
-        ],
-        child: state.when(
-          data: (val) {
-            if (val == null) return Center(child: Text('Chưa có phiếu chi',style: TextStyle(color: Colors.gray),));
-            return AppLoadingOverlay(
-              isLoading: saveState.isLoading || deleteState.isLoading,
-              child: Container(
-                // margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(color: Colors.white),
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    AppRow(
-                      columnWidths: {0: 110, 2: 90},
-                      items: [
-                        Text('Ngày chi').medium,
-                        AppDateField(
-                          enabled: !khoa,
-                          value: ngay,
-                          onChanged: (val) {
-                            if (val != null) {
-                              ngay = val;
-                            }
-                          },
-                        ),
-                        Row(children: [Gap(20), Text('Số phiếu').medium]),
-                        AppTextField(
-                          readOnly: true,
-                          fontWeight: FontWeight.w500,
-                          controller: txtSoPhieu,
-                          enabled: !khoa,
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110, 2: 90},
-                      items: [
-                        Text('Kiểu chi').medium,
-                        NvuChiCombobox(
-                          enabled: !khoa,
-                          selected: maTC,
-                          onChanged: (val) {
-                            setState(() {
-                              maTC = val;
-                            });
-                          },
-                        ),
-                        Row(
-                          children: [
-                            Gap(20),
-                            if (['CNC', 'CTN'].contains(maTC)) maTC == "CNC" ? Text('Mã NV') : Text('Mã khách'),
-                          ],
-                        ),
-                        Builder(
-                          builder: (context) {
-                            if (['CNC', 'CTN'].contains(maTC)) {
-                              if (maTC == 'CNC') {
-                                return NhanVienCombobox(
-                                  enabled: !khoa,
-                                  selected: maNV,
-                                  onChanged: (val) {
-                                    final lstNV = ref.read(nhanVienLookupProvider).value;
-                                    final nv = lstNV?.firstWhereOrNull((e) => e.maNV == val);
-                                    if (nv != null) {
-                                      txtTenKH.text = nv.tenNV;
-                                      txtDiaChi.text = nv.diaChi ?? '';
-                                    } else {
-                                      txtTenKH.clear();
-                                      txtDiaChi.clear();
-                                    }
-                                    setState(() {
-                                      maNV = val;
-                                    });
-                                  },
-                                );
-                              } else {
-                                return NhaCungCombobx(
-                                  enabled: !khoa,
-                                  selected: maKH,
-                                  onChanged: (val) {
-                                    final k = ref.read(khachLookupProvider(LoaiKH.NhaCung)).value;
-                                    final tmp = k?.firstWhereOrNull((e) => e.maKH == val);
-                                    if (tmp != null) {
-                                      txtTenKH.text = tmp.tenKH;
-                                      txtDiaChi.text = tmp.diaChi;
-                                    } else {
-                                      txtTenKH.clear();
-                                      txtDiaChi.clear();
-                                    }
-                                    setState(() {
-                                      maKH = val;
-                                    });
-                                  },
-                                );
-                              }
-                            } else {
-                              return SizedBox();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                  ),
+                  Gap(5),
+                  AppEditButton(
+                    enabled: khoa,
+                    onPressed: () {
+                      final data = state.value;
+                      if (data != null) {
+                        isUpdateKhoa = true;
+                        ref.read(chiSaveProvider.notifier).updateEdit(data.id);
+                      }
+                    },
+                  ),
+                  Gap(5),
+                  AppDeleteButton(
+                    enabled: !khoa && state.value != null,
+                    onPressed: () {
+                      showQuestion(
+                        context,
+                        onPressed: () {
+                          final data = state.value;
+                          if (data != null) {
+                            ref.read(chiDeleteProvider.notifier).delete(data.id);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  Gap(5),
+                  AppPrintButton(enabled: khoa,onPressed: () async {
+                    ref.read(reportProvider.notifier).getPhieuChi(id);
+                    await showPrinter(context, ref);
 
-                    AppRow(
-                      columnWidths: {0: 110},
-                      items: [
-                        Text('Tên khách').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          controller: txtTenKH,
-                          // onFieldLeave: () async {
-                          // await _controller.updateTenKH(_controller.txtTenKH.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110},
-                      items: [
-                        Text('Địa chỉ').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          controller: txtDiaChi,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateDiaChi(_controller.txtDiaChi.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110},
-                      items: [
-                        Text('Người nhận tiền').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          controller: txtNguoiNhan,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateNguoiNop(_controller.txtNguoiNop.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110},
-                      items: [
-                        Text('Người chi tiền').medium,
-                        AppTextField(controller: txtNguoiChi, enabled: !khoa),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110, 1: 120, 2: 50, 4: 50},
-                      items: [
-                        Text('Số tiền').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          // enabled: !_controller.khoa,
-                          isNumber: true,
-                          textAlign: TextAlign.end,
-                          controller: txtSoTien,
-                          onFieldLeave: () async {
-                            txtSoTien.text = NumHelper.numFormat(txtSoTien.text);
-                            // await _controller.updateSoTien(_controller.txtSoTien.text,user);
-                          },
-                        ),
-                        Row(children: [Gap(20), Text('Nợ').medium]),
-                        TaiKhoanXL0Combobox(
-                          enabled: !khoa,
-                          selected: tkNo,
-                          onChanged: (val) {
-                            setState(() {
-                              tkNo = val;
-                            });
-                          },
-                        ),
-                        Row(children: [Gap(20), Text('Có').medium]),
-                        TaiKhoanXL0Combobox(
-                          enabled: !khoa,
-                          selected: tkCo,
-                          onChanged: (val) {
-                            setState(() {
-                              tkCo = val;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110},
-                      items: [
-                        Text('Lý do chi').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          controller: txtLyDo,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateNoiDung(_controller.txtLyDo.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
-                        ),
-                      ],
-                    ),
-                    AppRow(
-                      columnWidths: {0: 110, 2: 90},
-                      items: [
-                        Text('Số chứng từ').medium,
-                        AppTextField(
-                          enabled: !khoa,
-                          controller: txtSoCT,
-                          // onFieldLeave: () async {
-                          //   await _controller.updateSoCT(_controller.txtSoCT.text,user);
-                          // },
-                          // enabled: !_controller.khoa,
-                        ),
-                        Row(children: [Gap(20), Text('PTTT').medium]),
-                        AppCombobox(
-                          // enabled: !_controller.khoa,
-                          enabledClear: false,
-                          value: pttt,
-                          enabled: !khoa,
-                          onChanged: (val) async {
-                            // await _controller.updatePTTT(val,user);
-                            setState(() {
-                              pttt = val;
-                            });
-                          },
+                  },),
+                ],
+              ),
+              Divider(color: AppColor.border),
+            ],
+            child: state.when(
+              data: (val) {
+                if (val == null) return Center(child: Text('Chưa có phiếu chi',style: TextStyle(color: Colors.gray),));
+                return AppLoadingOverlay(
+                  isLoading: saveState.isLoading || deleteState.isLoading,
+                  child: Container(
+                    // margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: Column(
+                      spacing: 10,
+                      children: [
+                        AppRow(
+                          columnWidths: {0: 110, 2: 90},
                           items: [
-                            ComboboxItem(value: 'TM', text: ["Tiền mặt"]),
-                            ComboboxItem(value: 'CK', text: ["Chuyển khoản"]),
+                            Text('Ngày chi').medium,
+                            AppDateField(
+                              enabled: !khoa,
+                              value: ngay,
+                              onChanged: (val) {
+                                if (val != null) {
+                                  ngay = val;
+                                }
+                              },
+                            ),
+                            Row(children: [Gap(20), Text('Số phiếu').medium]),
+                            AppTextField(
+                              readOnly: true,
+                              fontWeight: FontWeight.w500,
+                              controller: txtSoPhieu,
+                              enabled: !khoa,
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110, 2: 90},
+                          items: [
+                            Text('Kiểu chi').medium,
+                            NvuChiCombobox(
+                              enabled: !khoa,
+                              selected: maTC,
+                              onChanged: (val) {
+                                setState(() {
+                                  maTC = val;
+                                });
+                              },
+                            ),
+                            Row(
+                              children: [
+                                Gap(20),
+                                if (['CNC', 'CTN'].contains(maTC)) maTC == "CNC" ? Text('Mã NV') : Text('Mã khách'),
+                              ],
+                            ),
+                            Builder(
+                              builder: (context) {
+                                if (['CNC', 'CTN'].contains(maTC)) {
+                                  if (maTC == 'CNC') {
+                                    return NhanVienCombobox(
+                                      enabled: !khoa,
+                                      selected: maNV,
+                                      onChanged: (val) {
+                                        final lstNV = ref.read(nhanVienLookupProvider).value;
+                                        final nv = lstNV?.firstWhereOrNull((e) => e.maNV == val);
+                                        if (nv != null) {
+                                          txtTenKH.text = nv.tenNV;
+                                          txtDiaChi.text = nv.diaChi ?? '';
+                                        } else {
+                                          txtTenKH.clear();
+                                          txtDiaChi.clear();
+                                        }
+                                        setState(() {
+                                          maNV = val;
+                                        });
+                                      },
+                                    );
+                                  } else {
+                                    return NhaCungCombobx(
+                                      enabled: !khoa,
+                                      selected: maKH,
+                                      onChanged: (val) {
+                                        final k = ref.read(khachLookupProvider(LoaiKH.NhaCung)).value;
+                                        final tmp = k?.firstWhereOrNull((e) => e.maKH == val);
+                                        if (tmp != null) {
+                                          txtTenKH.text = tmp.tenKH;
+                                          txtDiaChi.text = tmp.diaChi;
+                                        } else {
+                                          txtTenKH.clear();
+                                          txtDiaChi.clear();
+                                        }
+                                        setState(() {
+                                          maKH = val;
+                                        });
+                                      },
+                                    );
+                                  }
+                                } else {
+                                  return SizedBox();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+
+                        AppRow(
+                          columnWidths: {0: 110},
+                          items: [
+                            Text('Tên khách').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              controller: txtTenKH,
+                              // onFieldLeave: () async {
+                              // await _controller.updateTenKH(_controller.txtTenKH.text,user);
+                              // },
+                              // enabled: !_controller.khoa,
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110},
+                          items: [
+                            Text('Địa chỉ').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              controller: txtDiaChi,
+                              // onFieldLeave: () async {
+                              //   await _controller.updateDiaChi(_controller.txtDiaChi.text,user);
+                              // },
+                              // enabled: !_controller.khoa,
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110},
+                          items: [
+                            Text('Người nhận tiền').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              controller: txtNguoiNhan,
+                              // onFieldLeave: () async {
+                              //   await _controller.updateNguoiNop(_controller.txtNguoiNop.text,user);
+                              // },
+                              // enabled: !_controller.khoa,
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110},
+                          items: [
+                            Text('Người chi tiền').medium,
+                            AppTextField(controller: txtNguoiChi, enabled: !khoa),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110, 1: 120, 2: 50, 4: 50},
+                          items: [
+                            Text('Số tiền').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              // enabled: !_controller.khoa,
+                              isNumber: true,
+                              textAlign: TextAlign.end,
+                              controller: txtSoTien,
+                              onFieldLeave: () async {
+                                txtSoTien.text = NumHelper.numFormat(txtSoTien.text);
+                                // await _controller.updateSoTien(_controller.txtSoTien.text,user);
+                              },
+                            ),
+                            Row(children: [Gap(20), Text('Nợ').medium]),
+                            TaiKhoanXL0Combobox(
+                              enabled: !khoa,
+                              selected: tkNo,
+                              onChanged: (val) {
+                                setState(() {
+                                  tkNo = val;
+                                });
+                              },
+                            ),
+                            Row(children: [Gap(20), Text('Có').medium]),
+                            TaiKhoanXL0Combobox(
+                              enabled: !khoa,
+                              selected: tkCo,
+                              onChanged: (val) {
+                                setState(() {
+                                  tkCo = val;
+                                  if(tkCo=="1121"){
+                                    pttt = "CK";
+                                  }else if(tkCo == "1111"){
+                                    pttt = "TM";
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110},
+                          items: [
+                            Text('Lý do chi').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              controller: txtLyDo,
+                              // onFieldLeave: () async {
+                              //   await _controller.updateNoiDung(_controller.txtLyDo.text,user);
+                              // },
+                              // enabled: !_controller.khoa,
+                            ),
+                          ],
+                        ),
+                        AppRow(
+                          columnWidths: {0: 110, 2: 90},
+                          items: [
+                            Text('Số chứng từ').medium,
+                            AppTextField(
+                              enabled: !khoa,
+                              controller: txtSoCT,
+                              // onFieldLeave: () async {
+                              //   await _controller.updateSoCT(_controller.txtSoCT.text,user);
+                              // },
+                              // enabled: !_controller.khoa,
+                            ),
+                            Row(children: [Gap(20), Text('PTTT').medium]),
+                            AppCombobox(
+                              // enabled: !_controller.khoa,
+                              enabledClear: false,
+                              value: pttt,
+                              enabled: !khoa,
+                              onChanged: (val) async {
+                                // await _controller.updatePTTT(val,user);
+                                setState(() {
+                                  pttt = val;
+                                });
+                              },
+                              items: [
+                                ComboboxItem(value: 'TM', text: ["Tiền mặt"]),
+                                ComboboxItem(value: 'CK', text: ["Chuyển khoản"]),
+                              ],
+                            ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          },
-          error: (e, s) => Center(child: Text(e.toString(),)),
-          loading: () => Center(child: CircularProgressIndicator(size: 50)),
+                  ),
+                );
+              },
+              error: (e, s) => Center(child: Text(e.toString(),)),
+              loading: () => Center(child: CircularProgressIndicator(size: 50)),
+            ),
+          ),
         ),
       ),
     );

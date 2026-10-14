@@ -26,6 +26,7 @@ class SoBanHangTableManager extends AppTableState<SoBanHangModel>{
       'TienBan': TrinaCell(value: e.tienBan),
       'TienTra': TrinaCell(value: e.tienTra),
     },)).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

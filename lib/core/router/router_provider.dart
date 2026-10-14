@@ -72,7 +72,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           return '/';
         }
       }
-
       return null;
     },
     routes: [

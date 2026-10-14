@@ -24,6 +24,7 @@ class BKeNhapXuatTableManager extends AppTableState<BKeNhapXuatModel>{
       'DonGia': TrinaCell(value: e.donGia),
       'ThanhTien': TrinaCell(value: e.thanhTien),
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

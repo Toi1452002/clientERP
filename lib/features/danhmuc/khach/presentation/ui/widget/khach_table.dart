@@ -82,18 +82,19 @@ class _KhachTableState extends ConsumerState<KhachTable> {
                 showFilter: false,
                 renderer: (re) => AppTableCell.delete(() {
                   _tableManager.setCurrent(re);
-                  _tableManager.showLoading();
+                  // _tableManager.showLoading();
                   showQuestion(
                     context,
                     onPressed: () async {
                       try {
                         await ref.read(khachViewProvider.notifier).delete(re.cell.value);
                       } catch (e) {
-                        if (context.mounted) showError(context, e.toString());
+                        if (context.mounted) showInfo(context, e.toString());
+                        _tableManager.closeLoading();
                       }
                     },
                   );
-                  _tableManager.closeLoading();
+
                 }),
               ),
 

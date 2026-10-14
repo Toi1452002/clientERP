@@ -12,6 +12,17 @@ class StorageController {
     final pref = await SharedPreferences.getInstance();
     await pref.setString(key, value);
   }
+
+  Future<void> saveBool(String key, bool value) async{
+    final pref = await SharedPreferences.getInstance();
+    await pref.setBool(key, value);
+  }
+
+  Future<bool?> getBool(String key) async {
+    final pref = await SharedPreferences.getInstance();
+    return pref.getBool(key);
+  }
+
   Future<String?> getString(String key) async {
     final pref = await SharedPreferences.getInstance();
     return pref.getString(key);

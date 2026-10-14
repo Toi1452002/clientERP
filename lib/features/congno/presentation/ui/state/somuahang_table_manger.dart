@@ -24,6 +24,7 @@ class SoMuaHangTableManager extends AppTableState<SoMuaHangModel>{
       'TienMua': TrinaCell(value: e.tienMua),
       'TienTra': TrinaCell(value: e.tienTra),
     },)).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 }

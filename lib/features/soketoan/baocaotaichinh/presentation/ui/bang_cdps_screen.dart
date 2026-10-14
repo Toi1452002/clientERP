@@ -39,7 +39,7 @@ class _BangCDPSScreenState extends ConsumerState<BangCDPSScreen> {
           }
         },
         error: (e, s) {
-          showError(context, e.toString());
+          showInfo(context, e.toString());
         },
       );
     });

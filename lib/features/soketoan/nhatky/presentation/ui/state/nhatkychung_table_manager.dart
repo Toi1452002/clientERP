@@ -22,6 +22,7 @@ class NhatKyChungTableManager extends AppTableState<NhatKyChungModel>{
       'SoPS': TrinaCell(value: e.soPS),
 
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
 
 

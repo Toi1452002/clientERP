@@ -116,6 +116,7 @@ class _SoMuaHangScreenState extends ConsumerState<SoMuaHangScreen> {
               columns: [
                 AppTableColumn(
                   title: ['#', 'stt'],
+                  showFilter: false,
                   width: 35,
                   readOnly: true,
                   renderer: (re) => AppTableCell.textNum("${re.rowIdx + 1}"),

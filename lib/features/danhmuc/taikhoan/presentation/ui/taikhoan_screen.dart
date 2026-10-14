@@ -110,24 +110,24 @@ class _TaiKhoanScreenState extends ConsumerState<TaiKhoanScreen> {
                 readOnly: true,
                 showFilter: false,
               ),
-              AppTableColumn(
-                title: ['', 'delete'],
-                showFilter: false,
-                width: 25,
-                renderer: (re) => AppTableCell.delete(() {
-                  _manager.setCurrent(re);
-                  showQuestion(
-                    context,
-                    onPressed: () async {
-                      try {
-                        await ref.read(taiKhoanViewProvider.notifier).delete(re.cell.value);
-                      } catch (e) {
-                        if (context.mounted) showInfo(context, e.toString());
-                      }
-                    },
-                  );
-                }),
-              ),
+              // AppTableColumn(
+              //   title: ['', 'delete'],
+              //   showFilter: false,
+              //   width: 25,
+              //   renderer: (re) => AppTableCell.delete(() {
+              //     _manager.setCurrent(re);
+              //     showQuestion(
+              //       context,
+              //       onPressed: () async {
+              //         try {
+              //           await ref.read(taiKhoanViewProvider.notifier).delete(re.cell.value);
+              //         } catch (e) {
+              //           if (context.mounted) showInfo(context, e.toString());
+              //         }
+              //       },
+              //     );
+              //   }),
+              // ),
               AppTableColumn(
                 title: ['Mã TK', 'MaTK'],
                 width: 100,

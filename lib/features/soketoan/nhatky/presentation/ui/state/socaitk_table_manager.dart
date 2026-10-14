@@ -21,6 +21,7 @@ class SoCaiTKTableManager extends AppTableState<SoCaiTkModel>{
       'PSNo': TrinaCell(value: e.psNo),
       'PSCo': TrinaCell(value: e.psCo),
     })).toList());
+    _stateManager.setShowColumnFilter(true);
   }
   
 }

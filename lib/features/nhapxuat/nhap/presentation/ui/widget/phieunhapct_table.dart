@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:erp_client_1/features/danhmuc/hanghoa/data/model/hanghoa_lookup_model.dart';
-import 'package:erp_client_1/features/nhapxuat/nhap/data/model/phieunhapct_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:trina_grid/trina_grid.dart';
@@ -10,12 +8,10 @@ import '../../../../../danhmuc/dvt/presentation/ui/widget/dvt_combobox.dart';
 import '../../../../../danhmuc/hanghoa/presentation/ui/state/hanghoa_lookup_provider.dart';
 import '../../../../../danhmuc/hanghoa/presentation/ui/widget/hanghoa_combobox.dart';
 import '../../../../../danhmuc/taikhoan/presentation/ui/widget/taikhoan_kho_combobox.dart';
-import '../state/phieunhapct_table_manager.dart';
 
 class PhieuNhapCTTable extends ConsumerWidget {
   const PhieuNhapCTTable({super.key, this.onLoaded, this.changedThanhTien, this.khoa = false});
 
-  // late PhieuNhapCTTableManager state;
   final void Function(TrinaGridOnLoadedEvent)? onLoaded;
   final void Function()? changedThanhTien;
   final bool khoa;
@@ -138,6 +134,7 @@ class PhieuNhapCTTable extends ConsumerWidget {
           padding: 0,
           renderer: (re) {
             return TaiKhoanKhoCombobox(
+              enableClear: true,
               noBorder: true,
               enabled: !re.stateManager.mode.isReadOnly,
 

@@ -28,7 +28,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authNotifierProvider);
 
-
     return Scaffold(
       backgroundColor: Colors.cyan[700],
       child: Container(
@@ -58,7 +57,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Gap(30),
                         AppTextField(hintText: "Nhập vào tài khoản", controller: txtUsername, autofocus: true),
                         Gap(10),
-                        AppTextField(hintText: "Nhập vào mật khẩu", controller: txtPassword, obscureText: true),
+                        AppTextField(
+                          hintText: "Nhập vào mật khẩu",
+                          controller: txtPassword,
+                          obscureText: true,
+                          onSubmitted: (val) {
+                            ref.read(authNotifierProvider.notifier).login(txtUsername.text, txtPassword.text);
+                          },
+                        ),
                         Gap(10),
                         Builder(
                           builder: (context) {

@@ -44,11 +44,11 @@ dependencies:
   phosphoricons_flutter: ^1.0.0
   dropdown_button2: ^3.1.0
   shared_preferences: ^2.5.5
-  printing: 5.14.0
+  printing: ^5.15.1
   collection: ^1.19.1
   loading_overlay: ^0.5.0
-  pdf:
-
+  pdf_viewer_plus: ^2.1.0
+  image: ^4.10.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

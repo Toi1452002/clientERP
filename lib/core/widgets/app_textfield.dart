@@ -67,7 +67,6 @@ class AppTextField extends StatefulWidget {
 
 class _AppTextFieldState extends State<AppTextField> {
   late FocusNode _focusNode;
-  String? _oldValue;
 
   @override
   void initState() {

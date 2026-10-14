@@ -37,7 +37,7 @@ class PhieuNhapCTTableManager extends AppTableState<PhieuNhapCTModel>{
           'SoLg': TrinaCell(value: null),
           'DonGia': TrinaCell(value: null),
           'ThanhTien': TrinaCell(value: null),
-          'TKkho': TrinaCell(value: null),
+          'TKKho': TrinaCell(value: null),
         },
       ),
     ]);

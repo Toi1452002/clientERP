@@ -37,8 +37,9 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
             _tableState.showLoading();
           },
           error: (e,s){
-            _tableState.closeLoading();
+
             showInfo(context, e.toString());
+            _tableState.closeLoading();
           }
         );
       }
@@ -50,7 +51,7 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
     final state = ref.watch(hangHoaViewProvider);
 
     return state.when(
-      // skipLoadingOnRefresh: false,
+      skipLoadingOnRefresh: isInit,
       skipLoadingOnReload: isInit,
       data: (value) {
         return Scaffold(
@@ -83,7 +84,7 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
                 showFilter: false,
                 renderer: (re) => AppTableCell.delete(() {
                   _tableState.setCurrent(re);
-                  _tableState.showLoading();
+                  // _tableState.showLoading();
                   showQuestion(
                     context,
                     onPressed: () async {
@@ -92,10 +93,12 @@ class _HangHoaTableState extends ConsumerState<HangHoaTable> {
                         await ref.read(hangHoaViewProvider.notifier).delete(id);
                       } catch (e) {
                         if (context.mounted) showInfo(context, e.toString());
+                        _tableState.closeLoading();
+                        // _tableState.closeLoading();
                       }
                     },
                   );
-                  _tableState.closeLoading();
+                  // _tableState.closeLoading();
                 }),
               ),
 
