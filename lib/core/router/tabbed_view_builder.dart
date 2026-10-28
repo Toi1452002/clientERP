@@ -1,0 +1,131 @@
+import 'package:erp_client_1/core/router/router_name.dart';
+import 'package:erp_client_1/features/congno/presentation/ui/sobanhang_screen.dart';
+import 'package:erp_client_1/features/congno/presentation/ui/somuahang_screen.dart';
+import 'package:erp_client_1/features/congno/presentation/ui/tonghopcongno_screen.dart';
+import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/dky_hanghoa_screen.dart';
+import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/dky_khachhang_screen.dart';
+import 'package:erp_client_1/features/danhmuc/dauky/presentation/ui/dky_taikhoan_screen.dart';
+import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/ui/hanghoa_screen.dart';
+import 'package:erp_client_1/features/danhmuc/khach/presentation/ui/khach_screen.dart';
+import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/nhanvien_screen.dart';
+import 'package:erp_client_1/features/danhmuc/taikhoan/presentation/ui/taikhoan_screen.dart';
+import 'package:erp_client_1/features/kho/presentation/ui/bke_hangnhap_screen.dart';
+import 'package:erp_client_1/features/kho/presentation/ui/bke_hangxuat_screen.dart';
+import 'package:erp_client_1/features/kho/presentation/ui/nhapxuatton_screen.dart';
+import 'package:erp_client_1/features/nhapxuat/report/presentation/ui/bke_hangban_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_cdkt_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_cdps_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_kqkd_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_lctt_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaotaichinh/presentation/ui/bang_tmtc_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/chuyenlo_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/sothue_view.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tncn_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_screen.dart';
+import 'package:erp_client_1/features/soketoan/baocaothue/presentation/ui/tndn_tt_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/nhatkychung_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socaitk_screen.dart';
+import 'package:erp_client_1/features/soketoan/nhatky/presentation/ui/socttk_screen.dart';
+import 'package:erp_client_1/features/system/home/presentation/ui/home_screen.dart';
+import 'package:erp_client_1/features/system/menu_permission/presentation/ui/menu_permission_screen.dart';
+import 'package:erp_client_1/features/system/ttdn/presentation/ui/ttdn_screen.dart';
+import 'package:erp_client_1/features/system/users/presentation/ui/user_screen.dart';
+import 'package:erp_client_1/features/taisan/ccdc/presentation/ui/ccdc_screen.dart';
+import 'package:erp_client_1/features/taisan/tscd/presentation/ui/tscd_screen.dart';
+import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_phieuchi_screen.dart';
+import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_phieuthu_screen.dart';
+import 'package:erp_client_1/features/thuchi/report/presentation/ui/bke_so_quy_tm_screen.dart';
+import 'package:erp_client_1/features/tienluong/bangluong/presentation/ui/bangluong_screen.dart';
+import 'package:erp_client_1/features/tienluong/chamcong/presentation/ui/chamcong_screen.dart';
+import 'package:flutter/material.dart';
+
+import '../../features/nhapxuat/report/presentation/ui/bke_hoadon_ban_screen.dart';
+import '../../features/nhapxuat/report/presentation/ui/bke_hoadon_mua_screen.dart';
+import '../../features/thuchi/report/presentation/ui/bke_so_quy_tg_screen.dart';
+
+Widget tabbedView(String routerName){
+  switch(routerName){
+    case RouterName.hangHoa:
+      return HangHoaScreen();
+    case RouterName.khach:
+      return KhachScreen();
+    case RouterName.nhanVien:
+      return NhanVienScreen();
+    case RouterName.taiKhoan:
+      return TaiKhoanScreen();
+    case RouterName.dkyKhachHang:
+      return DKyKhachHangScreen();
+    case RouterName.dkyHangHoa:
+      return DKyHangHoaScreen();
+    case RouterName.dkyTaiKhoan:
+      return DKyTaiKhoanScreen();
+    case RouterName.bkeHoaDonMua:
+      return BkeHoaDonMuaScreen();
+    case RouterName.bkeHoaDonBan:
+      return BkeHoaDonBanScreen();
+    case RouterName.bkeHangBan:
+      return BKeHangBanScreen();
+    case RouterName.bkePhieuThu:
+      return BKePhieuThuScreen();
+    case RouterName.bkePhieuChi:
+      return BKePhieuChiScreen();
+    case RouterName.bkeQuyTM:
+      return BKeSoQuyTMScreen();
+    case RouterName.bkeQuyTG:
+      return BKeSoQuyTGScreen();
+    case RouterName.soMuaHang:
+      return SoMuaHangScreen();
+    case RouterName.soBanHang:
+      return SoBanHangScreen();
+    case RouterName.tongHopCongNo:
+      return TongHopCongNoScreen();
+    case RouterName.bKeHangNhap:
+      return BKeHangNhapScreen();
+    case RouterName.bKeHangXuat:
+      return BKeHangXuatScreen();
+    case RouterName.bKeNhapXuatTon:
+      return NhapXuatTonScreen();
+    case RouterName.chamCong:
+      return ChamCongScreen();
+    case RouterName.bangLuong:
+      return BangLuongScreen();
+    case RouterName.tscd:
+      return TSCDScreen();
+    case RouterName.ccdc:
+      return CCDCScreen();
+    case RouterName.soNhatKyChung:
+      return NhatKyChungScreen();
+    case RouterName.soCaiTaiKhoan:
+      return SoCaiTKScreen();
+    case RouterName.soCTTK:
+      return SoCTTKScreen();
+    case RouterName.bangCDPS:
+      return BangCDPSScreen();
+    case RouterName.bangCDKT:
+      return BangCDKTScreen();
+    case RouterName.bangKQKD:
+      return BangKQKDScreen();
+    case RouterName.bangLCTT:
+      return BangLCTTScreen();
+    case RouterName.bangTMTC:
+      return BangTMTCScreen();
+    case RouterName.bangTNDNtt:
+      return TNDNttScreen();
+    case RouterName.bangChuyenLo:
+      return ChuyenLoScreen();
+    case RouterName.bangTNDN:
+      return TNDNScreen();
+    case RouterName.bangTNCN:
+      return TNCNScreen();
+    case RouterName.soThue:
+      return SoThueView();
+    case RouterName.ttdn:
+      return TTDNScreen();
+    case RouterName.users:
+      return UserScreen();
+    case RouterName.menuPermission:
+      return MenuPermissionScreen();
+    default:
+      return HomeScreen();
+  }
+}

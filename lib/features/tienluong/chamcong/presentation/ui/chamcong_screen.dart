@@ -58,7 +58,7 @@ class _ChamCongScreenState extends ConsumerState<ChamCongScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng chấm công"),
+        // AppHeader(title: "Bảng chấm công"),
         AppContainerBorder(
           child: AppBar(
             trailing: [

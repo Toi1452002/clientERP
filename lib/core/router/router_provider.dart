@@ -56,7 +56,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       final auth = ref.watch(authNotifierProvider);
       final isLogin = state.matchedLocation == '/login';
       final isAuthenticated = auth.value != null;
-
       if (!isAuthenticated) {
         // no login
         return isLogin ? null : "/login";
@@ -75,81 +74,82 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      ShellRoute(
-
-        builder: (context, state, child) {
-          return ShellWidget(child: child);
-        },
-        routes: [
-          GoRoute(path: "/", name: RouterName.home, builder: (_, _) => HomeScreen()),
-          GoRoute(path: "/danh-sach-khach", name: RouterName.khach, builder: (_, _) => KhachScreen()),
-          GoRoute(path: "/danh-sach-hang-hoa", name: RouterName.hangHoa, builder: (_, _) => HangHoaScreen()),
-          GoRoute(path: "/danh-sach-nhan-vien", name: RouterName.nhanVien, builder: (_, _) => NhanVienScreen()),
-          GoRoute(path: "/danh-sach-tai-khoan", name: RouterName.taiKhoan, builder: (_, _) => TaiKhoanScreen()),
-          GoRoute(path: "/danh-sach-no-dau-ky", name: RouterName.dkyKhachHang, builder: (_, _) => DKyKhachHangScreen()),
-          GoRoute(path: "/danh-sach-ton-dau-ky", name: RouterName.dkyHangHoa, builder: (_, _) => DKyHangHoaScreen()),
-          GoRoute(path: "/danh-sach-dau-ky-tai-khoan", name: RouterName.dkyTaiKhoan, builder: (_, _) => DKyTaiKhoanScreen()),
-          GoRoute(path: "/users", name: RouterName.users, builder: (_, _) => UserScreen()),
-          GoRoute(
-            path: "/phan-quyen-nguoi-dung",
-            name: RouterName.menuPermission,
-            builder: (_, _) => MenuPermissionScreen(),
-          ),
-          GoRoute(
-            path: "/bang-ke-hoa-don-mua-hang",
-            name: RouterName.bkeHoaDonMua,
-            builder: (_, _) => BkeHoaDonMuaScreen(),
-          ),
-          GoRoute(
-            path: "/bang-ke-hoa-don-ban-hang",
-            name: RouterName.bkeHoaDonBan,
-            builder: (_, _) => BkeHoaDonBanScreen(),
-          ),
-          GoRoute(path: "/bang-ke-hang-ban", name: RouterName.bkeHangBan, builder: (_, _) => BKeHangBanScreen()),
-          GoRoute(path: "/bang-ke-phieu-thu", name: RouterName.bkePhieuThu, builder: (_, _) => BKePhieuThuScreen()),
-          GoRoute(path: "/bang-ke-phieu-chi", name: RouterName.bkePhieuChi, builder: (_, _) => BKePhieuChiScreen()),
-          GoRoute(path: "/bang-ke-so-quy-tien-mat", name: RouterName.bkeQuyTM, builder: (_, _) => BKeSoQuyTMScreen()),
-          GoRoute(path: "/bang-ke-so-quy-tien-gui", name: RouterName.bkeQuyTG, builder: (_, _) => BKeSoQuyTGScreen()),
-          GoRoute(path: "/thong-tin-doanh-nghiep", name: RouterName.ttdn, builder: (_, _) => TTDNScreen()),
-          GoRoute(path: "/so-mua-hang", name: RouterName.soMuaHang, builder: (_,_)=>SoMuaHangScreen()),
-          GoRoute(path: "/so-ban-hang", name: RouterName.soBanHang, builder: (_,_)=>SoBanHangScreen()),
-          GoRoute(path: "/tong-hop-cong-no", name: RouterName.tongHopCongNo, builder: (_,_)=>TongHopCongNoScreen()),
-          GoRoute(path: "/bang-ke-hang-nhap", name: RouterName.bKeHangNhap, builder: (_,_)=>BKeHangNhapScreen()),
-          GoRoute(path: "/bang-ke-hang-xuat", name: RouterName.bKeHangXuat, builder: (_,_)=>BKeHangXuatScreen()),
-          GoRoute(path: "/nhap-xuat-ton-kho", name: RouterName.bKeNhapXuatTon, builder: (_,_)=>NhapXuatTonScreen()),
-
-          //SoKeToan
-          GoRoute(path: "/so-nhat-ky-chung", name: RouterName.soNhatKyChung, builder: (_,_)=>NhatKyChungScreen()),
-          GoRoute(path: "/so-cai-tai-khoan", name: RouterName.soCaiTaiKhoan, builder: (_,_)=>SoCaiTKScreen()),
-          GoRoute(path: "/so-chi-tiet-tai-khoan", name: RouterName.soCTTK, builder: (_,_)=>SoCTTKScreen()),
-
-
-          GoRoute(path: "/bang-can-doi-phat-sinh", name: RouterName.bangCDPS, builder: (_,_)=>BangCDPSScreen()),
-          GoRoute(path: "/bang-can-doi-ke-toan", name: RouterName.bangCDKT, builder: (_,_)=>BangCDKTScreen()),
-          GoRoute(path: "/bao-cao-ket-quan-kinh-doanh", name: RouterName.bangKQKD, builder: (_,_)=>BangKQKDScreen()),
-          GoRoute(path: "/bao-cao-luu-chuyen-tien-te", name: RouterName.bangLCTT, builder: (_,_)=>BangLCTTScreen()),
-          GoRoute(path: "/bao-cao-thuyet-minh-tai-chinh", name: RouterName.bangTMTC, builder: (_,_)=>BangTMTCScreen()),
-          GoRoute(path: "/bao-cao-thue-tam-tinh", name: RouterName.bangTNDNtt, builder: (_,_)=>TNDNttScreen()),
-          GoRoute(path: "/bao-cao-thue-tndn", name: RouterName.bangTNDN, builder: (_,_)=>TNDNScreen()),
-          GoRoute(path: "/bao-cao-thue-tncn", name: RouterName.bangTNCN, builder: (_,_)=>TNCNScreen()),
-          GoRoute(path: "/chuyen-lo", name: RouterName.bangChuyenLo, builder: (_,_)=>ChuyenLoScreen()),
-          GoRoute(path: "/so-thue", name: RouterName.soThue, builder: (_,_)=>SoThueView()),
-
-
-          GoRoute(path: "/tscd", name: RouterName.tscd, builder: (_,_)=>TSCDScreen()),
-          GoRoute(path: "/ccdc", name: RouterName.ccdc, builder: (_,_)=>CCDCScreen()),
-
-
-          GoRoute(path: "/cham-cong", name: RouterName.chamCong, builder: (_,_)=>ChamCongScreen()),
-          GoRoute(path: "/bang-luong", name: RouterName.bangLuong, builder: (_,_)=>BangLuongScreen()),
-
-
-
-        ],
-      ),
+      GoRoute(path: "/", name: RouterName.home, builder: (_, _) => ShellWidget()),
+      // ShellRoute(
+      //
+      //   builder: (context, state, child) {
+      //     return ShellWidget(child: child);
+      //   },
+      //   routes: [
+      //     GoRoute(path: "/", name: RouterName.home, builder: (_, _) => HomeScreen()),
+      //     GoRoute(path: "/danh-sach-khach", name: RouterName.khach, builder: (_, _) => KhachScreen()),
+      //     GoRoute(path: "/danh-sach-hang-hoa", name: RouterName.hangHoa, builder: (_, _) => HangHoaScreen()),
+      //     GoRoute(path: "/danh-sach-nhan-vien", name: RouterName.nhanVien, builder: (_, _) => NhanVienScreen()),
+      //     GoRoute(path: "/danh-sach-tai-khoan", name: RouterName.taiKhoan, builder: (_, _) => TaiKhoanScreen()),
+      //     GoRoute(path: "/danh-sach-no-dau-ky", name: RouterName.dkyKhachHang, builder: (_, _) => DKyKhachHangScreen()),
+      //     GoRoute(path: "/danh-sach-ton-dau-ky", name: RouterName.dkyHangHoa, builder: (_, _) => DKyHangHoaScreen()),
+      //     GoRoute(path: "/danh-sach-dau-ky-tai-khoan", name: RouterName.dkyTaiKhoan, builder: (_, _) => DKyTaiKhoanScreen()),
+      //     GoRoute(path: "/users", name: RouterName.users, builder: (_, _) => UserScreen()),
+      //     GoRoute(
+      //       path: "/phan-quyen-nguoi-dung",
+      //       name: RouterName.menuPermission,
+      //       builder: (_, _) => MenuPermissionScreen(),
+      //     ),
+      //     GoRoute(
+      //       path: "/bang-ke-hoa-don-mua-hang",
+      //       name: RouterName.bkeHoaDonMua,
+      //       builder: (_, _) => BkeHoaDonMuaScreen(),
+      //     ),
+      //     GoRoute(
+      //       path: "/bang-ke-hoa-don-ban-hang",
+      //       name: RouterName.bkeHoaDonBan,
+      //       builder: (_, _) => BkeHoaDonBanScreen(),
+      //     ),
+      //     GoRoute(path: "/bang-ke-hang-ban", name: RouterName.bkeHangBan, builder: (_, _) => BKeHangBanScreen()),
+      //     GoRoute(path: "/bang-ke-phieu-thu", name: RouterName.bkePhieuThu, builder: (_, _) => BKePhieuThuScreen()),
+      //     GoRoute(path: "/bang-ke-phieu-chi", name: RouterName.bkePhieuChi, builder: (_, _) => BKePhieuChiScreen()),
+      //     GoRoute(path: "/bang-ke-so-quy-tien-mat", name: RouterName.bkeQuyTM, builder: (_, _) => BKeSoQuyTMScreen()),
+      //     GoRoute(path: "/bang-ke-so-quy-tien-gui", name: RouterName.bkeQuyTG, builder: (_, _) => BKeSoQuyTGScreen()),
+      //     GoRoute(path: "/thong-tin-doanh-nghiep", name: RouterName.ttdn, builder: (_, _) => TTDNScreen()),
+      //     GoRoute(path: "/so-mua-hang", name: RouterName.soMuaHang, builder: (_,_)=>SoMuaHangScreen()),
+      //     GoRoute(path: "/so-ban-hang", name: RouterName.soBanHang, builder: (_,_)=>SoBanHangScreen()),
+      //     GoRoute(path: "/tong-hop-cong-no", name: RouterName.tongHopCongNo, builder: (_,_)=>TongHopCongNoScreen()),
+      //     GoRoute(path: "/bang-ke-hang-nhap", name: RouterName.bKeHangNhap, builder: (_,_)=>BKeHangNhapScreen()),
+      //     GoRoute(path: "/bang-ke-hang-xuat", name: RouterName.bKeHangXuat, builder: (_,_)=>BKeHangXuatScreen()),
+      //     GoRoute(path: "/nhap-xuat-ton-kho", name: RouterName.bKeNhapXuatTon, builder: (_,_)=>NhapXuatTonScreen()),
+      //
+      //     //SoKeToan
+      //     GoRoute(path: "/so-nhat-ky-chung", name: RouterName.soNhatKyChung, builder: (_,_)=>NhatKyChungScreen()),
+      //     GoRoute(path: "/so-cai-tai-khoan", name: RouterName.soCaiTaiKhoan, builder: (_,_)=>SoCaiTKScreen()),
+      //     GoRoute(path: "/so-chi-tiet-tai-khoan", name: RouterName.soCTTK, builder: (_,_)=>SoCTTKScreen()),
+      //
+      //
+      //     GoRoute(path: "/bang-can-doi-phat-sinh", name: RouterName.bangCDPS, builder: (_,_)=>BangCDPSScreen()),
+      //     GoRoute(path: "/bang-can-doi-ke-toan", name: RouterName.bangCDKT, builder: (_,_)=>BangCDKTScreen()),
+      //     GoRoute(path: "/bao-cao-ket-quan-kinh-doanh", name: RouterName.bangKQKD, builder: (_,_)=>BangKQKDScreen()),
+      //     GoRoute(path: "/bao-cao-luu-chuyen-tien-te", name: RouterName.bangLCTT, builder: (_,_)=>BangLCTTScreen()),
+      //     GoRoute(path: "/bao-cao-thuyet-minh-tai-chinh", name: RouterName.bangTMTC, builder: (_,_)=>BangTMTCScreen()),
+      //     GoRoute(path: "/bao-cao-thue-tam-tinh", name: RouterName.bangTNDNtt, builder: (_,_)=>TNDNttScreen()),
+      //     GoRoute(path: "/bao-cao-thue-tndn", name: RouterName.bangTNDN, builder: (_,_)=>TNDNScreen()),
+      //     GoRoute(path: "/bao-cao-thue-tncn", name: RouterName.bangTNCN, builder: (_,_)=>TNCNScreen()),
+      //     GoRoute(path: "/chuyen-lo", name: RouterName.bangChuyenLo, builder: (_,_)=>ChuyenLoScreen()),
+      //     GoRoute(path: "/so-thue", name: RouterName.soThue, builder: (_,_)=>SoThueView()),
+      //
+      //
+      //     GoRoute(path: "/tscd", name: RouterName.tscd, builder: (_,_)=>TSCDScreen()),
+      //     GoRoute(path: "/ccdc", name: RouterName.ccdc, builder: (_,_)=>CCDCScreen()),
+      //
+      //
+      //     GoRoute(path: "/cham-cong", name: RouterName.chamCong, builder: (_,_)=>ChamCongScreen()),
+      //     GoRoute(path: "/bang-luong", name: RouterName.bangLuong, builder: (_,_)=>BangLuongScreen()),
+      //
+      //
+      //
+      //   ],
+      // ),
 
       GoRoute(path: "/login", name: RouterName.login, builder: (_, _) => LoginScreen()),
-      GoRoute(path: "/splash", name: RouterName.splash, builder: (_, _) => SplashScreen()),
+      // GoRoute(path: "/splash", name: RouterName.splash, builder: (_, _) => SplashScreen()),
     ],
   );
 });

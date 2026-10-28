@@ -46,7 +46,7 @@ class _BangKQKDScreenState extends ConsumerState<BangKQKDScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Báo cáo kết quả kinh doanh"),
+          // AppHeader(title: "Báo cáo kết quả kinh doanh"),
           AppContainerBorder(
             child: AppBar(
               leading: [

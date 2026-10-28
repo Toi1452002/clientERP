@@ -73,7 +73,7 @@ class _CCDCScreenState extends ConsumerState<CCDCScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng phân bổ CCDC"),
+        // AppHeader(title: "Bảng phân bổ CCDC"),
         AppContainerBorder(
           child: AppBar(
             leading: [AppTngayDngay(tuNgay: tuNgay, onSubmit: (a, b) async {

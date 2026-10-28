@@ -46,7 +46,7 @@ class _BangLCTTScreenState extends ConsumerState<BangLCTTScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Báo cáo lưu chuyển tiền tệ"),
+          // AppHeader(title: "Báo cáo lưu chuyển tiền tệ"),
           AppContainerBorder(
             child: AppBar(
               leading: [

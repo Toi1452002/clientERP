@@ -1,8 +1,16 @@
 import 'dart:async';
 
+import 'package:erp_client_1/features/danhmuc/dvt/presentation/notifier/dvt_notifier.dart';
+import 'package:erp_client_1/features/danhmuc/hanghoa/presentation/ui/state/hanghoa_lookup_provider.dart';
+import 'package:erp_client_1/features/danhmuc/khach/presentation/ui/state/khach_lookup_state.dart';
+import 'package:erp_client_1/features/danhmuc/manghiepvu/presentation/notifier/manghiepvu_notifier.dart';
+import 'package:erp_client_1/features/danhmuc/nhanvien/presentation/ui/state/nhanvien_lookup_state.dart';
+import 'package:erp_client_1/features/danhmuc/nhomhang/presentation/notifier/nhomhang_notifier.dart';
+import 'package:erp_client_1/features/danhmuc/taikhoan/presentation/ui/state/taikhoan_lookup_state.dart';
 import 'package:erp_client_1/features/system/auth/data/model/auth_model.dart';
 import 'package:erp_client_1/features/system/auth/data/repository/auth_repository.dart';
 import 'package:erp_client_1/features/system/auth/data/repository/iauth_repository.dart';
+import 'package:erp_client_1/features/system/home/presentation/notifier/tabbed_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/data/local/storage/storage_name.dart';
 import '../../../../../core/data/local/storage/storage_provider.dart';
@@ -66,5 +74,15 @@ class AuthNotifier extends AsyncNotifier<AuthModel?> {
     if (!isRefresh) await _repo.logout(); //gui request xoa token
     await ref.read(storageProvider).removeStore(stToken);
     await ref.read(storageProvider).removeStore(stRefreshToken);
+
+
+    ref.invalidate(hangHoaLookupProvider);
+    ref.invalidate(dvtProvider);
+    ref.invalidate(nhomhangProvider);
+    ref.invalidate(maNghiepVuProvider);
+    ref.invalidate(khachLookupProvider);
+    ref.invalidate(nhanVienLookupProvider);
+    ref.invalidate(taiKhoanLookupProvider);
+    ref.invalidate(tabbedProvider);
   }
 }

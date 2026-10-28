@@ -26,11 +26,11 @@ class _TTDNScreenState extends ConsumerState<TTDNScreen> {
       footers: [
         AppFooter()
       ],
-      headers: [
-        AppHeader(
-          title: "Thông tin doanh nghiệp",
-        ),
-      ],
+      // headers: [
+      //   AppHeader(
+      //     title: "Thông tin doanh nghiệp",
+      //   ),
+      // ],
       child: state.when(
         skipLoadingOnRefresh: false,
         data: (val) {

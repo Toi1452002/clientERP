@@ -64,8 +64,8 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách tồn đầu kỳ",
+        // AppHeader(
+        //   title: "Danh sách tồn đầu kỳ",
           // trailing: [
           //   AppReloadButton(
           //     onPressed: () {
@@ -75,7 +75,7 @@ class _DKyHangHoaScreenState extends ConsumerState<DKyHangHoaScreen> {
           //   ),
           //   Gap(10),
           // ],
-        ),
+        // ),
       ],
       backgroundColor: AppColor.background,
       child: state.when(

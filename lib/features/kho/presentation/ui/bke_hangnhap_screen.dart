@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/utils/num_helper.dart';
+import '../../../nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
 
 class BKeHangNhapScreen extends ConsumerStatefulWidget {
   const BKeHangNhapScreen({super.key});
@@ -24,13 +25,16 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
       backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng kê hàng nhập"),
+        // AppHeader(title: "Bảng kê hàng nhập"),
         AppContainerBorder(
           child: AppBar(
             leading: [
               AppTngayDngay(onSubmit: (t,d){
                 ref.read(bKeHangNhapProvider.notifier).get(t, d);
               },)
+            ],
+            trailing: [
+              AppPrintButton()
             ],
           ),
         ),
@@ -40,19 +44,27 @@ class _BKeHangNhapScreenState extends ConsumerState<BKeHangNhapScreen> {
         child: state.when(
           data: (val) {
             return Scaffold(
-              headers: [
-                AppContainerBorder(
-                  child: AppBar(
-                    leading: [
-                      AppPrintButton()
-                    ],
-                  ),
-                )
-              ],
+              // headers: [
+              //   AppContainerBorder(
+              //     child: AppBar(
+              //       leading: [
+              //
+              //       ],
+              //     ),
+              //   )
+              // ],
               child: AppTable(
                 onLoaded: (e){
                   _manager = BKeNhapXuatTableManager(e.stateManager);
                   _manager.loadView(val);
+                },
+                onRowDoubleTap: (re){
+                  if(re.cell.column.field == "Phieu"){
+                    if(re.cell.value.toString().startsWith("N")){
+                      showAppDialog(context, child: PhieuNhapScreen(phieu: re.cell.value,));
+
+                    }
+                  }
                 },
                 columns: [
                   AppTableColumn(

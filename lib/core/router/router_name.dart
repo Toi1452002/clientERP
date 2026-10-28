@@ -1,8 +1,8 @@
 abstract class RouterName {
   static const String login = "login";
 
-  static const String home = "home";
-  static const String splash = "splash";
+  static const String home = "Home";
+  // static const String splash = "splash";
 
   static const String khach = "DM_KH";
   static const String hangHoa = "DM_HH";

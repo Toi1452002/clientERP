@@ -40,6 +40,7 @@ class _BangLuongScreenState extends ConsumerState<BangLuongScreen> {
             if(idUpdate==0){
               _manager.loadView(val);
             }else{
+
               if(val.indexWhere((e)=>e.id == idUpdate)!=-1){
                 _manager.updateRow(idUpdate, val.firstWhere((e)=>e.id ==idUpdate));
               }
@@ -51,6 +52,7 @@ class _BangLuongScreenState extends ConsumerState<BangLuongScreen> {
             showInfo(context, e.toString());
             _manager.closeLoading();
             idUpdate=0;
+            isInit = false;
           },
           loading: () {
             _manager.showLoading();
@@ -62,6 +64,7 @@ class _BangLuongScreenState extends ConsumerState<BangLuongScreen> {
   }
 
   Future<void> updateCell(int id, BangLuongUpdateModel model, String field) async{
+    _manager.showLoading();
     try{
       idUpdate = id;
       await ref.read(bangLuongViewNotifier.notifier).updateCell(model, id, field);
@@ -76,7 +79,7 @@ class _BangLuongScreenState extends ConsumerState<BangLuongScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng thanh toán lương"),
+        // AppHeader(title: "Bảng thanh toán lương"),
         AppContainerBorder(
           child: AppBar(
             trailing: [
@@ -125,8 +128,8 @@ class _BangLuongScreenState extends ConsumerState<BangLuongScreen> {
         ),
       ],
       child: state.when(
-        skipLoadingOnReload: true,
-        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: isInit,
+        skipLoadingOnRefresh: isInit,
         data: (val) {
           return AppTable(
             onRowDoubleTap: (re){

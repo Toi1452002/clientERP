@@ -25,7 +25,7 @@ class _TNDNScreenState extends ConsumerState<TNDNScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Thuế thu nhập doanh nghiệp"),
+        // AppHeader(title: "Thuế thu nhập doanh nghiệp"),
         AppContainerBorder(child: AppBar(
           leading: [
             Text("Năm").medium,
@@ -70,9 +70,10 @@ class _TNDNScreenState extends ConsumerState<TNDNScreen> {
               ),
               AppTableColumn(
                 title: ['Số tiền', 'SoNamNay'],
-                width: 80,
+                width: 120,
                 columnType: ColumnType.num,
-                renderer: (re) => AppTableCell.textBlue(NumHelper.numFormat(re.cell.value, lamTron: true)),
+                columnAlign: ColumnAlign.right,
+                renderer: (re) => Align(alignment: Alignment.centerRight,child: AppTableCell.textBlue(NumHelper.numFormat(re.cell.value, lamTron: true),)),
               ),
             ],
           );

@@ -36,21 +36,10 @@ class _NhapXuatTonScreenState extends ConsumerState<NhapXuatTonScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Nhập xuất tồn kho"),
+        // AppHeader(title: "Nhập xuất tồn kho"),
         AppContainerBorder(child: Column(children: [
-          AppBar(
-            leading: [
-              AppTngayDngay(
-                onSubmit: (t,d){
-                  if(maTK!=null){
-                    ref.read(nhapXuatTonProvider.notifier).get(t, d, maTK!);
-                  }
-                  tNgay = t;
-                  dNgay = d;
-                },
-              ),
-            ],
-          ),
+
+
           AppBar(
             leading: [
               Text("Tài khoản").medium,
@@ -69,6 +58,22 @@ class _NhapXuatTonScreenState extends ConsumerState<NhapXuatTonScreen> {
                 }
               },),),
               SizedBox(width: 250,child: AppTextField(readOnly: true,controller: txtTenTK,),)
+            ],
+          ),
+          AppBar(
+            leading: [
+              AppTngayDngay(
+                onSubmit: (t,d){
+                  if(maTK!=null){
+                    ref.read(nhapXuatTonProvider.notifier).get(t, d, maTK!);
+                  }
+                  tNgay = t;
+                  dNgay = d;
+                },
+              ),
+            ],
+            trailing: [
+              AppPrintButton(),
             ],
           ),
         ],))

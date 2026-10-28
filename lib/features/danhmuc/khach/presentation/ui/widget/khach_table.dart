@@ -90,6 +90,7 @@ class _KhachTableState extends ConsumerState<KhachTable> {
                         await ref.read(khachViewProvider.notifier).delete(re.cell.value);
                       } catch (e) {
                         if (context.mounted) showInfo(context, e.toString());
+
                         _tableManager.closeLoading();
                       }
                     },

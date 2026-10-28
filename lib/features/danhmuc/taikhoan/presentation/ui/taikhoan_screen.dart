@@ -53,8 +53,8 @@ class _TaiKhoanScreenState extends ConsumerState<TaiKhoanScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách tài khoản kế toán",
+        // AppHeader(
+          // title: "Danh sách tài khoản kế toán",
           // trailing: [
           //   AppReloadButton(
           //     onPressed: () {
@@ -63,7 +63,7 @@ class _TaiKhoanScreenState extends ConsumerState<TaiKhoanScreen> {
           //   ),
           //   Gap(10),
           // ],
-        ),
+        // ),
         AppContainerBorder(
           child: AppBar(
             leading: [

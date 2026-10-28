@@ -28,7 +28,7 @@ class _BKeHangBanScreenState extends ConsumerState<BKeHangBanScreen> {
       backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: 'Bảng kê hàng bán'),
+        // AppHeader(title: 'Bảng kê hàng bán'),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -40,21 +40,24 @@ class _BKeHangBanScreenState extends ConsumerState<BKeHangBanScreen> {
                 },
               )
             ],
+            trailing: [
+              AppPrintButton()
+            ],
           ),
         ),
       ],
       child: state.when(
         data: (val){
           return Scaffold(
-            headers: [
-              AppContainerBorder(
-                child: AppBar(
-                  leading: [
-                    AppPrintButton()
-                  ],
-                ),
-              )
-            ],
+            // headers: [
+            //   AppContainerBorder(
+            //     child: AppBar(
+            //       leading: [
+            //
+            //       ],
+            //     ),
+            //   )
+            // ],
             child: AppTable(
               onLoaded: (re){
                 _manager = BkeHangBanManager(re.stateManager);

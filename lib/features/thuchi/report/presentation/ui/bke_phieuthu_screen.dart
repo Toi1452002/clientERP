@@ -40,7 +40,7 @@ class _BKePhieuThuScreenState extends ConsumerState<BKePhieuThuScreen> {
       footers: [AppFooter()],
       backgroundColor: AppColor.background,
       headers: [
-        AppHeader(title: "Bảng kê phiếu thu"),
+        // AppHeader(title: "Bảng kê phiếu thu"),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -54,19 +54,15 @@ class _BKePhieuThuScreenState extends ConsumerState<BKePhieuThuScreen> {
                 },
               ),
             ],
+            trailing: [
+              AppPrintButton()
+            ],
           ),
         ),
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
-            headers: [
-              AppContainerBorder(
-                child: AppBar(
-                  leading: [AppPrintButton(),],
-                ),
-              )
-            ],
             child: AppTable(
               onLoaded: (e){
                 _manager = BKeThuChiTableManager(e.stateManager);

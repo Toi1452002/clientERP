@@ -10,6 +10,10 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/utils/num_helper.dart';
+import '../../../nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
+import '../../../nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
+import '../../../thuchi/chi/presentation/ui/phieuchi_screen.dart';
+import '../../../thuchi/thu/presentation/ui/phieuthu_screen.dart';
 
 class SoMuaHangScreen extends ConsumerStatefulWidget {
   const SoMuaHangScreen({super.key});
@@ -32,20 +36,10 @@ class _SoMuaHangScreenState extends ConsumerState<SoMuaHangScreen> {
       // backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Sổ mua hàng"),
+        // AppHeader(title: "Sổ mua hàng"),
         AppContainerBorder(child: Column(
           children: [
-            AppBar(
-              leading: [
-                AppTngayDngay(
-                  onSubmit: (tn, dn) {
-                    tN = tn;
-                    dN = dn;
-                    ref.read(soMuaHangProvider.notifier).get(maKH, tN, dN);
-                  },
-                ),
-              ],
-            ),
+
             AppBar(
               leading: [
                 Text("Mã NC").medium,
@@ -77,6 +71,20 @@ class _SoMuaHangScreenState extends ConsumerState<SoMuaHangScreen> {
                 SizedBox(width: 250, child: AppTextField(readOnly: true, controller: txtTenKH)),
               ],
             ),
+            AppBar(
+              leading: [
+                AppTngayDngay(
+                  onSubmit: (tn, dn) {
+                    tN = tn;
+                    dN = dn;
+                    ref.read(soMuaHangProvider.notifier).get(maKH, tN, dN);
+                  },
+                ),
+              ],
+              trailing: [
+                AppPrintButton()
+              ],
+            ),
           ],
         )),
 
@@ -87,7 +95,6 @@ class _SoMuaHangScreenState extends ConsumerState<SoMuaHangScreen> {
             headers: [
               AppContainerBorder(
                 child: AppBar(
-                  leading: [AppPrintButton()],
                   trailing: [
                     Text('Nợ đầu kỳ: '),
                     Text(NumHelper.numFormat(val?.noDky), style: TextStyle(fontWeight: FontWeight.w700)),
@@ -111,6 +118,21 @@ class _SoMuaHangScreenState extends ConsumerState<SoMuaHangScreen> {
                 _manager = SoMuaHangTableManager(e.stateManager);
                 if (val != null) {
                   _manager.loadView(val.soMuaHang);
+                }
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "Phieu"){
+                  if(re.cell.value.toString().startsWith("T")){
+                    showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("C")){
+                    showAppDialog(context, child: PhieuChiScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("N")){
+                    showAppDialog(context, child: PhieuNhapScreen(phieu: re.cell.value,));
+
+                  }else if(re.cell.value.toString().startsWith("X")){
+                    showAppDialog(context, child: PhieuXuatScreen(phieu: re.cell.value,));
+                  }
                 }
               },
               columns: [

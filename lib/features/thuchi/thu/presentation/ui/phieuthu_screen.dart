@@ -257,6 +257,9 @@ class _PhieuThuScreenState extends ConsumerState<PhieuThuScreen> {
               AppBar(
                 // height: 25,
                 // backgroundColor: Colors.gray.shade200,
+                trailing: [
+                  Text("Người tạo: ${state.value==null?"":state.value?.createdBy}",style: TextStyle(color: Colors.gray),)
+                ],
                 leading: [
                   Focus(
                     autofocus: true,

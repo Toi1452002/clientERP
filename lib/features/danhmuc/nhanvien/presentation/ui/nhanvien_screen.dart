@@ -16,19 +16,19 @@ class NhanVienScreen extends ConsumerWidget {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách nhân viên",
-          // trailing: [
-          //   AppReloadButton(
-          //     onPressed: () {
-          //       ref.refresh(nhanVienViewProvider);
-          //       ref.invalidate(nhanVienLookupProvider);
-          //       // ref.refresh(khachViewProvider);
-          //     },
-          //   ),
-          //   Gap(10),
-          // ],
-        ),
+        // AppHeader(
+        //   title: "Danh sách nhân viên",
+        //   // trailing: [
+        //   //   AppReloadButton(
+        //   //     onPressed: () {
+        //   //       ref.refresh(nhanVienViewProvider);
+        //   //       ref.invalidate(nhanVienLookupProvider);
+        //   //       // ref.refresh(khachViewProvider);
+        //   //     },
+        //   //   ),
+        //   //   Gap(10),
+        //   // ],
+        // ),
         AppContainerBorder(
           child: AppBar(
             leading: [

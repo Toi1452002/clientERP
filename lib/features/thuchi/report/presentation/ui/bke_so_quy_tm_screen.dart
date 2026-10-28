@@ -1,3 +1,6 @@
+import 'package:erp_client_1/features/nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
+import 'package:erp_client_1/features/nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
+import 'package:erp_client_1/features/thuchi/chi/presentation/ui/phieuchi_screen.dart';
 import 'package:erp_client_1/features/thuchi/report/presentation/ui/state/bke_so_quy_table_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constain/app_color.dart';
 import '../../../../../core/utils/num_helper.dart';
 import '../../../../../core/widgets/widget.dart';
+import '../../../thu/presentation/ui/phieuthu_screen.dart';
 import '../notifier/bke_so_quy_tm_notifier.dart';
 
 
@@ -35,7 +39,7 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
       footers: [AppFooter()],
       backgroundColor: AppColor.background,
       headers: [
-        AppHeader(title: "Sổ chi tiết quỹ tiền mặt"),
+        // AppHeader(title: "Sổ chi tiết quỹ tiền mặt"),
         AppBar(
           leading: [
 
@@ -48,6 +52,9 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
               },
             ),
           ],
+          trailing: [
+            AppPrintButton()
+          ],
         ),
         Divider(color: AppColor.border300,)
       ],
@@ -57,9 +64,6 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
             headers: [
               AppContainerBorder(
                 child: AppBar(
-                  leading: [
-                    AppPrintButton(),
-                  ],
                   trailing: [
                     Text('Tồn đầu kỳ: '),
                     Text(NumHelper.numFormat(val?.dauKy),style: TextStyle(fontWeight: FontWeight.w700,))
@@ -82,6 +86,21 @@ class _BKeSoQuyTMScreenState extends ConsumerState<BKeSoQuyTMScreen> {
                 _manager = BKeSoQuyTableManager(e.stateManager);
                 if(val!=null){
                   _manager.loadView(val.bkeSoQuy);
+                }
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "Phieu"){
+                  if(re.cell.value.toString().startsWith("T")){
+                    showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("C")){
+                    showAppDialog(context, child: PhieuChiScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("N")){
+                    showAppDialog(context, child: PhieuNhapScreen(phieu: re.cell.value,));
+
+                  }else if(re.cell.value.toString().startsWith("X")){
+                    showAppDialog(context, child: PhieuXuatScreen(phieu: re.cell.value,));
+                  }
                 }
               },
               columns: [

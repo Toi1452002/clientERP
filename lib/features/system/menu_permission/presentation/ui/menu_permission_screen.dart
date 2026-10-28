@@ -58,9 +58,9 @@ class _MenuPermissionScreenState extends ConsumerState<MenuPermissionScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(
-            title: "Phân quyền người dùng",
-          ),
+          // AppHeader(
+          //   title: "Phân quyền người dùng",
+          // ),
           AppBar(
             leading: [
               Text('Vai trò'),

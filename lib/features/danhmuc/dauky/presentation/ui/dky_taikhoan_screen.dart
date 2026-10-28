@@ -43,26 +43,26 @@ class _DKyTaiKhoanScreenState extends ConsumerState<DKyTaiKhoanScreen> {
     return Scaffold(
       backgroundColor: AppColor.background,
       footers: [AppFooter()],
-      headers: [
-        AppHeader(
-          title: "Danh sách đầu kỳ tài khoản",
-          // trailing: [
-          //   AppReloadButton(
-          //     onPressed: () {
-          //       ref.refresh(dkyTaiKhoanViewProvider);
-          //       _manager.showLoading();
-          //       ref.listenManual(dkyTaiKhoanViewProvider, (_, next) {
-          //         next.whenData((data) {
-          //           _manager.loadView(data);
-          //           _manager.closeLoading();
-          //         });
-          //       });
-          //     },
-          //   ),
-          //   Gap(10),
-          // ],
-        ),
-      ],
+      // headers: [
+      //   AppHeader(
+      //     title: "Danh sách đầu kỳ tài khoản",
+      //     // trailing: [
+      //     //   AppReloadButton(
+      //     //     onPressed: () {
+      //     //       ref.refresh(dkyTaiKhoanViewProvider);
+      //     //       _manager.showLoading();
+      //     //       ref.listenManual(dkyTaiKhoanViewProvider, (_, next) {
+      //     //         next.whenData((data) {
+      //     //           _manager.loadView(data);
+      //     //           _manager.closeLoading();
+      //     //         });
+      //     //       });
+      //     //     },
+      //     //   ),
+      //     //   Gap(10),
+      //     // ],
+      //   ),
+      // ],
       child: state.when(
         data: (val) {
           return LoadingOverlay(

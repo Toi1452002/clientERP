@@ -1,5 +1,6 @@
 import 'package:erp_client_1/features/kho/presentation/notifier/bkehangxuat_notifier.dart';
 import 'package:erp_client_1/features/kho/presentation/ui/state/bke_nhapxuat_table_manager.dart';
+import 'package:erp_client_1/features/nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -27,13 +28,17 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Bảng kê hàng xuất"),
+        // AppHeader(title: "Bảng kê hàng xuất"),
         AppContainerBorder(
           child: AppBar(
             leading: [
               AppTngayDngay(onSubmit: (t,d){
                 ref.read(bKeHangXuatProvider.notifier).get(t, d);
               },)
+            ],
+            trailing: [
+              AppPrintButton()
+
             ],
           ),
         ),
@@ -43,19 +48,18 @@ class _BKeHangXuatScreenState extends ConsumerState<BKeHangXuatScreen> {
         child: state.when(
           data: (val) {
             return Scaffold(
-              headers: [
-                AppContainerBorder(
-                  child: AppBar(
-                    leading: [
-                      AppPrintButton()
-                    ],
-                  ),
-                )
-              ],
               child: AppTable(
                 onLoaded: (e){
                   _manager = BKeNhapXuatTableManager(e.stateManager);
                   _manager.loadView(val);
+                },
+                onRowDoubleTap: (re){
+                  if(re.cell.column.field == "Phieu"){
+                    if(re.cell.value.toString().startsWith("X")){
+                      showAppDialog(context, child: PhieuXuatScreen(phieu: re.cell.value,));
+
+                    }
+                  }
                 },
                 columns: [
                   AppTableColumn(

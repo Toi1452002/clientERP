@@ -9,6 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/num_helper.dart';
 import '../../../danhmuc/khach/data/model/khach_lookup_model.dart';
 import '../../../danhmuc/khach/presentation/ui/state/khach_lookup_state.dart';
+import '../../../nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
+import '../../../nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
+import '../../../thuchi/chi/presentation/ui/phieuchi_screen.dart';
+import '../../../thuchi/thu/presentation/ui/phieuthu_screen.dart';
 import '../notifier/sobanhang_notifier.dart';
 
 class SoBanHangScreen extends ConsumerStatefulWidget {
@@ -34,20 +38,10 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Sổ bán hàng"),
+        // AppHeader(title: "Sổ bán hàng"),
         AppContainerBorder(child: Column(
           children: [
-            AppBar(
-              leading: [
-                AppTngayDngay(
-                  onSubmit: (tn, dn) {
-                    tN = tn;
-                    dN = dn;
-                    ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
-                  },
-                ),
-              ],
-            ),
+
             AppBar(
               leading: [
                 Text("Mã KH").medium,
@@ -78,7 +72,21 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
                 ),
                 SizedBox(width: 250, child: AppTextField(readOnly: true, controller: txtTenKH)),
               ],
-            )
+            ),
+            AppBar(
+              leading: [
+                AppTngayDngay(
+                  onSubmit: (tn, dn) {
+                    tN = tn;
+                    dN = dn;
+                    ref.read(soBanHangProvider.notifier).get(maKH, tN, dN);
+                  },
+                ),
+              ],
+              trailing: [
+                AppPrintButton()
+              ],
+            ),
           ],
         )),
 
@@ -89,7 +97,6 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
             headers: [
               AppContainerBorder(
                 child: AppBar(
-                  leading: [AppPrintButton()],
                   trailing: [
                     Text('Nợ đầu kỳ: '),
                     Text(NumHelper.numFormat(val?.noDKy), style: TextStyle(fontWeight: FontWeight.w700)),
@@ -113,6 +120,21 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
                 _manager = SoBanHangTableManager(e.stateManager);
                 if (val != null) {
                   _manager.loadView(val.soBanHang);
+                }
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "Phieu"){
+                  if(re.cell.value.toString().startsWith("T")){
+                    showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("C")){
+                    showAppDialog(context, child: PhieuChiScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("N")){
+                    showAppDialog(context, child: PhieuNhapScreen(phieu: re.cell.value,));
+
+                  }else if(re.cell.value.toString().startsWith("X")){
+                    showAppDialog(context, child: PhieuXuatScreen(phieu: re.cell.value,));
+                  }
                 }
               },
               columns: [
@@ -157,7 +179,7 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
                       AppTableCell.textBlue(NumHelper.numFormat(re.cell.value)).withAlign(Alignment.centerRight),
                 ),
                 AppTableColumn(
-                  title: ['Nợ', 'TienBan'],
+                  title: ['Thành tiền', 'TienBan'],
                   columnType: ColumnType.num,
                   width: 120,
                   renderer: (re) =>
@@ -165,7 +187,7 @@ class _SoBanHangScreenState extends ConsumerState<SoBanHangScreen> {
                   showFooter: true,
                 ),
                 AppTableColumn(
-                  title: ['Có', 'TienTra'],
+                  title: ['Thanh toán', 'TienTra'],
                   width: 120,
                   columnType: ColumnType.num,
                   renderer: (re) =>

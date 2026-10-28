@@ -23,9 +23,9 @@ class _UserScreenState extends ConsumerState<UserScreen> {
       // backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách người dùng",
-        ),
+        // AppHeader(
+        //   title: "Danh sách người dùng",
+        // ),
         AppBar(
           leading: [
             AppNewButton(

@@ -54,7 +54,7 @@ class _BangCDPSScreenState extends ConsumerState<BangCDPSScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Bảng cân đối phát sinh"),
+          // AppHeader(title: "Bảng cân đối phát sinh"),
           AppContainerBorder(
             child: AppBar(
               leading: [
@@ -101,6 +101,7 @@ class _BangCDPSScreenState extends ConsumerState<BangCDPSScreen> {
                     showAppDialog(context, child: KetChuyenScreen());
                   },
                 ),
+                AppPrintButton()
               ],
             ),
           ),
@@ -108,9 +109,9 @@ class _BangCDPSScreenState extends ConsumerState<BangCDPSScreen> {
         child: state.when(
           data: (val) {
             return Scaffold(
-              headers: [
-                AppContainerBorder(child: AppBar(leading: [AppPrintButton()])),
-              ],
+              // headers: [
+              //   AppContainerBorder(child: AppBar(leading: [])),
+              // ],
               child: AppTable(
                 onLoaded: (e) {
                   _manager = BangCDPSTableManager(e.stateManager);

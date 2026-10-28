@@ -19,7 +19,7 @@ class _SoThueViewState extends ConsumerState<SoThueView> {
   Widget build(BuildContext context) {
     return Scaffold(
       footers: [AppFooter()],
-      headers: [AppHeader(title: "Sổ thuế")],
+      // headers: [AppHeader(title: "Sổ thuế")],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

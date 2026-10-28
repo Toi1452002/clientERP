@@ -34,22 +34,10 @@ class _SoCaiTKScreenState extends ConsumerState<SoCaiTKScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Sổ cái tài khoản"),
+        // AppHeader(title: "Sổ cái tài khoản"),
         AppContainerBorder(child: Column(
           children: [
-            AppBar(
-              leading: [
-                AppTngayDngay(
-                  onSubmit: (t,d){
-                    tuNgay = t;
-                    denNgay = d;
-                    if(maTK != null){
-                      ref.read(soCaiTKProvider.notifier).get(maTK!, tuNgay, denNgay);
-                    }
-                  },
-                )
-              ],
-            ),
+
             AppBar(
               leading: [
                 Text("Mã TK").medium,
@@ -69,6 +57,22 @@ class _SoCaiTKScreenState extends ConsumerState<SoCaiTKScreen> {
                   }
                 },),),
                 SizedBox(width: 250,child: AppTextField(controller: txtTenTK,readOnly: true,),),
+              ],
+            ),
+            AppBar(
+              leading: [
+                AppTngayDngay(
+                  onSubmit: (t,d){
+                    tuNgay = t;
+                    denNgay = d;
+                    if(maTK != null){
+                      ref.read(soCaiTKProvider.notifier).get(maTK!, tuNgay, denNgay);
+                    }
+                  },
+                )
+              ],
+              trailing: [
+                AppPrintButton()
               ],
             ),
           ],
@@ -99,9 +103,6 @@ class _SoCaiTKScreenState extends ConsumerState<SoCaiTKScreen> {
             headers: [
               AppContainerBorder(
                 child: AppBar(
-                  leading: [
-                    AppPrintButton()
-                  ],
                   trailing: [
                     Text('Số dư đầu kỳ: '),
                     Text("[NỢ]",style: TextStyle(color: Colors.gray),),

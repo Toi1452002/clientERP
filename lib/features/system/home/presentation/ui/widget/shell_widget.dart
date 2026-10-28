@@ -6,6 +6,8 @@ import 'package:erp_client_1/features/nhapxuat/nhap/presentation/ui/phieunhap_sc
 import 'package:erp_client_1/features/nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
 import 'package:erp_client_1/features/system/auth/presentation/notifier/auth_notifier.dart';
 import 'package:erp_client_1/features/system/home/presentation/dialog/tuychon_dialog.dart';
+import 'package:erp_client_1/features/system/home/presentation/notifier/tabbed_notifier.dart';
+import 'package:erp_client_1/features/system/home/presentation/ui/widget/tabbed_view.dart';
 import 'package:erp_client_1/features/system/home/presentation/ui/widget/tree_menu_widget.dart';
 import 'package:erp_client_1/features/thuchi/chi/presentation/ui/phieuchi_screen.dart';
 import 'package:erp_client_1/features/thuchi/thu/presentation/ui/phieuthu_screen.dart';
@@ -15,6 +17,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../../../core/router/tabbed_view_builder.dart';
 import '../../../../../../core/shortcut/shortcut_config.dart';
 
 final closeMenuProvider = StateProvider<bool>((ref) {
@@ -22,9 +25,9 @@ final closeMenuProvider = StateProvider<bool>((ref) {
 });
 
 class ShellWidget extends ConsumerWidget {
-  final Widget child;
+  final Widget? child;
 
-  const ShellWidget({super.key, required this.child});
+  const ShellWidget({super.key, this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,28 +37,28 @@ class ShellWidget extends ConsumerWidget {
       child: Actions(
         actions: {
           ShowPNIntent: CallbackAction<ShowPNIntent>(
-            onInvoke: (ShowPNIntent intent){
+            onInvoke: (ShowPNIntent intent) {
               showAppDialog(context, child: PhieuNhapScreen());
               return null;
-            }
+            },
           ),
           ShowPXIntent: CallbackAction<ShowPXIntent>(
-              onInvoke: (ShowPXIntent intent){
-                showAppDialog(context, child: PhieuXuatScreen());
-                return null;
-              }
+            onInvoke: (ShowPXIntent intent) {
+              showAppDialog(context, child: PhieuXuatScreen());
+              return null;
+            },
           ),
           ShowPTIntent: CallbackAction<ShowPTIntent>(
-              onInvoke: (ShowPTIntent intent){
-                showAppDialog(context, child: PhieuThuScreen());
-                return null;
-              }
+            onInvoke: (ShowPTIntent intent) {
+              showAppDialog(context, child: PhieuThuScreen());
+              return null;
+            },
           ),
           ShowPCIntent: CallbackAction<ShowPCIntent>(
-              onInvoke: (ShowPCIntent intent){
-                showAppDialog(context, child: PhieuChiScreen());
-                return null;
-              }
+            onInvoke: (ShowPCIntent intent) {
+              showAppDialog(context, child: PhieuChiScreen());
+              return null;
+            },
           ),
         },
         child: Scaffold(
@@ -72,7 +75,7 @@ class ShellWidget extends ConsumerWidget {
                 backgroundColor: Colors.cyan.shade800,
                 leading: [
                   IconButton.text(
-                    icon: Icon(PhosphorIcons.list,color: Colors.white,),
+                    icon: Icon(PhosphorIcons.list, color: Colors.white),
                     onPressed: () {
                       ref.read(closeMenuProvider.notifier).state = !closeMenu;
                     },
@@ -80,7 +83,11 @@ class ShellWidget extends ConsumerWidget {
                   TextButton(
                     child: Text("Home", style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      context.goNamed(RouterName.home);
+                      // context.goNamed(RouterName.home);
+                      // ref.refresh(tabbedProvider);
+                      ref
+                          .read(tabbedProvider.notifier)
+                          .addTab(RouterName.home, RouterName.home, tabbedView(RouterName.home));
                     },
                   ),
                   TextButton(
@@ -123,7 +130,8 @@ class ShellWidget extends ConsumerWidget {
                 ),
               ),
 
-              Expanded(child: child),
+              // Expanded(child: child),
+              Expanded(child: TabbedViewCustom(child: child??SizedBox())),
             ],
           ),
         ),

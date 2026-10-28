@@ -277,7 +277,9 @@ class _PhieuNhapScreenState extends ConsumerState<PhieuNhapScreen> {
               ),
             ],
             headers: [
-              AppBar(
+              AppBar( trailing: [
+                Text("Người tạo: ${state.value==null?"":state.value?.phieuNhap.createdBy}",style: TextStyle(color: Colors.gray),)
+              ],
                 leading: [
                   Focus(
                     autofocus: true,

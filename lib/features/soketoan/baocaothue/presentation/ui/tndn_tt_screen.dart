@@ -34,7 +34,7 @@ class _TNDNttScreenState extends ConsumerState<TNDNttScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Thuế tạm tính"),
+        // AppHeader(title: "Thuế tạm tính"),
         AppContainerBorder(
           child: AppBar(
             leading: [

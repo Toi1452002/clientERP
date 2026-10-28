@@ -27,7 +27,7 @@ class _NhatKyChungScreenState extends ConsumerState<NhatKyChungScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Sổ nhật ký chung",),
+        // AppHeader(title: "Sổ nhật ký chung",),
         AppContainerBorder(
           child: AppBar(
             leading: [

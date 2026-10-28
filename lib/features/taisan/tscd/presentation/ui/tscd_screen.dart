@@ -74,7 +74,7 @@ class _TSCDScreenState extends ConsumerState<TSCDScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng khấu hao TSCĐ"),
+        // AppHeader(title: "Bảng khấu hao TSCĐ"),
         AppContainerBorder(
           child: AppBar(
             leading: [AppTngayDngay(tuNgay: tuNgay, onSubmit: (a, b) async {

@@ -148,13 +148,14 @@ class _UserFormState extends ConsumerState<UserForm> {
                     }
                   },
                 ),
-                AppSaveButton(
-                  text: "Lưu",
-                  onPressed: () {
-                    themTiep = true;
-                    ref.read(userEditProvider.notifier).add(_userAddModel());
-                  },
-                ),
+                if (widget.id == null)
+                  AppSaveButton(
+                    text: "Lưu",
+                    onPressed: () {
+                      themTiep = true;
+                      ref.read(userEditProvider.notifier).add(_userAddModel());
+                    },
+                  ),
               ],
             ),
           ],

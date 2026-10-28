@@ -26,7 +26,7 @@ class _BkeHoaDonBanScreenState extends ConsumerState<BkeHoaDonBanScreen> {
       footers: [AppFooter()],
       backgroundColor: AppColor.background,
       headers: [
-        AppHeader(title: "Bảng kê hóa đơn bán ra"),
+        // AppHeader(title: "Bảng kê hóa đơn bán ra"),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -36,21 +36,16 @@ class _BkeHoaDonBanScreenState extends ConsumerState<BkeHoaDonBanScreen> {
                 },
               )
             ],
+            trailing: [
+              AppPrintButton()
+
+            ],
           ),
         ),
       ],
       child: state.when(
         data: (val){
           return Scaffold(
-            headers: [
-              AppContainerBorder(
-                child: AppBar(
-                  leading: [
-                    AppPrintButton()
-                  ],
-                ),
-              )
-            ],
             child: AppTable(
               onLoaded: (e){
                 _manager = BkeHoaDonBanManager(e.stateManager);

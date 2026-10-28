@@ -52,7 +52,7 @@ class _BangCDKTScreenState extends ConsumerState<BangCDKTScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Bảng cân đối kế toán"),
+          // AppHeader(title: "Bảng cân đối kế toán"),
           AppContainerBorder(
             child: AppBar(
               leading: [

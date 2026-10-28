@@ -27,7 +27,7 @@ class LuuSoDuNotifier extends AsyncNotifier<bool>{
       thang = "${denNgay.year}";
     }
     state = await AsyncValue.guard(() async{
-     return await _repo.luuSoDuCDPS(thang);
+     return await _repo.luuSoDuCDPS(thang,nam: kieu == 2);
     });
   }
 }

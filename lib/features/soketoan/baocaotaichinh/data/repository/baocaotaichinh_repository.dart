@@ -53,10 +53,12 @@ class BaoCaoTaiChinhRepository implements IBaoCaoTaiChinhRepository{
   }
 
   @override
-  Future<bool> luuSoDuCDPS(String thang) async {
+  Future<bool> luuSoDuCDPS(String thang, {bool nam = false}) async {
     // TODO: implement luuSoDuCDPS
     try{
-      final response = await _dio.post("/BaoCaoTaiChinh/luu-sd-cdps/$thang");
+      final response = await _dio.post("/BaoCaoTaiChinh/luu-sd-cdps/$thang", queryParameters: {
+        "nam": nam
+      });
       return response.data;
     }on DioException catch(e){
       throw ApiException.handleDioException(e);

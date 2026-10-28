@@ -29,7 +29,7 @@ class _ChuyenLoScreenState extends ConsumerState<ChuyenLoScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Chuyển lỗ"),
+        // AppHeader(title: "Chuyển lỗ"),
         AppContainerBorder(
           child: AppBar(
             leading: [

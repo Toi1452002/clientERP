@@ -46,7 +46,7 @@ class _BangTMTCScreenState extends ConsumerState<BangTMTCScreen> {
       child: Scaffold(
         footers: [AppFooter()],
         headers: [
-          AppHeader(title: "Báo cáo thuyết minh tài chính"),
+          // AppHeader(title: "Báo cáo thuyết minh tài chính"),
           AppContainerBorder(
             child: AppBar(
               leading: [
@@ -99,7 +99,7 @@ class _BangTMTCScreenState extends ConsumerState<BangTMTCScreen> {
                 ),
                 AppTableColumn(
                   title: ['Chỉ tiêu', 'ChiTieu'],
-                  width: 300,
+                  width: 350,
                   renderer: (re) => AppTableCell.textBlue(re.cell.value),
                 ),
                 AppTableColumn(
@@ -108,7 +108,7 @@ class _BangTMTCScreenState extends ConsumerState<BangTMTCScreen> {
                   columnAlign: ColumnAlign.center,
                   renderer: (re) => AppTableCell.textBlue(re.cell.value).withAlign(Alignment.center),
                 ),
-                AppTableColumn(title: ['Thuyết minh', 'ThuyetMinh'], width: 300),
+                AppTableColumn(title: ['Thuyết minh', 'ThuyetMinh'], width: 350),
                 AppTableColumn(
                   title: ['Số năm nay', 'SoNamNay'],
                   width: 130,

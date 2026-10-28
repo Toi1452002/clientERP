@@ -7,7 +7,7 @@ abstract interface class IBaoCaoTaiChinhRepository {
 
   Future<List<BangCDPSModel>> tinhToanCDPS(int kieu, DateTime tuNgay, DateTime denNgay);
 
-  Future<bool> luuSoDuCDPS(String thang);
+  Future<bool> luuSoDuCDPS(String thang,{bool nam = false});
 
   Future<List<SoCTTKModel>> getViewCTTK(String maTK, String year);
 

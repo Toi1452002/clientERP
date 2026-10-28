@@ -21,8 +21,8 @@ class KhachScreenState extends ConsumerState<KhachScreen> {
     return Scaffold(
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách khách hàng – nhà cung",
+        // AppHeader(
+          // title: "Danh sách khách hàng – nhà cung",
           // trailing: [
           //   AppReloadButton(
           //     onPressed: () {
@@ -32,7 +32,7 @@ class KhachScreenState extends ConsumerState<KhachScreen> {
           //   ),
           //   Gap(10),
           // ],
-        ),
+        // ),
         AppContainerBorder(
           child: AppBar(
             // padding: EdgeInsets.only(left: 20, top: 10, bottom: 5),

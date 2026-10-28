@@ -257,6 +257,9 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
             ],
             headers: [
               AppBar(
+                trailing: [
+                  Text("Người tạo: ${state.value==null?"":state.value?.createdBy}",style: TextStyle(color: Colors.gray),)
+                ],
                 // height: 25,
                 // backgroundColor: Colors.gray.shade200,
                 leading: [
@@ -367,12 +370,12 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
                             Row(
                               children: [
                                 Gap(20),
-                                if (['CNC', 'CTN'].contains(maTC)) maTC == "CNC" ? Text('Mã NV') : Text('Mã khách'),
+                                 maTC == "CNC" ? Text('Mã NV') : Text('Mã khách'),
                               ],
                             ),
                             Builder(
                               builder: (context) {
-                                if (['CNC', 'CTN'].contains(maTC)) {
+                                // if (['CNC', 'CTN'].contains(maTC)) {
                                   if (maTC == 'CNC') {
                                     return NhanVienCombobox(
                                       enabled: !khoa,
@@ -412,9 +415,9 @@ class _PhieuChiScreenState extends ConsumerState<PhieuChiScreen> {
                                       },
                                     );
                                   }
-                                } else {
-                                  return SizedBox();
-                                }
+                                // } else {
+                                //   return SizedBox();
+                                // }
                               },
                             ),
                           ],

@@ -25,7 +25,7 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
       backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(title: "Bảng kê hóa đơn mua vào"),
+        // AppHeader(title: "Bảng kê hóa đơn mua vào"),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -34,7 +34,11 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
                   ref.read(bkeHoaDonMuaProvider.notifier).get(tuNgay: t,denNgay: d);
                 },
               )
+
           
+            ],
+            trailing: [
+              AppPrintButton()
             ],
           ),
         ),
@@ -43,15 +47,6 @@ class _BkeHoaDonMuaScreenState extends ConsumerState<BkeHoaDonMuaScreen> {
       child: state.when(
         data: (val){
           return Scaffold(
-            headers: [
-              AppContainerBorder(
-                child: AppBar(
-                  leading: [
-                    AppPrintButton()
-                  ],
-                ),
-              )
-            ],
             child: AppTable(
               onLoaded: (e){
                 _manager = BkeHoaDonMuaManager(e.stateManager);

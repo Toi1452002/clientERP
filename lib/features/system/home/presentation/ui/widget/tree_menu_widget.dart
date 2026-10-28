@@ -1,9 +1,11 @@
 import 'package:erp_client_1/core/router/router_name.dart';
+import 'package:erp_client_1/core/router/tabbed_view_builder.dart';
 import 'package:erp_client_1/core/widgets/app_dialog.dart';
 import 'package:erp_client_1/features/danhmuc/manghiepvu/presentation/ui/manghiepvu_screen.dart';
 import 'package:erp_client_1/features/nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
 import 'package:erp_client_1/features/nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
 import 'package:erp_client_1/features/system/home/presentation/notifier/menu_notifier.dart';
+import 'package:erp_client_1/features/system/home/presentation/notifier/tabbed_notifier.dart';
 import 'package:erp_client_1/features/thuchi/chi/presentation/ui/phieuchi_screen.dart';
 import 'package:erp_client_1/features/thuchi/thu/presentation/ui/phieuthu_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,7 +77,9 @@ class TreeMenuWidget extends ConsumerWidget {
                   RouterName.chamCong,
                   RouterName.bangLuong
                 ].contains(code)) {
-                  context.goNamed(code);
+                  // context.goNamed(code);
+                  // ref.read(tabbedProvider.notifier).addTab(name);
+                  ref.read(tabbedProvider.notifier).addTab(code,name,tabbedView(code));
                 }
 
                 else if(code=="TC_T"){

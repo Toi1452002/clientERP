@@ -26,7 +26,7 @@ class _TongHopCongNoScreenState extends ConsumerState<TongHopCongNoScreen> {
         AppFooter()
       ],
       headers: [
-        AppHeader(title: "Tổng hợp công nợ"),
+        // AppHeader(title: "Tổng hợp công nợ"),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -39,21 +39,15 @@ class _TongHopCongNoScreenState extends ConsumerState<TongHopCongNoScreen> {
                 }
               },)
             ],
+            trailing: [
+              AppPrintButton()
+            ],
           ),
         ),
       ],
       child: state.when(
         data: (val) {
           return Scaffold(
-            headers: [
-              AppContainerBorder(
-                child: AppBar(
-                  leading: [
-                    AppPrintButton()
-                  ],
-                ),
-              )
-            ],
             child: AppTable(onLoaded: (e){
               _manager = TongHopCongNoTableManager(e.stateManager);
               _manager.loadView(val);

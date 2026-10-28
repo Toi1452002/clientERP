@@ -6,6 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constain/app_color.dart';
 import '../../../../../core/utils/num_helper.dart';
 import '../../../../../core/widgets/widget.dart';
+import '../../../../nhapxuat/nhap/presentation/ui/phieunhap_screen.dart';
+import '../../../../nhapxuat/xuat/presentation/ui/phieuxuat_screen.dart';
+import '../../../chi/presentation/ui/phieuchi_screen.dart';
+import '../../../thu/presentation/ui/phieuthu_screen.dart';
 
 
 class BKeSoQuyTGScreen extends ConsumerStatefulWidget {
@@ -35,7 +39,7 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
       footers: [AppFooter()],
       backgroundColor: AppColor.background,
       headers: [
-        AppHeader(title: "Sổ chi tiết quỹ tiền gửi"),
+        // AppHeader(title: "Sổ chi tiết quỹ tiền gửi"),
         AppContainerBorder(
           child: AppBar(
             leading: [
@@ -48,6 +52,10 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
                 },
               ),
             ],
+            trailing: [
+              AppPrintButton(),
+
+            ],
           ),
         ),
       ],
@@ -57,9 +65,6 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
             headers: [
               AppContainerBorder(
                 child: AppBar(
-                  leading: [
-                    AppPrintButton(),
-                  ],
                   trailing: [
                     Text('Tồn đầu kỳ: '),
                     Text(NumHelper.numFormat(val?.dauKy),style: TextStyle(fontWeight: FontWeight.w700,))
@@ -82,6 +87,21 @@ class _BKeSoQuyTGScreenState extends ConsumerState<BKeSoQuyTGScreen> {
                 _manager = BKeSoQuyTableManager(e.stateManager);
                 if(val!=null){
                   _manager.loadView(val.bkeSoQuy);
+                }
+              },
+              onRowDoubleTap: (re){
+                final field = re.cell.column.field;
+                if(field == "Phieu"){
+                  if(re.cell.value.toString().startsWith("T")){
+                    showAppDialog(context, child: PhieuThuScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("C")){
+                    showAppDialog(context, child: PhieuChiScreen(phieu: re.cell.value,));
+                  }else if(re.cell.value.toString().startsWith("N")){
+                    showAppDialog(context, child: PhieuNhapScreen(phieu: re.cell.value,));
+
+                  }else if(re.cell.value.toString().startsWith("X")){
+                    showAppDialog(context, child: PhieuXuatScreen(phieu: re.cell.value,));
+                  }
                 }
               },
               columns: [

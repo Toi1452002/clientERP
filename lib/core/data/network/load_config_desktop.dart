@@ -11,6 +11,7 @@ Future<Map<String, dynamic>> loadConfig() async {
   // );
   final jsonString = await rootBundle.loadString('assets/config/appsettings.json');
 
+
   // if (!await file.exists()) {
   //   throw Exception('Không tìm thấy config.json');
   // }

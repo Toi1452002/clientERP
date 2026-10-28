@@ -26,21 +26,21 @@ class HangHoaScreenState extends ConsumerState<HangHoaScreen> {
       // backgroundColor: AppColor.background,
       footers: [AppFooter()],
       headers: [
-        AppHeader(
-          title: "Danh sách hàng hóa – vật tư",
-          trailing: [
-            // AppReloadButton(
-            //   onPressed: () {
-            //     ref.refresh(hangHoaViewProvider);
-            //     ref.refresh(dvtProvider);
-            //     ref.refresh(nhomhangProvider);
-            //     ref.refresh(loaiHangProvider);
-            //     ref.invalidate(hangHoaLookupProvider);
-            //   },
-            // ),
-            // Gap(10),
-          ],
-        ),
+        // AppHeader(
+        //   title: "Danh sách hàng hóa – vật tư",
+        //   trailing: [
+        //     // AppReloadButton(
+        //     //   onPressed: () {
+        //     //     ref.refresh(hangHoaViewProvider);
+        //     //     ref.refresh(dvtProvider);
+        //     //     ref.refresh(nhomhangProvider);
+        //     //     ref.refresh(loaiHangProvider);
+        //     //     ref.invalidate(hangHoaLookupProvider);
+        //     //   },
+        //     // ),
+        //     // Gap(10),
+        //   ],
+        // ),
         AppContainerBorder(
           child: AppBar(
             // padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
